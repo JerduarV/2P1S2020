@@ -1,0 +1,62 @@
+<div class="container h-100 mt-4">
+  
+  <!-- run, clear & beautify buttons -->
+  <div class="row mb-4 justify-content-center mx-4">
+    <div class="col-4 col-lg-2 col-md-3 col-sm-4 w-75">
+        <button type="button" class="btn btn-dark btn-sm btn-block px-4 mx-2" (click)="Ejecutar();">
+            Ejecutar
+        </button>
+    </div>
+    <div class="col-4 col-lg-2 col-md-3 col-sm-4 w-75">
+        <button type="button" class="btn btn-dark btn-sm btn-block px-4 mx-2" (click)="LimpiarConsola()">
+            Limpiar
+        </button>
+    </div>
+    <div class="col-4 col-lg-2 col-md-3 col-sm-4 w-75">
+        <button type="button" class="btn btn-dark btn-sm btn-block px-4 mx-2" (click)="Logout()">
+            Salir
+        </button>
+    </div>
+    <div class="col-4 col-lg-2 col-md-3 col-sm-4 w-75">
+            <button type="button" class="btn btn-dark btn-sm btn-block px-4 mx-2" (click)="openDialog()">
+                Errores
+            </button>
+    </div>
+</div>
+  
+  <!-- the code editor -->
+  <div class="row mb-4">
+       
+                <div class="col">
+                    <app-editor-avanzado #editor></app-editor-avanzado>
+                </div>
+      
+  </div>
+
+  <!-- output box -->
+  <div class="row mt-">
+      
+    <div class="col">
+        <mat-tab-group animationDuration="0ms" #tabGroup style="height: 400px;">
+                <mat-tab label="CONSOLA">
+                    <ng-template matTabContent>
+                        <div class="col">
+                            <div class="label-box border"><span class="mx-4 font-weight-light">Consola</span></div>
+                            <textarea style="height: 300px;" [(ngModel)]="consola.salida" class="form-control output" rows="6" disabled="true" aria-label="output-textarea"></textarea>
+                        </div>
+                      </ng-template>
+                </mat-tab>
+                <mat-tab label="TABLA DE SÍMBOLOS">
+                    <ng-template matTabContent>
+                        <div class="col">
+                            <div class="label-box border"><span class="mx-4 font-weight-light">TABLA DE SÍMBOLOS</span></div>
+                            <textarea style="height: 300px;" [(ngModel)]="lup" class="form-control output" rows="6" disabled="true" aria-label="output-textarea"></textarea>
+                        </div>
+                      </ng-template>
+                </mat-tab>
+        </mat-tab-group> 
+    </div>
+  </div>
+
+
+</div>
