@@ -17,7 +17,7 @@
 <comment>.              /* skip comment content */
 
 ["]                                     this.begin('string');
-<string>[[%][d]]|[[%][c]|[%][e]]        return 'CAD';
+<string>[[%][d]]|[[%][c]|[%][i]]        return 'CAD';
 <string>["]                             this.popState();
 
 
@@ -84,6 +84,9 @@
    var TipoOpe = require('../app/Interprete3D/Expresion/Operacion').TipoOpe;
    var Identificador = require('../app/Interprete3D/Expresion/Identificador').Identificador;
    var Literal = require('../app/Interprete3D/Expresion/Literal').Literal;
+   var Print = require('../app/Interprete3D/Instruccion/Print').Print;
+   var Direccion = require('../app/Interprete3D/Instruccion/Direccion').Direccion;
+   var Asignacion = require('../app/Interprete3D/Instruccion/Asignacion').Asignacion;
 %}
 
 %start INI
@@ -101,12 +104,12 @@ LISTA_SENT:
 
 SENT:
         DECLARA_VAR PTCOMA      { $$ = $1; }
-    |   ASIG PTCOMA        
+    |   ASIG PTCOMA             { $$ = $1; }        
     |   JUMPC PTCOMA       
     |   JUMPIC PTCOMA      
     |   DECLARA_FUN        
     |   PRINT PTCOMA       
-    |   DIRECCION          
+    |   DIRECCION               { $$ = $1; }          
     |   CALLFUN PTCOMA   
     //|   error PTCOMA            {/**/}
 ;
@@ -116,11 +119,11 @@ CALLFUN:
 ;
 
 DIRECCION : 
-        ID DOSPT        
+        ID DOSPT        { $$ = new Direccion($1,@1.first_line,@1.first_column); }
 ;
 
 PRINT:
-        RPRINT PARIZQ CAD COMA A PARDER 
+        RPRINT PARIZQ CAD COMA A PARDER         { $$ = new Print($3,$5,@1.first_line,@1.first_column); }
 ;
 
 DECLARA_VAR:
@@ -129,7 +132,7 @@ DECLARA_VAR:
 ;
 
 ASIG:
-        ID IGUAL E                           
+        ID IGUAL E                              { $$ = new Asignacion($1,$3,@1.first_line,@1.first_column); }                           
     |   RSTACK CORIZQ A CORDER IGUAL A          
     |   RHEAP CORIZQ A CORDER IGUAL A           
 ;
@@ -156,7 +159,7 @@ BLOCK3D:
 ;
 
 E:
-        A OPA A                         {$$ = new Operacion($2,$1,$3,@1.first_line,@1.first_column); }
+        A OPA A                         { $$ = new Operacion($2,$1,$3,@1.first_line,@1.first_column); }
     |   RSTACK CORIZQ A CORDER  
     |   RHEAP CORIZQ A CORDER
     |   A                               { $$ = $1; }
