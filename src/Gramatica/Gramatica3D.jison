@@ -16,9 +16,9 @@
 <comment>"*#"           this.popState();
 <comment>.              /* skip comment content */
 
-["]                     this.begin('string');
-<string>[[%][d]]|[[%][c]|[%][e]]   return 'CAD';
-<string>["]             this.popState();
+["]                                     this.begin('string');
+<string>[[%][d]]|[[%][c]|[%][e]]        return 'CAD';
+<string>["]                             this.popState();
 
 
 \s+                     /* skip whitespace */
@@ -80,6 +80,10 @@
 
 %{
    var Declaracion = require('../app/Interprete3D/Instruccion/Declaracion').Declaracion;
+   var Operacion = require('../app/Interprete3D/Expresion/Operacion').Operacion;
+   var TipoOpe = require('../app/Interprete3D/Expresion/Operacion').TipoOpe;
+   var Identificador = require('../app/Interprete3D/Expresion/Identificador').Identificador;
+   var Literal = require('../app/Interprete3D/Expresion/Literal').Literal;
 %}
 
 %start INI
@@ -91,7 +95,7 @@ INI:
 ;
 
 LISTA_SENT:
-        LISTA_SENT SENT         { $$ = $1; $$.push($1); }
+        LISTA_SENT SENT         { $$ = $1; $$.push($2); }
     |   SENT                    { $$ = [$1]; }
 ;
 
@@ -120,8 +124,8 @@ PRINT:
 ;
 
 DECLARA_VAR:
-        RVAR ID                 { $$ = new Declaracion($2,null,@1.first_line,@1.firs_column); }
-    |   RVAR ID IGUAL E     
+        RVAR ID                 { $$ = new Declaracion($2,null,@1.first_line,@1.first_column); }
+    |   RVAR ID IGUAL E         { $$ = new Declaracion($2,$4,@1.first_line,@1.first_column); }
 ;
 
 ASIG:
@@ -152,32 +156,32 @@ BLOCK3D:
 ;
 
 E:
-        A OPA A                 
+        A OPA A                         {$$ = new Operacion($2,$1,$3,@1.first_line,@1.first_column); }
     |   RSTACK CORIZQ A CORDER  
     |   RHEAP CORIZQ A CORDER
-    |   A                       
+    |   A                               { $$ = $1; }
 ;
 
 A:
-        ID              
-    |   NUMBER          
-    |   MENOS NUMBER    
-    |   MENOS ID        
+        ID              { $$ = new Identificador($1,@1.first_line,@1.first_column); }
+    |   NUMBER          { $$ = new Literal($1,@1.first_line,@1.first_column); }
+    |   MENOS NUMBER    { $$ = new Operacion(TipoOpe.NEGATIVO,new Literal($2,@2.first_line,@2.first_column),null,@1.first_line,@1.first_column); }
+    |   MENOS ID        { $$ = new Operacion(TipoOpe.NEGATIVO,new Identificador($2,@2.first_line,@2.first_column),null,@1.first_line,@1.first_column); }
 
 ;
 
 OPA:
-        MAS     
-    |   MENOS   
-    |   POR     
-    |   DIV
+        MAS             { $$ = TipoOpe.SUMA; }
+    |   MENOS           { $$ = TipoOpe.RESTA; }
+    |   POR             { $$ = TipoOpe.MULT; }
+    |   DIV             { $$ = TipoOpe.DIV; }
 ;
 
 OPR:
-        MENOR           
-    |   MAYOR           
-    |   MENORIGUAL      
-    |   MAYORIGUAL      
-    |   IGUALQUE        
-    |   DIFERENTE       
+        MENOR           { $$ = TipoOpe.MENOR; }
+    |   MAYOR           { $$ = TipoOpe.MAYOR; }
+    |   MENORIGUAL      { $$ = TipoOpe.MENORIGUAL; }
+    |   MAYORIGUAL      { $$ = TipoOpe.MAYORIGUAL; }
+    |   IGUALQUE        { $$ = TipoOpe.IGUALQUE; }
+    |   DIFERENTE       { $$ = TipoOpe.DIFERENTE; }
 ;

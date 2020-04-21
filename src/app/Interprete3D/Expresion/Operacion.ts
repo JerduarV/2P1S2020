@@ -10,7 +10,8 @@ export enum TipoOpe {
     MENOR,
     MAYORIGUAL,
     MENORIGUAL,
-    IGUALQUE
+    IGUALQUE,
+    DIFERENTE
 }
 
 export class Operacion extends Expresion{

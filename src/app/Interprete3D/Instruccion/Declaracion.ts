@@ -21,7 +21,7 @@ export class Declaracion extends Instruccion{
 
     public Ejecutar(ts: import("../TS/TablaSimbolos").TablaSimbolos): Object {
         let val: Object = this.valor != null ? this.valor.Resolver(ts) : null;
-        ts.InsertarVar(this.identificador,val);
+        ts.InsertarVar(this.identificador,Number(val));
         return null;
     }
 

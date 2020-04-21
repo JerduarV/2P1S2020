@@ -29,7 +29,6 @@
               "src/styles.css"
             ],
             "scripts": [
-              "src/Gramatica/Gramatica3D.js"
             ],
             "es5BrowserSupport": true
           },
