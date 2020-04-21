@@ -36,7 +36,10 @@ export class Interprete3D {
     private Recorrer(ts: TablaSimbolos, AST: []):void{
         for(let i = 0; i < AST.length; i++){
             let n: Instruccion = AST[i];
-            n.Ejecutar(ts);
+            let a = n.Ejecutar(ts);
+            if(a != null){
+                i = <number>a;
+            }
         }
     }
 

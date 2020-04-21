@@ -3,7 +3,7 @@
 
 /* lexical grammar */
 %lex
-%options ranges
+%options ranges case-insensitive
 
 %s                      comment
 %s                      string
@@ -80,6 +80,8 @@
 
 %{
    var Declaracion = require('../app/Interprete3D/Instruccion/Declaracion').Declaracion;
+   var AccesoHeap = require('../app/Interprete3D/Expresion/AccesoHeap').AccesoHeap;
+   var AccesoStack = require('../app/Interprete3D/Expresion/AccesoStack').AccesoStack;
    var Operacion = require('../app/Interprete3D/Expresion/Operacion').Operacion;
    var TipoOpe = require('../app/Interprete3D/Expresion/Operacion').TipoOpe;
    var Identificador = require('../app/Interprete3D/Expresion/Identificador').Identificador;
@@ -87,6 +89,9 @@
    var Print = require('../app/Interprete3D/Instruccion/Print').Print;
    var Direccion = require('../app/Interprete3D/Instruccion/Direccion').Direccion;
    var Asignacion = require('../app/Interprete3D/Instruccion/Asignacion').Asignacion;
+   var SetHeap = require('../app/Interprete3D/Instruccion/SetHeap').SetHeap;
+   var SetStack = require('../app/Interprete3D/Instruccion/SetStack').SetStack;
+   var SaltoIC = require('../app/Interprete3D/Instruccion/SaltoIC').SaltoIC;
 %}
 
 %start INI
@@ -106,7 +111,7 @@ SENT:
         DECLARA_VAR PTCOMA      { $$ = $1; }
     |   ASIG PTCOMA             { $$ = $1; }        
     |   JUMPC PTCOMA       
-    |   JUMPIC PTCOMA      
+    |   JUMPIC PTCOMA           { $$ = $1; }      
     |   DECLARA_FUN        
     |   PRINT PTCOMA       
     |   DIRECCION               { $$ = $1; }          
@@ -133,8 +138,8 @@ DECLARA_VAR:
 
 ASIG:
         ID IGUAL E                              { $$ = new Asignacion($1,$3,@1.first_line,@1.first_column); }                           
-    |   RSTACK CORIZQ A CORDER IGUAL A          
-    |   RHEAP CORIZQ A CORDER IGUAL A           
+    |   RSTACK CORIZQ A CORDER IGUAL A          { $$ = new SetStack($3,$6,@1.first_line,@1.first_column); }          
+    |   RHEAP CORIZQ A CORDER IGUAL A           { $$ = new SetHeap($3,$6,@1.first_line,@1.first_column); }           
 ;
 
 JUMPC:
@@ -142,11 +147,11 @@ JUMPC:
 ;
 
 JUMPIC:
-        RGOTO ID      
+        RGOTO ID        { $$ = new SaltoIC($2,@1.first_line,@1.first_column); }
 ;
 
 ER:
-        A OPR A 
+        A OPR A         {  }
 ;
 
 DECLARA_FUN:
@@ -160,8 +165,8 @@ BLOCK3D:
 
 E:
         A OPA A                         { $$ = new Operacion($2,$1,$3,@1.first_line,@1.first_column); }
-    |   RSTACK CORIZQ A CORDER  
-    |   RHEAP CORIZQ A CORDER
+    |   RSTACK CORIZQ A CORDER          { $$ = new AccesoStack($3,@1.first_line,@1.first_column); }
+    |   RHEAP CORIZQ A CORDER           { $$ = new AccesoHeap($3,@1.first_line,@1.first_column); }
     |   A                               { $$ = $1; }
 ;
 

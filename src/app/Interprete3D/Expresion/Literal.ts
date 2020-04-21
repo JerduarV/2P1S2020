@@ -19,7 +19,7 @@ export class Literal extends Expresion{
     }
 
     Resolver(ts: import("../TS/TablaSimbolos").TablaSimbolos): Object {
-        return <number>this.valor;
+        return parseFloat(this.valor.toString());
     }
 
 }

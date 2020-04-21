@@ -32,8 +32,8 @@ export class TablaSimbolos{
      * @param val Valor que puede ser null
      */
     public InsertarVar(id: string, val: number):void{
-        if(!this.Temporales.get("var$" + id)){
-            this.Temporales.set('var$' + id,val);
+        if(!this.Temporales.get("var$" + id.toUpperCase())){
+            this.Temporales.set('var$' + id.toUpperCase(),val);
         }
     }
 
@@ -43,9 +43,8 @@ export class TablaSimbolos{
      */
     public getValorVar(id: string):number{
         //console.log('buscando ' + id);
-        if(this.Temporales.has('var$' + id)){
-            let n: number = <number>this.Temporales.get('var$'+id);
-            console.log(n);
+        if(this.Temporales.has('var$' + id.toUpperCase())){
+            let n: number = <number>this.Temporales.get('var$'+id.toUpperCase());
             return n;
         }
         return -1;
@@ -57,8 +56,8 @@ export class TablaSimbolos{
      * @param val Valor nuevo
      */
     public setValorVar(id: string, val: number):void{
-        if(this.Temporales.has('var$' + id)){
-            this.Temporales.set('var$' + id, val);
+        if(this.Temporales.has('var$' + id.toUpperCase())){
+            this.Temporales.set('var$' + id.toUpperCase(), val);
         }
     }
 
@@ -68,9 +67,56 @@ export class TablaSimbolos{
      * @param index Índice asociado a la etiqueta
      */
     public InsertarDireccion(label: string, index: number):void{
-        if(!this.tablaDirecciones.has(label)){
-            this.tablaDirecciones.set(label,index);
-            //console.log('Etiqueta ' + label + ' : ' + index);
+        if(!this.tablaDirecciones.has(label.toUpperCase())){
+            this.tablaDirecciones.set(label.toUpperCase(),index);
+            console.log('Etiqueta ' + label + ' : ' + index);
         }
+    }
+
+    /**
+     * Función que accede un posición del heap
+     * @param index Retorna la posición úbicada en el índice
+     * index
+     */
+    public getHeap(index: number):number{
+        return this.HEAP[index];
+    }
+
+    /**
+     * Función que accede un posición del stack
+     * @param index Retorna la posición úbicada en el índice
+     * index
+     */
+    public getStack(index: number):number{
+        return this.STACK[index];
+    }
+
+    /**
+     * Método que setea un valor en el heap
+     * @param index Indice al que se setea
+     * @param val Valor a insertar
+     */
+    public setHeap(index: number, val: number):void{
+        this.HEAP[index] = val;
+    }
+
+    /**
+     * Método que setea un valor en el stack
+     * @param index Indice al que se setea
+     * @param val Valor a insertar
+     */
+    public setStack(index: number, val: number):void{
+        this.STACK[index] = val;
+    }
+
+    /**
+     * Función que retorna el índice asociado a una etiqueta
+     * @param label Nombre de la etiqueta
+     */
+    public getLabel(label: string):number{
+        if(this.tablaDirecciones.has(label.toUpperCase())){
+            return this.tablaDirecciones.get(label.toUpperCase());
+        }
+        return null;
     }
 }

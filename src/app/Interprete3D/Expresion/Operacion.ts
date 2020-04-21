@@ -1,4 +1,5 @@
 import { Expresion } from './Expresion';
+import { TablaSimbolos } from '../TS/TablaSimbolos';
 
 export enum TipoOpe {
     SUMA,
@@ -14,7 +15,7 @@ export enum TipoOpe {
     DIFERENTE
 }
 
-export class Operacion extends Expresion{
+export class Operacion extends Expresion {
 
     private tipo: TipoOpe;
 
@@ -29,15 +30,45 @@ export class Operacion extends Expresion{
      * @param fila Fila donde se encuentra
      * @param col Columna donde se encuentra
      */
-    constructor(t: TipoOpe, izq: Expresion, der: Expresion, fila: number, col: number){
+    constructor(t: TipoOpe, izq: Expresion, der: Expresion, fila: number, col: number) {
         super(fila, col);
         this.ExpDer = der;
         this.ExpIzq = izq;
         this.tipo = t;
     }
 
-    Resolver(): Object {
-        throw new Error("Method not implemented.");
+    Resolver(ts: TablaSimbolos): Object {
+
+        let opIzq: number = <number>this.ExpIzq.Resolver(ts);
+
+        if(this.tipo == TipoOpe.NEGATIVO){
+            return -1 * opIzq;
+        }
+
+        let opDer: number = <number>this.ExpDer.Resolver(ts);
+
+        switch (this.tipo) {
+            case TipoOpe.SUMA:
+                return opIzq + opDer;
+            case TipoOpe.RESTA:
+                return opIzq - opDer;
+            case TipoOpe.MULT:
+                return opIzq * opDer;
+            case TipoOpe.DIV:
+                return opIzq / opDer;
+            case TipoOpe.MENOR:
+                return opIzq < opDer;
+            case TipoOpe.MAYOR:
+                return opIzq > opDer;
+            case TipoOpe.MENORIGUAL:
+                return opIzq <= opDer;
+            case TipoOpe.MAYORIGUAL:
+                return opIzq >= opDer;
+            case TipoOpe.IGUALQUE:
+                return opIzq == opDer;
+            case TipoOpe.DIFERENTE:
+                return opIzq != opDer;
+        }
     }
 
 }
