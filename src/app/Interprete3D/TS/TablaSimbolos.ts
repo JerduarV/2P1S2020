@@ -69,7 +69,7 @@ export class TablaSimbolos{
     public InsertarDireccion(label: string, index: number):void{
         if(!this.tablaDirecciones.has(label.toUpperCase())){
             this.tablaDirecciones.set(label.toUpperCase(),index);
-            console.log('Etiqueta ' + label + ' : ' + index);
+            //console.log('Etiqueta ' + label + ' : ' + index);
         }
     }
 

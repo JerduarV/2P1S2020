@@ -27,7 +27,6 @@
 "var"                   return  'RVAR'
 "goto"                  return  'RGOTO'
 "if"                    return  'RIF'
-"ifFalse"               return  'RIFFALSE'
 "proc"                  return  'RPROC'
 "begin"                 return  'RBEGIN'
 "end"                   return  'REND'
@@ -92,6 +91,8 @@
    var SetHeap = require('../app/Interprete3D/Instruccion/SetHeap').SetHeap;
    var SetStack = require('../app/Interprete3D/Instruccion/SetStack').SetStack;
    var SaltoIC = require('../app/Interprete3D/Instruccion/SaltoIC').SaltoIC;
+   var SaltoCond = require('../app/Interprete3D/Instruccion/SaltoCond').SaltoCond;
+   var DecFuncion = require('../app/Interprete3D/Instruccion/DecFuncion').DecFuncion;
 %}
 
 %start INI
@@ -110,10 +111,10 @@ LISTA_SENT:
 SENT:
         DECLARA_VAR PTCOMA      { $$ = $1; }
     |   ASIG PTCOMA             { $$ = $1; }        
-    |   JUMPC PTCOMA       
+    |   JUMPC PTCOMA            { $$ = $1; }       
     |   JUMPIC PTCOMA           { $$ = $1; }      
-    |   DECLARA_FUN        
-    |   PRINT PTCOMA       
+    |   DECLARA_FUN             { $$ = $1; }
+    |   PRINT PTCOMA            { $$ = $1; }       
     |   DIRECCION               { $$ = $1; }          
     |   CALLFUN PTCOMA   
     //|   error PTCOMA            {/**/}
@@ -143,7 +144,7 @@ ASIG:
 ;
 
 JUMPC:
-        RIF PARIZQ ER PARDER RGOTO ID
+        RIF PARIZQ ER PARDER RGOTO ID           { $$ = new SaltoCond($3,$6,@1.first_line,@1.first_column); }
 ;
 
 JUMPIC:
@@ -151,16 +152,16 @@ JUMPIC:
 ;
 
 ER:
-        A OPR A         {  }
+        A OPR A         { $$ = new Operacion($2,$1,$3,@1.first_line,@1.first_column); }
 ;
 
 DECLARA_FUN:
-        RPROC ID BLOCK3D  
+        RPROC ID BLOCK3D        { $$ = new DecFuncion($2,$3,@1.first_line,@1.first_column); }  
 ;
 
 BLOCK3D:
-        RBEGIN LISTA_SENT REND      
-    |   RBEGIN REND                 
+        RBEGIN LISTA_SENT REND  { $$ = $2; }      
+    |   RBEGIN REND             { $$ = []; }
 ;
 
 E:
