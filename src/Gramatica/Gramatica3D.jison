@@ -93,6 +93,7 @@
    var SaltoIC = require('../app/Interprete3D/Instruccion/SaltoIC').SaltoIC;
    var SaltoCond = require('../app/Interprete3D/Instruccion/SaltoCond').SaltoCond;
    var DecFuncion = require('../app/Interprete3D/Instruccion/DecFuncion').DecFuncion;
+   var CallFun = require('../app/Interprete3D/Instruccion/CallFun').CallFun;
 %}
 
 %start INI
@@ -116,12 +117,12 @@ SENT:
     |   DECLARA_FUN             { $$ = $1; }
     |   PRINT PTCOMA            { $$ = $1; }       
     |   DIRECCION               { $$ = $1; }          
-    |   CALLFUN PTCOMA   
+    |   CALLFUN PTCOMA          { $$ = $1; }
     //|   error PTCOMA            {/**/}
 ;
 
 CALLFUN:
-        RCALL ID 
+        RCALL ID        { $$ = new CallFun($2,@1.first_line,@1.first_column); }
 ;
 
 DIRECCION : 

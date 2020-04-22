@@ -1,3 +1,6 @@
+import { DecFuncion } from '../Instruccion/DecFuncion';
+import { SimboloFun } from './SimboloFun';
+
 export class TablaSimbolos{
     
     /**
@@ -12,6 +15,11 @@ export class TablaSimbolos{
     private readonly Temporales:Map<string, Object>;
 
     /**
+     * Tabla de funcioness
+     */
+    private readonly Funciones:Map<string,SimboloFun>;
+
+    /**
      * Tabla de direcciones
      */
     private readonly tablaDirecciones: Map<string, number>;
@@ -21,6 +29,7 @@ export class TablaSimbolos{
      */
     constructor(){
         this.Temporales = new Map();
+        this.Funciones = new Map();
         this.tablaDirecciones = new Map();
         this.HEAP = [];
         this.STACK = [];
@@ -116,6 +125,31 @@ export class TablaSimbolos{
     public getLabel(label: string):number{
         if(this.tablaDirecciones.has(label.toUpperCase())){
             return this.tablaDirecciones.get(label.toUpperCase());
+        }
+        return null;
+    }
+
+    /**
+     * Método para guardar funciones en la tabla de simbolos
+     * @param fun Función a guardar
+     * @param inicio Posición donde inicia la función
+     */
+    public guardarFuncion(fun:DecFuncion, inicio: number):void{
+        let key: string = ('fun$' + fun.getID()).toUpperCase();
+        if(!this.Funciones.has(key)){
+            let s: SimboloFun = new SimboloFun(inicio, fun.getCuerpo().length,fun.getID());
+            this.Funciones.set(key,s);
+        }
+    }
+
+    /**
+     * Función que recupera las funciones de la tabla de simbolos
+     * @param id Identificador de la función que se busca
+     */
+    public getFuncion(id:string):SimboloFun{
+        let key: string = ('fun$' + id).toUpperCase();
+        if(this.Funciones.has(key)){
+            return this.Funciones.get(key);
         }
         return null;
     }

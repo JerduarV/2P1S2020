@@ -26,7 +26,15 @@ export class DecFuncion extends Instruccion{
     }
 
     public Ejecutar(ts: import("../TS/TablaSimbolos").TablaSimbolos): Object {
-        throw new Error("Method not implemented.");
+        return null;
+    }
+
+    public getCuerpo():[]{
+        return this.cuerpo;
+    }
+
+    public getID():string{
+        return this.id;
     }
 
 }
