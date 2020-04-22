@@ -1,7 +1,6 @@
 import { BrowserModule } from '@angular/platform-browser';
 import { NgModule, NO_ERRORS_SCHEMA } from '@angular/core';
 import { FormsModule } from '@angular/forms';
-import { AppRoutingModule } from "./app-routing/app-routing.module";
 
 
 import { AppComponent } from './app.component';
@@ -12,7 +11,6 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { MatTabsModule, MatButtonModule, MatIconModule, MatDialogModule, MatTableModule } from '@angular/material';
 import { Editor3Component } from './components/editor3/editor3.component';
 import { MonacoEditorModule, NgxMonacoEditorConfig } from 'ngx-monaco-editor';
-import { HttpClientModule } from '@angular/common/http';
 import { VentanaErroresComponent } from './components/ventana-errores/ventana-errores.component';
 
 export const monacoConfig:  NgxMonacoEditorConfig = {
@@ -54,9 +52,7 @@ export const monacoConfig:  NgxMonacoEditorConfig = {
     MatDialogModule,
     MatTableModule,
     FormsModule,
-    MonacoEditorModule.forRoot(monacoConfig),
-    HttpClientModule,
-    AppRoutingModule,
+    MonacoEditorModule.forRoot(monacoConfig)
   ],
   providers: [
     
