@@ -135,7 +135,11 @@
 %left   UMINUS
 
 %{
-   
+    var DeclaracionJ = require('../app/Compilador/InstruccionJ/DeclaracionJ').DeclaracionJ;
+    var LiteralJ = require('../app/Compilador/ExpresionJ/LiteralJ').LiteralJ;
+    var TipoLit = require('../app/Compilador/ExpresionJ/LiteralJ').TipoLit;
+    var TipoOpeJ = require('../app/Compilador/ExpresionJ/OperacionesJ/OperacionJ').TipoOpeJ;
+    var OpeArit = require('../app/Compilador/ExpresionJ/OperacionesJ/OpeArit').OpeArit;
 %}
 
 %start INI
@@ -148,13 +152,14 @@ INI:
 
 JS_BODY:
         JS_BODY JS_BODY_DEC     { $$ = $1; $$.push($2); }
-    |   JS_BODY_DEC             { $$ = [$1]; }
+    |   JS_BODY_DEC             { $$ = [$1];            }
 ;
 
 JS_BODY_DEC:
-        METHOD_DEC
-    |   STRC_DEC
-    |   VAR_DEC PTCOMA       
+        METHOD_DEC              { $$ = $1; }
+    |   STRC_DEC                { $$ = $1; }
+    |   VAR_DEC PTCOMA          { $$ = $1; }
+    |   VAR_DEC                 { $$ = $1; }       
 ;
 
 STRC_DEC:
@@ -197,10 +202,10 @@ METHOD_DEC:
 ;
 
 TYPE:
-        RINTEGER
-    |   RDOUBLE
-    |   RCHAR
-    |   RBOOLEAN
+        RINTEGER    { $$ = $1.toUpperCase(); }
+    |   RDOUBLE     { $$ = $1.toUpperCase(); }
+    |   RCHAR       { $$ = $1.toUpperCase(); }
+    |   RBOOLEAN    { $$ = $1.toUpperCase(); }
 ;
 
 L_PARAMS:
@@ -232,13 +237,13 @@ PARAM:
 ;
 
 VAR_DEC:
-        TYPE L_ID IGUAL VAR_INIT
-    |   ID L_ID IGUAL VAR_INIT
-    |   RVAR ID DOSPTIGUAL VAR_INIT
-    |   RCONST ID DOSPTIGUAL VAR_INIT
-    |   RGLOBAL ID DOSPTIGUAL VAR_INIT
-    |   TYPE L_ID
-    |   ID L_ID
+        TYPE L_ID IGUAL VAR_INIT                { $$ = new DeclaracionJ($1,[$2],false,false,$4,@1.first_line,@1.first_column);      }
+    |   ID L_ID IGUAL VAR_INIT                  { $$ = new DeclaracionJ($1,$2,false,false,$4,@1.first_line,@1.first_column);        }
+    |   RVAR ID DOSPTIGUAL VAR_INIT             { $$ = new DeclaracionJ('$VAR',[$2],false,false,$4,@1.first_line,@1.first_column);  }
+    |   RCONST ID DOSPTIGUAL VAR_INIT           { $$ = new DeclaracionJ(null,[$2],true,false,$4,@1.first_line,@1.first_column);     }
+    |   RGLOBAL ID DOSPTIGUAL VAR_INIT          { $$ = new DeclaracionJ(null,[$2],false,true,$4,@1.first_line,@1.first_column);     }
+    |   TYPE L_ID                               { $$ = new DeclaracionJ($1,$2,false,false,null,@1.first_line,@1.first_column);      }                               
+    |   ID L_ID                                 { $$ = new DeclaracionJ($1,$2,false,false,null,@1.first_line,@1.first_column);      }
     /* PARA ARREGLOS */
     |   TYPE CORIZQ CORDER L_ID IGUAL VAR_INIT
     |   ID CORIZQ CORDER L_ID IGUAL VAR_INIT
@@ -247,12 +252,12 @@ VAR_DEC:
 ;
 
 L_ID:
-        L_ID COMA ID
-    |   ID
+        L_ID COMA ID    { $$ = $1; $$.push($3); }
+    |   ID              { $$ = [$1]; }
 ;
 
 VAR_INIT:
-        EXP
+        EXP         { $$ = $1; }
     |   ARRAY_INIT
 ;
 
@@ -271,7 +276,7 @@ EXP:
     |   EXP     XOR     EXP
     |   NOT     EXP
     |   PARIZQ TYPE PARDER EXP %prec CASTEO
-    |   EXPR
+    |   EXPR                                    { $$ = $1; }
 ;
 
 EXPR:
@@ -282,31 +287,31 @@ EXPR:
     |   EXP2    IGUALQUE        EXP2
     |   EXP2    DIFERENTE       EXP2
     |   EXP2    IGUALREF        EXP2
-    |   EXP2
+    |   EXP2                            { $$ = $1; }
 ;
 
 EXP2:
-        EXP2    MAS     EXP2
-    |   EXP2    MENOS   EXP2
-    |   EXP2    POR     EXP2
-    |   EXP2    DIV     EXP2
-    |   EXP2    MOD     EXP2
-    |   EXP2    POT     EXP2
+        EXP2    MAS     EXP2        { $$ = new OpeArit(TipoOpeJ.SUMA,$1,$3,@1.first_line,@1.first_column); }
+    |   EXP2    MENOS   EXP2        { $$ = new OpeArit(TipoOpeJ.RESTA,$1,$3,@1.first_line,@1.first_column); }
+    |   EXP2    POR     EXP2        { $$ = new OpeArit(TipoOpeJ.MULT,$1,$3,@1.first_line,@1.first_column); }
+    |   EXP2    DIV     EXP2        { $$ = new OpeArit(TipoOpeJ.DIV,$1,$3,@1.first_line,@1.first_column); }
+    |   EXP2    MOD     EXP2        { $$ = new OpeArit(TipoOpeJ.MOD,$1,$3,@1.first_line,@1.first_column); }
+    |   EXP2    POT     EXP2        { $$ = new OpeArit(TipoOpeJ.POT,$1,$3,@1.first_line,@1.first_column); }
     |   L_ACCESO
     |   L_ACCESO        INCREMENTO
     |   L_ACCESO        DECREMENTO
     |   MENOS   EXP2 %prec UMINUS
-    |   LITERAL
+    |   LITERAL                     { $$ = $1; }
     |   INSTANCIA_STRC
 ;
 
 LITERAL:
-        LIT_INTEGER
-    |   LIT_CHAR
-    |   LIT_DOUBLE
-    |   LIT_STRING
-    |   RTRUE
-    |   RFALSE
+        LIT_INTEGER     { $$ = new LiteralJ($1,TipoLit.LIT_INT,@1.first_line,@1.first_column);      }
+    |   LIT_CHAR        { $$ = new LiteralJ($1,TipoLit.LIT_CHAR,@1.first_line,@1.first_column);     }
+    |   LIT_DOUBLE      { $$ = new LiteralJ($1,TipoLit.LIT_DOUBLE,@1.first_line,@1.first_column);   }
+    |   LIT_STRING      { $$ = new LiteralJ($1,TipoLit.LIT_STRING,@1.first_line,@1.first_column);   }
+    |   RTRUE           { $$ = new LiteralJ($1,TipoLit.LIT_TRUE,@1.first_line,@1.first_column);     }
+    |   RFALSE          { $$ = new LiteralJ($1,TipoLit.LIT_FALSE,@1.first_line,@1.first_column);    }
 ;
 
 INSTANCIA_STRC:
