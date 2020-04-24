@@ -277,7 +277,7 @@ EXP:
         EXP     AND     EXP                     { $$ = new OpeLogica(TipoOpeJ.AND,$1,$3,@1.first_line,@1.first_column); }
     |   EXP     OR      EXP                     { $$ = new OpeLogica(TipoOpeJ.OR,$1,$3,@1.first_line,@1.first_column); }
     |   EXP     XOR     EXP                     { $$ = new OpeLogica(TipoOpeJ.XOR,$1,$3,@1.first_line,@1.first_column); }
-    |   NOT     EXP
+    |   NOT     EXP                             { $$ = new OpeLogica(TipoOpeJ.NOT,$2,null,@1.first_line,@1.first_column); }
     |   PARIZQ TYPE PARDER EXP %prec CASTEO
     |   EXPR                                    { $$ = $1; }
 ;
