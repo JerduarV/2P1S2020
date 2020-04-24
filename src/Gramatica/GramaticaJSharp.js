@@ -143,6 +143,9 @@ break;
 case 66:
  this.$ = new OpeLogica(TipoOpeJ.XOR,$$[$0-2],$$[$0],_$[$0-2].first_line,_$[$0-2].first_column); 
 break;
+case 67:
+ this.$ = new OpeLogica(TipoOpeJ.NOT,$$[$0],null,_$[$0-1].first_line,_$[$0-1].first_column); 
+break;
 case 70:
  this.$ = new OpeRel(TipoOpeJ.MAYOR,$$[$0-2],$$[$0],_$[$0-2].first_line,_$[$0-2].first_column); 
 break;
