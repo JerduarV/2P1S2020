@@ -112,6 +112,10 @@ export class EditorAvanzadoComponent implements OnInit {
     }
   }
 
+  public getNombre():string{
+    return this.selectedTab.getNombre();
+  }
+
   public get3D():string{
     return this.codigo3d.code;
   }

@@ -6,7 +6,21 @@ export enum TipoOpeJ{
     MULT,
     DIV,
     POT,
-    MOD
+    MOD,
+    NEGATIVO,
+
+    MAYOR,
+    MENOR,
+    MENORIGUAL,
+    MAYORIGUAL,
+    IGUALQUE,
+    IGUALREF,
+    DIFERENTE,
+
+    AND,
+    OR,
+    XOR,
+    NOT
 }
 
 export abstract class OperacionJ extends ExpresionJ{
@@ -22,6 +36,18 @@ export abstract class OperacionJ extends ExpresionJ{
         this.tipo = t;
         this.OpeIzq = izq;
         this.OpeDer = der;
+    }
+
+    public getTipoOpe():TipoOpeJ{
+        return this.tipo;
+    }
+
+    public getIzq():ExpresionJ{
+        return this.OpeIzq;
+    }
+
+    public getDer():ExpresionJ{
+        return this.OpeDer;
     }
 
 }

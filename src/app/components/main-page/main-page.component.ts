@@ -46,7 +46,7 @@ export class MainPageComponent implements OnInit {
    */
   public Compilar(): void {
     let compilador: CompiladorJ = new CompiladorJ();
-    compilador.Compilar(this.editor_avanzado.getTexto(),this.consola);
+    compilador.Compilar(this.editor_avanzado.getNombre(), this.editor_avanzado.getTexto(),this.consola);
   }
 
   /**

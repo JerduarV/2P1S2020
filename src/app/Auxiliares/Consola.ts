@@ -16,8 +16,9 @@ export class Consola{
         this.lista_select.push(s);
     }
 
-    public InsertError(desc: string, tipo: string, fila: number, col: number):void{
+    public InsertError(desc: string, tipo: string, fila: number, col: number):ErrorLup{
         let e: ErrorLup = new ErrorLup(fila, col, desc, tipo);
         this.lista_errores.push(e);
+        return e;
     }
 }

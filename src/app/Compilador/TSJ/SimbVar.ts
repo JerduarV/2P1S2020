@@ -1,8 +1,9 @@
 import { SimboloJ } from './SimboloJ';
+import { Tipo } from './Tipo';
 
 export class SimbVar extends SimboloJ{
 
-    private readonly tipo: string;
+    private readonly tipo: Tipo;
     private readonly esGlobal: boolean;
     private readonly esConstante: boolean;
     private readonly posicion: number;
@@ -15,19 +16,17 @@ export class SimbVar extends SimboloJ{
      * @param esGlobal Indica si es global
      * @param esConstante Indica si es constante
      * @param pos Posicion
-     * @param dim Dimensiones
      */
-    constructor(nombre: string, tipo: string, esGlobal: boolean, esConstante: boolean, pos: number, dim: number){
-        super(nombre);
+    constructor(nombre: string, tipo: Tipo, esGlobal: boolean, esConstante: boolean, pos: number, nivel: number){
+        super(nombre,nivel);
         this.tipo = tipo;
         this.esGlobal = esGlobal;
         this.esConstante = esConstante;
         this.posicion = pos;
-        this.dimensiones = dim;
     }
 
     
-    public getTipo() : string {
+    public getTipo() : Tipo {
         return this.tipo;
     }
 

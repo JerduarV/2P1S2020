@@ -12,7 +12,7 @@ export abstract class NodoASTJ{
 
     public abstract Analizar(ts: TablaSimbJ):Object;
 
-    public abstract Traducir():void;
+    public abstract Traducir(ts: TablaSimbJ):void;
 
     public getFila():number{
         return this.fila;

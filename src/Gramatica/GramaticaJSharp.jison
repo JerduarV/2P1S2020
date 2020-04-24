@@ -140,6 +140,8 @@
     var TipoLit = require('../app/Compilador/ExpresionJ/LiteralJ').TipoLit;
     var TipoOpeJ = require('../app/Compilador/ExpresionJ/OperacionesJ/OperacionJ').TipoOpeJ;
     var OpeArit = require('../app/Compilador/ExpresionJ/OperacionesJ/OpeArit').OpeArit;
+    var OpeRel = require('../app/Compilador/ExpresionJ/OperacionesJ/OpeRel').OpeRel;
+    var Tipo = require('../app/Compilador/TSJ/Tipo').Tipo;
 %}
 
 %start INI
@@ -202,10 +204,10 @@ METHOD_DEC:
 ;
 
 TYPE:
-        RINTEGER    { $$ = $1.toUpperCase(); }
-    |   RDOUBLE     { $$ = $1.toUpperCase(); }
-    |   RCHAR       { $$ = $1.toUpperCase(); }
-    |   RBOOLEAN    { $$ = $1.toUpperCase(); }
+        RINTEGER    { $$ = 'INT' }
+    |   RDOUBLE     { $$ = 'DOUBLE' }
+    |   RCHAR       { $$ = 'CHAR' }
+    |   RBOOLEAN    { $$ = 'BOOL' }
 ;
 
 L_PARAMS:
@@ -237,13 +239,13 @@ PARAM:
 ;
 
 VAR_DEC:
-        TYPE L_ID IGUAL VAR_INIT                { $$ = new DeclaracionJ($1,[$2],false,false,$4,@1.first_line,@1.first_column);      }
-    |   ID L_ID IGUAL VAR_INIT                  { $$ = new DeclaracionJ($1,$2,false,false,$4,@1.first_line,@1.first_column);        }
-    |   RVAR ID DOSPTIGUAL VAR_INIT             { $$ = new DeclaracionJ('$VAR',[$2],false,false,$4,@1.first_line,@1.first_column);  }
+        TYPE L_ID IGUAL VAR_INIT                { $$ = new DeclaracionJ(new Tipo($1,0),$2,false,false,$4,@1.first_line,@1.first_column);      }
+    |   ID L_ID IGUAL VAR_INIT                  { $$ = new DeclaracionJ(new Tipo($1,0),$2,false,false,$4,@1.first_line,@1.first_column);        }
+    |   RVAR ID DOSPTIGUAL VAR_INIT             { $$ = new DeclaracionJ(new Tipo('$VAR',0),[$2],false,false,$4,@1.first_line,@1.first_column);  }
     |   RCONST ID DOSPTIGUAL VAR_INIT           { $$ = new DeclaracionJ(null,[$2],true,false,$4,@1.first_line,@1.first_column);     }
     |   RGLOBAL ID DOSPTIGUAL VAR_INIT          { $$ = new DeclaracionJ(null,[$2],false,true,$4,@1.first_line,@1.first_column);     }
-    |   TYPE L_ID                               { $$ = new DeclaracionJ($1,$2,false,false,null,@1.first_line,@1.first_column);      }                               
-    |   ID L_ID                                 { $$ = new DeclaracionJ($1,$2,false,false,null,@1.first_line,@1.first_column);      }
+    |   TYPE L_ID                               { $$ = new DeclaracionJ(new Tipo($1,0),$2,false,false,null,@1.first_line,@1.first_column);      }                               
+    |   ID L_ID                                 { $$ = new DeclaracionJ(new Tipo($1,0),$2,false,false,null,@1.first_line,@1.first_column);      }
     /* PARA ARREGLOS */
     |   TYPE CORIZQ CORDER L_ID IGUAL VAR_INIT
     |   ID CORIZQ CORDER L_ID IGUAL VAR_INIT
@@ -280,13 +282,13 @@ EXP:
 ;
 
 EXPR:
-        EXP2    MAYOR           EXP2
-    |   EXP2    MENOR           EXP2
-    |   EXP2    MAYORIGUAL      EXP2
-    |   EXP2    MENORIGUAL      EXP2
-    |   EXP2    IGUALQUE        EXP2
-    |   EXP2    DIFERENTE       EXP2
-    |   EXP2    IGUALREF        EXP2
+        EXP2    MAYOR           EXP2    { $$ = new OpeRel(TipoOpeJ.MAYOR,$1,$3,@1.first_line,@1.first_column); }
+    |   EXP2    MENOR           EXP2    { $$ = new OpeRel(TipoOpeJ.MENOR,$1,$3,@1.first_line,@1.first_column); }
+    |   EXP2    MAYORIGUAL      EXP2    { $$ = new OpeRel(TipoOpeJ.MAYORIGUAL,$1,$3,@1.first_line,@1.first_column); }
+    |   EXP2    MENORIGUAL      EXP2    { $$ = new OpeRel(TipoOpeJ.MENORIGUAL,$1,$3,@1.first_line,@1.first_column); }
+    |   EXP2    IGUALQUE        EXP2    { $$ = new OpeRel(TipoOpeJ.IGUALQUE,$1,$3,@1.first_line,@1.first_column); }
+    |   EXP2    DIFERENTE       EXP2    { $$ = new OpeRel(TipoOpeJ.DIFERENTE,$1,$3,@1.first_line,@1.first_column); }
+    |   EXP2    IGUALREF        EXP2    { $$ = new OpeRel(TipoOpeJ.IGUALREF,$1,$3,@1.first_line,@1.first_column); }
     |   EXP2                            { $$ = $1; }
 ;
 
