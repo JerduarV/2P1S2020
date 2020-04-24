@@ -80,7 +80,7 @@
 "="                     return  'IGUAL'
 
 /* OPERADORES LÓGICOS */
-"%%"                    return  'AND'
+"&&"                    return  'AND'
 "||"                    return  'OR'
 "!"                     return  'NOT'
 "^"                     return  'XOR'
@@ -141,6 +141,7 @@
     var TipoOpeJ = require('../app/Compilador/ExpresionJ/OperacionesJ/OperacionJ').TipoOpeJ;
     var OpeArit = require('../app/Compilador/ExpresionJ/OperacionesJ/OpeArit').OpeArit;
     var OpeRel = require('../app/Compilador/ExpresionJ/OperacionesJ/OpeRel').OpeRel;
+    var OpeLogica = require('../app/Compilador/ExpresionJ/OperacionesJ/OpeLogica').OpeLogica;
     var Tipo = require('../app/Compilador/TSJ/Tipo').Tipo;
 %}
 
@@ -273,9 +274,9 @@ LISTA_EXP:
 ;
 
 EXP:
-        EXP     AND     EXP
-    |   EXP     OR      EXP
-    |   EXP     XOR     EXP
+        EXP     AND     EXP                     { $$ = new OpeLogica(TipoOpeJ.AND,$1,$3,@1.first_line,@1.first_column); }
+    |   EXP     OR      EXP                     { $$ = new OpeLogica(TipoOpeJ.OR,$1,$3,@1.first_line,@1.first_column); }
+    |   EXP     XOR     EXP                     { $$ = new OpeLogica(TipoOpeJ.XOR,$1,$3,@1.first_line,@1.first_column); }
     |   NOT     EXP
     |   PARIZQ TYPE PARDER EXP %prec CASTEO
     |   EXPR                                    { $$ = $1; }
@@ -299,6 +300,7 @@ EXP2:
     |   EXP2    DIV     EXP2        { $$ = new OpeArit(TipoOpeJ.DIV,$1,$3,@1.first_line,@1.first_column); }
     |   EXP2    MOD     EXP2        { $$ = new OpeArit(TipoOpeJ.MOD,$1,$3,@1.first_line,@1.first_column); }
     |   EXP2    POT     EXP2        { $$ = new OpeArit(TipoOpeJ.POT,$1,$3,@1.first_line,@1.first_column); }
+    |   PARIZQ EXP  PARDER          { $$ = $2; }
     |   L_ACCESO
     |   L_ACCESO        INCREMENTO
     |   L_ACCESO        DECREMENTO
