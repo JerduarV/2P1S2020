@@ -9,7 +9,7 @@ export class Acceso extends ExpresionJ{
         this.lista_exp = l;
     }
 
-    public Analizar(ts: import("../TSJ/TablaSimbJ").TablaSimbJ): Object {
+    public getTipo(ts: import("../TSJ/TablaSimbJ").TablaSimbJ): Object {
         throw new Error("Method not implemented.");
     }
     public Traducir(ts: import("../TSJ/TablaSimbJ").TablaSimbJ): void {

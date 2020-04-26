@@ -27,15 +27,6 @@ export class DecFun extends InstruccionJ {
         this.parametroFormales = p;
     }
 
-    public Analizar(ts: import("../TSJ/TablaSimbJ").TablaSimbJ): Object {
-        ts.tam_fun_actual = 0;
-        ts.nivel_actual = 1;
-        this.AnalizarCuerpo(ts);
-        ts.tam_fun_actual = -1;
-        ts.nivel_actual = 0;
-        return null;
-    }
-
     public Traducir(ts: import("../TSJ/TablaSimbJ").TablaSimbJ): void {
         ts.tam_fun_actual = 0;
         ts.nivel_actual = 1;

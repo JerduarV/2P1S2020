@@ -2,7 +2,7 @@ import { ExpresionJ } from './ExpresionJ';
 
 export class Identificador extends ExpresionJ{
     
-    public Analizar(ts: import("../TSJ/TablaSimbJ").TablaSimbJ): Object {
+    public getTipo(ts: import("../TSJ/TablaSimbJ").TablaSimbJ): Object {
         throw new Error("Method not implemented.");
     }
     public Traducir(ts: import("../TSJ/TablaSimbJ").TablaSimbJ): void {

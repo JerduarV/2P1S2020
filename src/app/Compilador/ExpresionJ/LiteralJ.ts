@@ -24,7 +24,7 @@ export class LiteralJ extends ExpresionJ {
         this.tipo = t;
     }
 
-    public Analizar(ts: TablaSimbJ): Object {
+    public getTipo(ts: TablaSimbJ): Object {
         switch (this.tipo) {
             case TipoLit.LIT_CHAR:
                 return new Tipo('CHAR', 0);
@@ -34,17 +34,18 @@ export class LiteralJ extends ExpresionJ {
                 return new Tipo('DOUBLE', 0);
             case TipoLit.LIT_FALSE:
             case TipoLit.LIT_TRUE:
-                return new Tipo('', 0);
+                return new Tipo('BOOL', 0);
             case TipoLit.LIT_STRING:
                 return new Tipo('STRING', 0);
         }
     }
+
+
     public Traducir(): void {
         let temp: string = genTemp();
         switch (this.tipo) {
             case TipoLit.LIT_CHAR:
                 let c: string = this.ProcesarChar(this.val.toString());
-                
                 concatCodigo(temp + '=' + c.charCodeAt(0) + ';');
                 break;
             case TipoLit.LIT_INT:
@@ -75,9 +76,7 @@ export class LiteralJ extends ExpresionJ {
             return '\r'
         }else{
             return val.substring(1,val.length-1);
-
         }
-
     }
 
 }

@@ -19,10 +19,10 @@ export class OpeLogica extends OperacionJ {
         super(t, izq, der, fila, col);
     }
 
-    public Analizar(ts: import("../../TSJ/TablaSimbJ").TablaSimbJ): Object {
+    public getTipo(ts: import("../../TSJ/TablaSimbJ").TablaSimbJ): Object {
 
         if (this.getTipoOpe() == TipoOpeJ.NOT) {
-            let tipoUnico: Object = this.getIzq().Analizar(ts);
+            let tipoUnico: Object = this.getIzq().getTipo(ts);
             if (tipoUnico instanceof ErrorLup) {
                 return tipoUnico;
             }
@@ -34,8 +34,8 @@ export class OpeLogica extends OperacionJ {
             }
         }
 
-        let izq: Object = this.getIzq().Analizar(ts);
-        let der: Object = this.getDer().Analizar(ts);
+        let izq: Object = this.getIzq().getTipo(ts);
+        let der: Object = this.getDer().getTipo(ts);
 
         if (izq instanceof ErrorLup || der instanceof ErrorLup) {
             return izq instanceof ErrorLup ? izq : der;
@@ -52,6 +52,9 @@ export class OpeLogica extends OperacionJ {
     }
 
     public Traducir(ts: import("../../TSJ/TablaSimbJ").TablaSimbJ): void {
+        if(this.getTipo(ts) instanceof ErrorLup){
+            return;
+        }
         switch (this.getTipoOpe()) {
             case TipoOpeJ.AND:
                 this.TraducirAnd(ts);

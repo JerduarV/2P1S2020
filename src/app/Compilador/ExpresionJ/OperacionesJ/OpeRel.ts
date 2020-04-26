@@ -19,9 +19,9 @@ export class OpeRel extends OperacionJ {
         super(t, izq, der, fila, col);
     }
 
-    public Analizar(ts: TablaSimbJ): Object {
-        let izq: Object = this.getIzq().Analizar(ts);
-        let der: Object = this.getDer().Analizar(ts);
+    public getTipo(ts: TablaSimbJ): Object {
+        let izq: Object = this.getIzq().getTipo(ts);
+        let der: Object = this.getDer().getTipo(ts);
 
         if (izq instanceof ErrorLup || der instanceof ErrorLup) {
             return izq instanceof ErrorLup ? izq : der;
@@ -58,6 +58,10 @@ export class OpeRel extends OperacionJ {
     }
 
     public Traducir(ts: import("../../TSJ/TablaSimbJ").TablaSimbJ): void {
+        if(this.getTipo(ts) instanceof ErrorLup){
+            return;
+        }
+
         this.getIzq().Traducir(ts);
         let t1: string = getTempAct();
 

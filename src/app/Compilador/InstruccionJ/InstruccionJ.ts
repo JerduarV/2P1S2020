@@ -1,5 +1,6 @@
 import { NodoASTJ } from '../ASTJ/NodoASTJ';
 import { TablaSimbJ } from '../TSJ/TablaSimbJ';
+import { DeclaracionJ } from './DeclaracionJ';
 
 export abstract class InstruccionJ extends NodoASTJ{
 
@@ -10,15 +11,14 @@ export abstract class InstruccionJ extends NodoASTJ{
         this.cuerpo = cuper;
     }
 
-    public  AnalizarCuerpo(ts: TablaSimbJ):Object{
-        if(this.cuerpo == null){
-            return null;
+    public BuscarVariablesGlobales(lista_dec: DeclaracionJ[]): void{
+        if(this.cuerpo != null){
+            for(let i = 0; i < this.cuerpo.length; i++){
+                if(this.cuerpo[i] instanceof InstruccionJ){
+                    (<InstruccionJ>this.cuerpo[i]).BuscarVariablesGlobales(lista_dec);
+                }
+            }
         }
-        for(let i = 0; i < this.cuerpo.length; i++){
-            let n: NodoASTJ = this.cuerpo[i];
-            n.Analizar(ts);
-        }
-        return null;
     }
 
     public TraducirCuperpo(ts: TablaSimbJ):void{

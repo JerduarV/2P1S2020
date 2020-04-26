@@ -19,9 +19,9 @@ export class OpeArit extends OperacionJ {
         super(t, izq, der, fila, col);
     }
 
-    public Analizar(ts: TablaSimbJ): Object {
+    public getTipo(ts: TablaSimbJ): Object {
         if (this.getTipoOpe() == TipoOpeJ.NEGATIVO) {
-            let tipoUnico: Object = this.getIzq().Analizar(ts);
+            let tipoUnico: Object = this.getIzq().getTipo(ts);
             if (tipoUnico instanceof ErrorLup) {
                 return tipoUnico;
             }
@@ -33,8 +33,8 @@ export class OpeArit extends OperacionJ {
             }
         }
 
-        let izq: Object = this.getIzq().Analizar(ts);
-        let der: Object = this.getDer().Analizar(ts);
+        let izq: Object = this.getIzq().getTipo(ts);
+        let der: Object = this.getDer().getTipo(ts);
 
         if (izq instanceof ErrorLup || der instanceof ErrorLup) {
             return izq instanceof ErrorLup ? izq : der;
@@ -185,6 +185,11 @@ export class OpeArit extends OperacionJ {
     }
 
     public Traducir(ts: TablaSimbJ): void {
+
+        if(this.getTipo(ts) instanceof ErrorLup){
+            return;
+        }
+
         if (this.getTipoOpe() == TipoOpeJ.NEGATIVO) {
             this.TraducirNegativo(ts);
         } else if (this.getTipoOpe() == TipoOpeJ.SUMA) {

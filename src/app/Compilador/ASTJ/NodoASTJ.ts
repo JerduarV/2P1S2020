@@ -10,8 +10,6 @@ export abstract class NodoASTJ{
         this.col = col;
     }
 
-    public abstract Analizar(ts: TablaSimbJ):Object;
-
     public abstract Traducir(ts: TablaSimbJ):void;
 
     public getFila():number{

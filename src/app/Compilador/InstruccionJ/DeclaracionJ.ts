@@ -19,11 +19,14 @@ export class DeclaracionJ extends InstruccionJ{
         this.exp = e;
     }
 
-    public Analizar(ts: import("../TSJ/TablaSimbJ").TablaSimbJ): Object {
-        throw new Error("Method not implemented.");
+    public BuscarVariablesGlobales(lista_dec: DeclaracionJ[]): void{
+        if(this.esGlobal()){
+            lista_dec.push(this);
+        }
     }
+
     public Traducir(): void {
-        throw new Error("Method not implemented.");
+        
     }
 
     public getExp():ExpresionJ{
@@ -39,7 +42,7 @@ export class DeclaracionJ extends InstruccionJ{
     }
 
     public esVar():boolean{
-        return this.tipo.isVar();
+        return this.tipo == null ? false : this.tipo.isVar();
     }
 
     public getListaIDs():string[]{

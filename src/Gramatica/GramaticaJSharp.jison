@@ -229,7 +229,10 @@ L_SENT:
 ;
 
 SENT:
-        PRINT PTCOMA
+        PRINT PTCOMA            { $$ = $1; }
+    |   PRINT                   { $$ = $1; }
+    |   VAR_DEC PTCOMA          { $$ = $1; }
+    |   VAR_DEC                 { $$ = $1; }
 ;
 
 PRINT:
