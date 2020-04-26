@@ -137,6 +137,8 @@
 %{
     var DeclaracionJ = require('../app/Compilador/InstruccionJ/DeclaracionJ').DeclaracionJ;
     var Asignacion = require('../app/Compilador/InstruccionJ/Asignacion').Asignacion;
+    var While = require('../app/Compilador/InstruccionJ/While').While;
+    var Print = require('../app/Compilador/InstruccionJ/Print').Print;
     var DecFun = require('../app/Compilador/InstruccionJ/DecFun').DecFun;
     var LiteralJ = require('../app/Compilador/ExpresionJ/LiteralJ').LiteralJ;
     var Identificador = require('../app/Compilador/ExpresionJ/Identificador').Identificador;
@@ -236,6 +238,11 @@ SENT:
     |   VAR_DEC                 { $$ = $1; }
     |   ASIGNACION PTCOMA       { $$ = $1; }
     |   ASIGNACION              { $$ = $1; }
+    |   WHILE                   { $$ = $1; }
+;
+
+WHILE:
+        RWHILE PARIZQ EXP PARDER BLOCK_SENT     { $$ = new While($3,$5,@1.first_line,@1.first_column); }
 ;
 
 ASIGNACION:
@@ -243,7 +250,7 @@ ASIGNACION:
 ;
 
 PRINT:
-        RPRINT PARIZQ EXP PARDER
+        RPRINT PARIZQ EXP PARDER    { $$ = new Print($3,@1.first_line,@1.first_column); }
 ;
 
 PARAM:

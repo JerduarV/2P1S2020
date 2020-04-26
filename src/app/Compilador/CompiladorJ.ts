@@ -38,12 +38,13 @@ export class CompiladorJ {
             //RECOLECCION DE GLOBALES
             this.RecolectarGlobales(global, AST);
 
-            //TRADUCCIÓN DE FUNCIONES
-            this.TraducirFunciones(global, d);
             //ETAPA DE TRADUCCIÓN
 
             let etiqueta_salida: string = getEtiqueta();
             concatCodigo('#* IR AL FIN DEL PROGRAMA *#\ngoto ' + etiqueta_salida + ';');
+
+            //TRADUCCIÓN DE FUNCIONES
+            this.TraducirFunciones(global, d);
 
             //QUEMAR FUNCOINES NATIVAS
             QuemarFunciones();

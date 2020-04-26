@@ -5,6 +5,7 @@ import { Tipo } from './Tipo';
 import { ErrorLup } from 'src/app/Auxiliares/Error';
 import { SimbFuncion } from './SimbFuncion';
 import { DecFun } from '../InstruccionJ/DecFun';
+import { Display } from './Display';
 
 export function NewTablaLocal(padre: TablaSimbJ): TablaSimbJ {
     let t: TablaSimbJ = new TablaSimbJ(padre.getArchivo(), padre.getConsola());
@@ -12,6 +13,7 @@ export function NewTablaLocal(padre: TablaSimbJ): TablaSimbJ {
     t.nivel_actual = padre.nivel_actual + 1;
     this.tam_fun_actual = padre.tam_fun_actual;
     this.etq_fun_salida = padre.etq_fun_salida;
+    this.display = padre.display;
     return t;
 }
 
@@ -24,6 +26,7 @@ export class TablaSimbJ {
     public tam_fun_actual: number;
     public etq_fun_salida: string;
     public padre: TablaSimbJ;
+    public display: Display;
 
     /**
      * Cosntructor de la tabla de simbolos
@@ -38,6 +41,7 @@ export class TablaSimbJ {
         this.tam_fun_actual = -1;
         this.etq_fun_salida = '';
         this.padre = null;
+        this.display = new Display();
     }
 
     public BuscarVariable(id: string): SimbVar{
@@ -128,5 +132,21 @@ export class TablaSimbJ {
      */
     public getExisteTipo(tipo: Tipo): boolean {
         return tipo.esNativo();
+    }
+
+    public esValidaBreak():boolean{
+        return this.display.esValidoBreak();
+    }
+
+    public esValidoContinue():boolean{
+        return this.display.esValidoContinue();
+    }
+
+    public getEtqSalida():string{
+        return this.display.lista_etqs[this.display.lista_etqs.length - 1].etq_salida;
+    }
+
+    public getEtqInicio():string{
+        return this.display.lista_etqs[this.display.lista_etqs.length - 1].etq_inicio;
     }
 }
