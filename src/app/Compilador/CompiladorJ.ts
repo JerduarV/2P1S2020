@@ -55,6 +55,7 @@ export class CompiladorJ {
 
             //IMPRESIÓN DEL CÓDIGO
             cons.salida = ImprimitCodigo();
+            console.log(global.getConsola().lista_errores);
 
         } catch (error) {
             console.log(error);
@@ -111,7 +112,7 @@ export class CompiladorJ {
                 }
             }
             for (let k = 0; k < dec.getListaIDs().length; k++) {
-                console.log(dec.getListaIDs()[k]);
+                //console.log(dec.getListaIDs()[k]);
                 let s: SimbVar = ts.GuardarVarible(dec.getListaIDs()[k], t, true, dec.esConstante(), contador, dec.getFila(), dec.getCol());
 
                 if (s != null) {
@@ -131,6 +132,8 @@ export class CompiladorJ {
             concatCodigo('Heap[' + variable.getPosicion() + '] = ' + variable.getTipo().getValDefecto() + ';');
         }
 
+        concatCodigo('H = ' + contador + ';')
+
         //SETENDO VALOR SI APLICA
         for (let u = 0; u < VariableGlobales.length; u++) {
             if (expresiones_ini[u] != null) {
@@ -139,6 +142,6 @@ export class CompiladorJ {
                 concatCodigo('Heap[' + VariableGlobales[u].getPosicion() + '] = ' + temp + ';')
             }
         }
-        console.log(VariableGlobales);
+        //console.log(VariableGlobales);
     }
 }

@@ -54,11 +54,11 @@
 "throw"                 return  'RTHROW'
 
 /* EXPRESIONES REGULARES */
-[0-9]+("."[0-9]+)\b             return  'LIT_DOUBLE'
-[0-9]+\b                        return  'LIT_INTEGER'
-[a-zA-Z_ñ]([a-zA-Z0-9_Ñ]*)      return  'ID'
-('"')([^\\"]|\\.)*('"')		return 'LIT_STRING'
-("'")([^\\']|"\\n"|"\\t"|"\\r"|"\\")("'")	    return 'LIT_CHAR'
+[0-9]+("."[0-9]+)\b                             return  'LIT_DOUBLE'
+[0-9]+\b                                        return  'LIT_INTEGER'
+[a-zA-Z_ñ]([a-zA-Z0-9_Ñ]*)                      return  'ID'
+('"')([^\\"]|\\.)*('"')		                    return  'LIT_STRING'
+("'")([^\\']|"\\n"|"\\t"|"\\r"|"\\")("'")	    return  'LIT_CHAR'
 
 
 /* OPERADORES ARITMETICOS */
@@ -136,6 +136,7 @@
 
 %{
     var DeclaracionJ = require('../app/Compilador/InstruccionJ/DeclaracionJ').DeclaracionJ;
+    var Asignacion = require('../app/Compilador/InstruccionJ/Asignacion').Asignacion;
     var DecFun = require('../app/Compilador/InstruccionJ/DecFun').DecFun;
     var LiteralJ = require('../app/Compilador/ExpresionJ/LiteralJ').LiteralJ;
     var Identificador = require('../app/Compilador/ExpresionJ/Identificador').Identificador;
@@ -233,6 +234,12 @@ SENT:
     |   PRINT                   { $$ = $1; }
     |   VAR_DEC PTCOMA          { $$ = $1; }
     |   VAR_DEC                 { $$ = $1; }
+    |   ASIGNACION PTCOMA       { $$ = $1; }
+    |   ASIGNACION              { $$ = $1; }
+;
+
+ASIGNACION:
+        L_ACCESO IGUAL VAR_INIT { $$ = new Asignacion(new Acceso($1,@1.first_line,@1.first_column),$3,@1.first_line,@1.first_column); }
 ;
 
 PRINT:

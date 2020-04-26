@@ -28,7 +28,7 @@ export class DecFun extends InstruccionJ {
     }
 
     public Traducir(ts: import("../TSJ/TablaSimbJ").TablaSimbJ): void {
-        ts.tam_fun_actual = 0;
+        ts.tam_fun_actual = 1;
         ts.nivel_actual = 1;
         let etq_salida = getEtiqueta();
         ts.etq_fun_salida = etq_salida;

@@ -40,6 +40,18 @@ export class TablaSimbJ {
         this.padre = null;
     }
 
+    public BuscarVariable(id: string): SimbVar{
+        let key: string = this.getKeyVar('var',id);
+        if(this.tabla.has(key)){
+            return <SimbVar>this.tabla.get(key);
+        }else{
+            if(this.padre != null){
+                return this.padre.BuscarVariable(id);
+            }
+            return null;
+        }
+    }
+
     /**
      * Método para guardar una variable en la tabla de símbolos de J#
      * @param nombre Nombre de la variable
@@ -95,7 +107,7 @@ export class TablaSimbJ {
     }
 
     public GenerarError(desc: string, fila: number, col: number): ErrorLup {
-        return this.consola.InsertError('desc', 'Semantico', fila, col);
+        return this.consola.InsertError(desc, 'Semantico', fila, col);
     }
 
     public getTamanioFunActual(): number {

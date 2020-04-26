@@ -14,4 +14,8 @@ export class Identificador extends ExpresionJ{
         super(fila,col);
         this.id = id;
     }
+
+    public getId():string{
+        return this.id;
+    }
 }
