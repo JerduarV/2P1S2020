@@ -3,7 +3,7 @@ import { ExpresionJ } from '../ExpresionJ';
 import { ErrorLup } from 'src/app/Auxiliares/Error';
 import { Tipo } from '../../TSJ/Tipo';
 import { TablaSimbJ } from '../../TSJ/TablaSimbJ';
-import { getTempAct, getEtiqueta, genTemp, concatCodigo } from '../../CompiladorJ';
+import { genTemp, concatCodigo, getTempAct, getEtiqueta } from 'src/app/Auxiliares/Utilidades';
 
 export class OpeLogica extends OperacionJ {
 

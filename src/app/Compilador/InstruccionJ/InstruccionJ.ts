@@ -21,13 +21,13 @@ export abstract class InstruccionJ extends NodoASTJ{
         return null;
     }
 
-    public TraducirCuperpo():void{
+    public TraducirCuperpo(ts: TablaSimbJ):void{
         if(this.cuerpo == null){
             return;
         }
         for(let i = 0; i < this.cuerpo.length; i++){
             let n: NodoASTJ = this.cuerpo[i];
-            n.Traducir();
+            n.Traducir(ts);
         }
     }
 

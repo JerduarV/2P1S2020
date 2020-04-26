@@ -136,13 +136,17 @@
 
 %{
     var DeclaracionJ = require('../app/Compilador/InstruccionJ/DeclaracionJ').DeclaracionJ;
+    var DecFun = require('../app/Compilador/InstruccionJ/DecFun').DecFun;
     var LiteralJ = require('../app/Compilador/ExpresionJ/LiteralJ').LiteralJ;
+    var Identificador = require('../app/Compilador/ExpresionJ/Identificador').Identificador;
+    var Acceso = require('../app/Compilador/ExpresionJ/Acceso').Acceso;
     var TipoLit = require('../app/Compilador/ExpresionJ/LiteralJ').TipoLit;
     var TipoOpeJ = require('../app/Compilador/ExpresionJ/OperacionesJ/OperacionJ').TipoOpeJ;
     var OpeArit = require('../app/Compilador/ExpresionJ/OperacionesJ/OpeArit').OpeArit;
     var OpeRel = require('../app/Compilador/ExpresionJ/OperacionesJ/OpeRel').OpeRel;
     var OpeLogica = require('../app/Compilador/ExpresionJ/OperacionesJ/OpeLogica').OpeLogica;
     var Tipo = require('../app/Compilador/TSJ/Tipo').Tipo;
+    var ParametroFormal = require('../app/Compilador/TSJ/ParametroFormal').ParametroFormal;
 %}
 
 %start INI
@@ -150,7 +154,7 @@
 %% /* language grammar */
 
 INI: 
-        JS_BODY EOF          { return $$; }     
+        JS_BODY EOF          { return $1; console.log($1);}     
 ;
 
 JS_BODY:
@@ -189,19 +193,17 @@ ATRIB:
 ;
 
 METHOD_DEC:
-        TYPE ID PARIZQ PARDER BLOCK_SENT
-    |   RVOID ID PARIZQ PARDER BLOCK_SENT
-    |   ID ID PARIZQ PARDER BLOCK_SENT
-    |   TYPE ID PARIZQ L_PARAMS PARDER BLOCK_SENT
-    |   RVOID ID PARIZQ L_PARAMS PARDER BLOCK_SENT
-    |   ID ID PARIZQ L_PARAMS PARDER BLOCK_SENT
+        TYPE ID PARIZQ PARDER BLOCK_SENT                        { $$ = new DecFun(new Tipo($1,0),$2,[],$5,@1.first_line,@1.first_column); }
+    |   RVOID ID PARIZQ PARDER BLOCK_SENT                       { $$ = new DecFun(new Tipo('$VOID',0),$2,[],$5,@1.first_line,@1.first_column); }
+    |   ID ID PARIZQ PARDER BLOCK_SENT                          { $$ = new DecFun(new Tipo($1,0),$2,[],$5,@1.first_line,@1.first_column);}
+    |   TYPE ID PARIZQ L_PARAMS PARDER BLOCK_SENT               { $$ = new DecFun(new Tipo($1,0),$2,$4,$6,@1.first_line,@1.first_column); }
+    |   RVOID ID PARIZQ L_PARAMS PARDER BLOCK_SENT              { $$ = new DecFun(new Tipo('$VOID',0),$2,$4,$6,@1.first_line,@1.first_column); }
+    |   ID ID PARIZQ L_PARAMS PARDER BLOCK_SENT                 { $$ = new DecFun(new Tipo($1,0),$2,$4,$6,@1.first_line,@1.first_column); }
     /* PARA ARREGLOS */
-    |   TYPE CORIZQ CORDER ID PARIZQ PARDER BLOCK_SENT
-    |   RVOID CORIZQ CORDER ID PARIZQ PARDER BLOCK_SENT
-    |   ID CORIZQ CORDER ID PARIZQ PARDER BLOCK_SENT
-    |   TYPE CORIZQ CORDER ID PARIZQ L_PARAMS PARDER BLOCK_SENT
-    |   RVOID CORIZQ CORDER ID PARIZQ L_PARAMS PARDER BLOCK_SENT
-    |   ID CORIZQ CORDER ID PARIZQ L_PARAMS PARDER BLOCK_SENT
+    |   TYPE CORIZQ CORDER ID PARIZQ PARDER BLOCK_SENT          { $$ = new DecFun(new Tipo($1,1),$4,[],$7,@1.first_line,@1.first_column); }
+    |   ID CORIZQ CORDER ID PARIZQ PARDER BLOCK_SENT            { $$ = new DecFun(new Tipo($1,1),$4,[],$7,@1.first_line,@1.first_column); }
+    |   TYPE CORIZQ CORDER ID PARIZQ L_PARAMS PARDER BLOCK_SENT { $$ = new DecFun(new Tipo($1,1),$4,$6,$8,@1.first_line,@1.first_column); }
+    |   ID CORIZQ CORDER ID PARIZQ L_PARAMS PARDER BLOCK_SENT   { $$ = new DecFun(new Tipo($1,1),$4,$6,$8,@1.first_line,@1.first_column); }
 ;
 
 TYPE:
@@ -212,18 +214,18 @@ TYPE:
 ;
 
 L_PARAMS:
-        L_PARAMS COMA PARAM
-    |   PARAM
+        L_PARAMS COMA PARAM     { $$ = $1; $$.push($3); }
+    |   PARAM                   { $$ = [$1]; }
 ;
 
 BLOCK_SENT:
-        LLAVEIZQ L_SENT LLAVEDER
-    |   LLAVEIZQ LLAVEDER
+        LLAVEIZQ L_SENT LLAVEDER    { $$ = $2; }
+    |   LLAVEIZQ LLAVEDER           { $$ = []; }
 ;
 
 L_SENT:
-        L_SENT SENT
-    |   SENT
+        L_SENT SENT     { $$ = $1; $$.push($2) }
+    |   SENT            { $$ = [$1]; }
 ;
 
 SENT:
@@ -235,12 +237,14 @@ PRINT:
 ;
 
 PARAM:
-        TYPE ID
-    |   ID ID
+        TYPE ID                 { $$ = new ParametroFormal(new Tipo($1,0),$2); }
+    |   ID ID                   { $$ = new ParametroFormal(new Tipo($1,0),$2); }
+    |   TYPE CORIZQ CORDER ID   { $$ = new ParametroFormal(new Tipo($1,1),$4); }
+    |   ID CORIZQ CORDER ID     { $$ = new ParametroFormal(new Tipo($1,1),$4)  }
 ;
 
 VAR_DEC:
-        TYPE L_ID IGUAL VAR_INIT                { $$ = new DeclaracionJ(new Tipo($1,0),$2,false,false,$4,@1.first_line,@1.first_column);      }
+        TYPE L_ID IGUAL VAR_INIT                { $$ = new DeclaracionJ(new Tipo($1,0),$2,false,false,$4,@1.first_line,@1.first_column); console.log($$);     }
     |   ID L_ID IGUAL VAR_INIT                  { $$ = new DeclaracionJ(new Tipo($1,0),$2,false,false,$4,@1.first_line,@1.first_column);        }
     |   RVAR ID DOSPTIGUAL VAR_INIT             { $$ = new DeclaracionJ(new Tipo('$VAR',0),[$2],false,false,$4,@1.first_line,@1.first_column);  }
     |   RCONST ID DOSPTIGUAL VAR_INIT           { $$ = new DeclaracionJ(null,[$2],true,false,$4,@1.first_line,@1.first_column);     }
@@ -301,7 +305,7 @@ EXP2:
     |   EXP2    MOD     EXP2        { $$ = new OpeArit(TipoOpeJ.MOD,$1,$3,@1.first_line,@1.first_column); }
     |   EXP2    POT     EXP2        { $$ = new OpeArit(TipoOpeJ.POT,$1,$3,@1.first_line,@1.first_column); }
     |   PARIZQ EXP  PARDER          { $$ = $2; }
-    |   L_ACCESO
+    |   L_ACCESO                    { $$ = new Acceso($1,@1.first_line,@1.first_column); }
     |   L_ACCESO        INCREMENTO
     |   L_ACCESO        DECREMENTO
     |   MENOS   EXP2 %prec UMINUS
@@ -324,12 +328,12 @@ INSTANCIA_STRC:
 ;
 
 L_ACCESO:
-        L_ACCESO PUNTO ACCESO
-    |   ACCESO
+        L_ACCESO PUNTO ACCESO   { $$ = $1; $$.push($3); }
+    |   ACCESO                  { $$ = [$1]; }
 ;
 
 ACCESO:
-        ID
+        ID              { $$ = new Identificador($1,@1.first_line,@1.first_column); }              
     |   ACCESO_ARREGLO
     |   CALL_METHOD
 ;

@@ -3,6 +3,8 @@ import { SimbVar } from './SimbVar';
 import { Consola } from 'src/app/Auxiliares/Consola';
 import { Tipo } from './Tipo';
 import { ErrorLup } from 'src/app/Auxiliares/Error';
+import { SimbFuncion } from './SimbFuncion';
+import { DecFun } from '../InstruccionJ/DecFun';
 
 export class TablaSimbJ{
 
@@ -10,6 +12,8 @@ export class TablaSimbJ{
     private readonly consola: Consola;
     private readonly tabla : Map<string,SimboloJ>
     public nivel_actual: number;
+    public tam_fun_actual: number;
+    public etq_fun_salida: string;
 
     /**
      * Cosntructor de la tabla de simbolos
@@ -21,6 +25,8 @@ export class TablaSimbJ{
         this.Archivo = file;
         this.consola = con;
         this.nivel_actual = 0;
+        this.tam_fun_actual = -1;
+        this.etq_fun_salida = '';
     }
 
     /**
@@ -45,6 +51,28 @@ export class TablaSimbJ{
         return null;
     }
 
+    /**
+     * Método para guardar una función en la tabla de símbolos
+     * @param fun Función a guarda
+     */
+    public GuardarFuncion(fun: DecFun):Object{
+        let key: string = this.getKeyVar('fun',fun.getNombre());
+        if(!this.tabla.has(key)){
+            let f: SimbFuncion = new SimbFuncion(fun.getNombre());
+            f.AgregarDef(fun);
+            console.log('Se agregó ' + fun.getNombre());
+        }else{
+            let f: SimbFuncion = <SimbFuncion>this.tabla.get(key);
+            let b: boolean = f.AgregarDef(fun);
+            if(b){
+                console.log('Se agregó ' + fun.getNombre());
+                return null;
+            }else{
+                return this.GenerarError('Ya existe la función ' + fun.getNombre(), fun.getFila(), fun.getCol());
+            }
+        }
+    }
+
     //METODOS DE GET
 
     public getKeyVar(rol:string, id:string):string{
@@ -57,5 +85,21 @@ export class TablaSimbJ{
 
     public GenerarError(desc: string, fila: number, col: number):ErrorLup{
         return this.consola.InsertError('desc','Semantico',fila,col);
+    }
+
+    public getTamanioFunActual():number{
+        //SIGNIFICA QUE ESTOY EN EL AMBIENTE GLOBAL
+        if(this.tam_fun_actual == -1){
+            return 0;
+        }
+        return this.tam_fun_actual;
+    }
+
+    /**
+     * Retorna si un tipo existe o no
+     * @param tipo Tipo a valida
+     */
+    public getExisteTipo(tipo: Tipo):boolean{
+        return tipo.esNativo();
     }
 }

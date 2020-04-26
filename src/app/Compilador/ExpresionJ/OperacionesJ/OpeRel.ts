@@ -3,7 +3,7 @@ import { OperacionJ, TipoOpeJ } from './OperacionJ';
 import { ErrorLup } from 'src/app/Auxiliares/Error';
 import { Tipo, getTipoBool } from '../../TSJ/Tipo';
 import { TablaSimbJ } from '../../TSJ/TablaSimbJ';
-import { getTempAct, concatCodigo, genTemp, getEtiqueta } from '../../CompiladorJ';
+import { genTemp, concatCodigo, getTempAct, getEtiqueta } from 'src/app/Auxiliares/Utilidades';
 
 export class OpeRel extends OperacionJ {
 
@@ -88,7 +88,7 @@ export class OpeRel extends OperacionJ {
             case TipoOpeJ.IGUALQUE:
                 return ' == ';
             case TipoOpeJ.DIFERENTE:
-                return ' != ';
+                return ' <> ';
         }
     }
 }

@@ -1,7 +1,7 @@
 import { ExpresionJ } from './ExpresionJ';
 import { TablaSimbJ } from '../TSJ/TablaSimbJ';
 import { Tipo } from '../TSJ/Tipo';
-import { concatCodigo, genTemp } from '../CompiladorJ';
+import { concatCodigo, genTemp } from 'src/app/Auxiliares/Utilidades';
 
 export enum TipoLit {
     LIT_CHAR,

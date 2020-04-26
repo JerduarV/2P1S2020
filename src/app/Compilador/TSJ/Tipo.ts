@@ -15,7 +15,7 @@ export class Tipo{
     private readonly dim: number;
 
     constructor(t: string, dim: number){
-        this.tipo = t;
+        this.tipo = t.toUpperCase();
         this.dim = dim;
     }
 
@@ -68,5 +68,16 @@ export class Tipo{
 
     public soyArreglo():boolean{
         return this.dim > 0;
+    }
+
+    public getNombreTipo():string{
+        if(this.dim > 0){
+            return this.tipo + 'Array';
+        }
+        return this.tipo;
+    }
+
+    public esNativo():boolean{
+        return this.tipo == 'INT' || this.tipo == 'BOOL' || this.tipo == 'CHAR' || this.tipo == 'DOUBLE' || this.tipo == '$VOID';
     }
 }

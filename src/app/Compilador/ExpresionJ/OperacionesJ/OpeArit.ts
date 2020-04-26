@@ -3,7 +3,7 @@ import { ExpresionJ } from '../ExpresionJ';
 import { TablaSimbJ } from '../../TSJ/TablaSimbJ';
 import { ErrorLup } from 'src/app/Auxiliares/Error';
 import { Tipo, getTipoString, getTipoDouble } from '../../TSJ/Tipo';
-import { getTempAct, genTemp, concatCodigo, getEtiqueta } from '../../CompiladorJ';
+import { genTemp, concatCodigo, getTempAct, getEtiqueta } from 'src/app/Auxiliares/Utilidades';
 
 export class OpeArit extends OperacionJ {
 
@@ -51,6 +51,10 @@ export class OpeArit extends OperacionJ {
             return this.AnalizarResta(ts, opIzq, opDer);
         } else if (this.getTipoOpe() == TipoOpeJ.DIV) {
             return this.AnalizarDivision(ts, opIzq, opDer);
+        } else if (this.getTipoOpe() == TipoOpeJ.POT) {
+            return this.AnalizarPotencia(ts, opIzq, opDer);
+        }else if(this.getTipoOpe() == TipoOpeJ.MOD){
+            return this.AnalizarModulo(ts,opIzq,opDer);
         }
 
         return null;
@@ -154,6 +158,32 @@ export class OpeArit extends OperacionJ {
         ts.GenerarError('No se puede multiplicar ' + opIzq.getString() + ' con ' + opDer.getString(), this.getFila(), this.getCol());
     }
 
+    /**
+     * Analisis del módulo
+     * @param ts Tabla de símblos
+     * @param opIzq Tipo del operador izquierdo
+     * @param opDer Tipo del operador derecho
+     */
+    private AnalizarModulo(ts: TablaSimbJ, opIzq: Tipo, opDer: Tipo):Object{
+        if (opIzq.isInteger() && opDer.isInteger()) {
+            return opIzq;
+        }
+        ts.GenerarError('No se puede hacer el modulo de ' + opIzq.getString() + ' con ' + opDer.getString(), this.getFila(), this.getCol());
+    }
+
+    /**
+     * Análisis para la potencia
+     * @param ts Tabla de símbolos
+     * @param opIzq Tipo del operador izquierdo
+     * @param opDer Tipo del operador derecho
+     */
+    private AnalizarPotencia(ts: TablaSimbJ, opIzq: Tipo, opDer: Tipo): Object {
+        if (opIzq.isInteger() && opDer.isInteger()) {
+            return opIzq;
+        }
+        ts.GenerarError('No se puede elevar ' + opIzq.getString() + ' con ' + opDer.getString(), this.getFila(), this.getCol());
+    }
+
     public Traducir(ts: TablaSimbJ): void {
         if (this.getTipoOpe() == TipoOpeJ.NEGATIVO) {
             this.TraducirNegativo(ts);
@@ -165,6 +195,10 @@ export class OpeArit extends OperacionJ {
             this.TraducirMultiplicacion(ts);
         } else if (this.getTipoOpe() == TipoOpeJ.DIV) {
             this.TraducirDivision(ts);
+        } else if (this.getTipoOpe() == TipoOpeJ.POT) {
+            this.TraducirPotencia(ts);
+        }else if(this.getTipoOpe() == TipoOpeJ.MOD){
+            this.TraducirModulo(ts);
         }
     }
 
@@ -239,6 +273,52 @@ export class OpeArit extends OperacionJ {
 
         let temp: string = genTemp();
         concatCodigo(temp + ' = ' + t1 + ' / ' + t2 + ';');
+    }
+
+    /**
+     * Traducción de la potencia
+     * @param ts Tabla de simbolos
+     */
+    private TraducirPotencia(ts: TablaSimbJ): void {
+        this.getIzq().Traducir(ts);
+        let t1: string = getTempAct();
+
+        this.getDer().Traducir(ts);
+        let t2: string = getTempAct();
+
+        let temp_pivote: string = genTemp(),
+            base: string = genTemp(),
+            exponente: string = genTemp();
+        let temp: string = genTemp();
+
+        let tam_fun_actual: number = ts.getTamanioFunActual();
+
+        concatCodigo('\n' + temp_pivote + ' = P + ' + tam_fun_actual + ';')
+        concatCodigo(base + ' = ' + temp_pivote + ' + 1;');
+        concatCodigo('Stack[' + base + '] = ' + t1 + ';');
+        concatCodigo(exponente + ' = ' + temp_pivote + ' + 2;');
+        concatCodigo('Stack[' + exponente + '] = ' + t2 + ';');
+        concatCodigo('P = P + ' + tam_fun_actual + ';');
+        concatCodigo('call jerduar_POTENCIA;')
+        concatCodigo(temp + ' = Stack[P];');
+        concatCodigo('P = P - ' + tam_fun_actual + ';\n');
+    }
+
+    /**
+     * Traducción modulo
+     * @param ts Tabla de símbolos
+     */
+    private TraducirModulo(ts: TablaSimbJ){
+        this.getIzq().Traducir(ts);
+        let t1: string = getTempAct();
+
+        this.getDer().Traducir(ts);
+        let t2: string = getTempAct();
+
+        let temp: string = genTemp();
+
+        concatCodigo(temp + ' = ' + t1 + ' % ' + t2 + ';');
+            
     }
 
 }
