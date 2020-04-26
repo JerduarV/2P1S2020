@@ -42,7 +42,7 @@ export class DecFun extends InstruccionJ {
     public concatTipo():string{
         let cad: string = '';
         for(let i = 0; i < this.parametroFormales.length; i++){
-            cad += '_' + this.parametroFormales[i].getTipo().getNombreTipo()
+            cad += '_' + this.parametroFormales[i].getTipo().getNombreTipo();
         }
         return cad;
     }

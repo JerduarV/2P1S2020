@@ -26,7 +26,9 @@ export class DeclaracionJ extends InstruccionJ{
     }
 
     public Traducir(): void {
-        
+        if(this.esGlobal()){
+            return;
+        }
     }
 
     public getExp():ExpresionJ{
