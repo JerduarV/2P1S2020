@@ -136,6 +136,10 @@
 
 %{
     var DeclaracionJ = require('../app/Compilador/InstruccionJ/DeclaracionJ').DeclaracionJ;
+    var For = require('../app/Compilador/InstruccionJ/For').For;
+    var Break = require('../app/Compilador/InstruccionJ/Break').Break;
+    var Continue = require('../app/Compilador/InstruccionJ/Continue').Continue;
+    var Return = require('../app/Compilador/InstruccionJ/Return').Return;
     var Asignacion = require('../app/Compilador/InstruccionJ/Asignacion').Asignacion;
     var Else = require('../app/Compilador/InstruccionJ/Else').Else;
     var IF = require('../app/Compilador/InstruccionJ/IF').IF;
@@ -246,6 +250,24 @@ SENT:
     |   DOWHILE                 { $$ = $1; }
     |   IF                      { $$ = $1; }
     |   FOR                     { $$ = $1; }
+    |   RETURN                  { $$ = $1; }
+    |   BREAK PTCOMA            { $$ = $1; }
+    |   BREAK                   { $$ = $1; }
+    |   CONTINUE PTCOMA         { $$ = $1; }
+    |   CONTINUE                { $$ = $1; }
+;
+
+BREAK:
+        RBREAK      { $$ = new Break(@1.first_line,@1.first_column); }
+;
+
+CONTINUE:
+        RCONTINUE   { $$ = new Continue(@1.first_line,@1.first_column); }
+;
+
+RETURN:
+        RRETURN EXP PTCOMA      { $$ = new Return($2,@1.first_line,@1.first_column); }
+    |   RRETURN PTCOMA          { $$ = new Return(null,@1.first_line,@1.first_column); }
 ;
 
 FOR:
@@ -310,10 +332,10 @@ VAR_DEC:
     |   TYPE L_ID                               { $$ = new DeclaracionJ(new Tipo($1,0),$2,false,false,null,@1.first_line,@1.first_column);      }                               
     |   ID L_ID                                 { $$ = new DeclaracionJ(new Tipo($1,0),$2,false,false,null,@1.first_line,@1.first_column);      }
     /* PARA ARREGLOS */
-    |   TYPE CORIZQ CORDER L_ID IGUAL VAR_INIT
-    |   ID CORIZQ CORDER L_ID IGUAL VAR_INIT
-    |   TYPE CORIZQ CORDER L_ID
-    |   ID CORIZQ CORDER L_ID
+    |   TYPE CORIZQ CORDER L_ID IGUAL VAR_INIT  { $$ = new DeclaracionJ(new Tipo($1,1),$4,false,false,$6,@1.first_line,@1.first_column); }
+    |   ID CORIZQ CORDER L_ID IGUAL VAR_INIT    { $$ = new DeclaracionJ(new Tipo($1,1),$4,false,false,$6,@1.first_line,@1.first_column); }
+    |   TYPE CORIZQ CORDER L_ID                 { $$ = new DeclaracionJ(new Tipo($1,1),$4,false,false,null,@1.first_line,@1.first_column); }
+    |   ID CORIZQ CORDER L_ID                   { $$ = new DeclaracionJ(new Tipo($1,1),$4,false,false,null,@1.first_line,@1.first_column); }
 ;
 
 L_ID:

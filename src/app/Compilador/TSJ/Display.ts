@@ -25,7 +25,7 @@ export class Display{
     public esValidoContinue():boolean{
         if(this.lista_etqs.length > 0){
             if(this.lista_etqs[this.lista_etqs.length - 1].etq_inicio != null){
-                return false;
+                return true;
             }
         }
         return false;

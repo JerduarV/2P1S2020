@@ -32,6 +32,7 @@ export class DecFun extends InstruccionJ {
         ts.nivel_actual = 1;
         let etq_salida = getEtiqueta();
         ts.etq_fun_salida = etq_salida;
+        ts.funcion_actual = this;
         concatCodigo('\nproc ' + this.nombre + this.concatTipo() + ' begin');
         this.TraducirCuerpo(NewTablaLocal(ts));
         concatCodigo('\n' + ts.etq_fun_salida + ':\nend\n');

@@ -11,6 +11,6 @@ export class Break extends InstruccionJ{
         if(!ts.esValidaBreak()){
             ts.GenerarError('Break fuera de lugar', this.getFila(), this.getCol());
         }
-        concatCodigo('goto ' + ts.getEtqSalida());
+        concatCodigo('goto ' + ts.getEtqSalida() + ';');
     }
 }

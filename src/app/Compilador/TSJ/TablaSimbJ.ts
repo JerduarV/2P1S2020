@@ -14,6 +14,7 @@ export function NewTablaLocal(padre: TablaSimbJ): TablaSimbJ {
     t.tam_fun_actual = padre.tam_fun_actual;
     t.etq_fun_salida = padre.etq_fun_salida;
     t.display = padre.display;
+    t.funcion_actual = padre.funcion_actual;
     return t;
 }
 
@@ -27,6 +28,7 @@ export class TablaSimbJ {
     public etq_fun_salida: string;
     public padre: TablaSimbJ;
     public display: Display;
+    public funcion_actual: DecFun;
 
     /**
      * Cosntructor de la tabla de simbolos
@@ -42,6 +44,7 @@ export class TablaSimbJ {
         this.etq_fun_salida = '';
         this.padre = null;
         this.display = new Display();
+        this.funcion_actual = null;
     }
 
     public BuscarVariable(id: string): SimbVar{
