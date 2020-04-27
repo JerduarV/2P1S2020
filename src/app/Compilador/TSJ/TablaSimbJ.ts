@@ -11,9 +11,9 @@ export function NewTablaLocal(padre: TablaSimbJ): TablaSimbJ {
     let t: TablaSimbJ = new TablaSimbJ(padre.getArchivo(), padre.getConsola());
     t.padre = padre;
     t.nivel_actual = padre.nivel_actual + 1;
-    this.tam_fun_actual = padre.tam_fun_actual;
-    this.etq_fun_salida = padre.etq_fun_salida;
-    this.display = padre.display;
+    t.tam_fun_actual = padre.tam_fun_actual;
+    t.etq_fun_salida = padre.etq_fun_salida;
+    t.display = padre.display;
     return t;
 }
 

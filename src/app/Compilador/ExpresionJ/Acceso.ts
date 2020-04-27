@@ -38,9 +38,40 @@ export class Acceso extends ExpresionJ {
         //SI ES UN ACCESO PARA ASIGNACIÓN
         if (this.exp != null) {
             this.TraducirAsig(ts);
+        } else {
+            this.TraducirAcceso(ts);
         }
     }
 
+    /**
+     * Traduce un acceso para obtener un valor
+     * @param ts Tabla de símbolos
+     */
+    public TraducirAcceso(ts: TablaSimbJ): void {
+        if (this.lista_exp.length == 1) {
+            if (this.lista_exp[0] instanceof Identificador) {
+                let variable: SimbVar = ts.BuscarVariable((<Identificador>this.lista_exp[0]).getId())
+                if (variable == null) {
+                    return;
+                }
+
+                if (!variable.getEsGlobal()) {
+                    let temp: string = genTemp();
+                    let tem_val: string = genTemp();
+                    concatCodigo(temp + ' = P + ' + variable.getPosicion() + ';');
+                    concatCodigo(tem_val + ' = Stack[' + temp + '];')
+                } else {
+                    let tem_val: string = genTemp();
+                    concatCodigo(tem_val + ' = Heap[' + variable.getPosicion() + '];');
+                }
+            }
+        }
+    }
+
+    /**
+     * Traduce un acceso para setear un valor
+     * @param ts Tabla de simbolos
+     */
     public TraducirAsig(ts: TablaSimbJ) {
         if (this.lista_exp.length == 1) {
             if (this.lista_exp[0] instanceof Identificador) {

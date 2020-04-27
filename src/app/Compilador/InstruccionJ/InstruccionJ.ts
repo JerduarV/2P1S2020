@@ -21,7 +21,7 @@ export abstract class InstruccionJ extends NodoASTJ{
         }
     }
 
-    public TraducirCuperpo(ts: TablaSimbJ):void{
+    public TraducirCuerpo(ts: TablaSimbJ):void{
         if(this.cuerpo == null){
             return;
         }

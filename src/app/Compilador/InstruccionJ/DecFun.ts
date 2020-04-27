@@ -2,7 +2,7 @@ import { InstruccionJ } from './InstruccionJ';
 import { Tipo } from '../TSJ/Tipo';
 import { ParametroFormal } from '../TSJ/ParametroFormal';
 import { NodoASTJ } from '../ASTJ/NodoASTJ';
-import { TablaSimbJ } from '../TSJ/TablaSimbJ';
+import { TablaSimbJ, NewTablaLocal } from '../TSJ/TablaSimbJ';
 import { concatCodigo, getEtiqueta } from 'src/app/Auxiliares/Utilidades';
 
 export class DecFun extends InstruccionJ {
@@ -33,7 +33,7 @@ export class DecFun extends InstruccionJ {
         let etq_salida = getEtiqueta();
         ts.etq_fun_salida = etq_salida;
         concatCodigo('\nproc ' + this.nombre + this.concatTipo() + ' begin');
-        this.TraducirCuperpo(ts);
+        this.TraducirCuerpo(NewTablaLocal(ts));
         concatCodigo('\n' + ts.etq_fun_salida + ':\nend\n');
         ts.tam_fun_actual = -1;
         ts.nivel_actual = 0;

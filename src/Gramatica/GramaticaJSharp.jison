@@ -137,6 +137,9 @@
 %{
     var DeclaracionJ = require('../app/Compilador/InstruccionJ/DeclaracionJ').DeclaracionJ;
     var Asignacion = require('../app/Compilador/InstruccionJ/Asignacion').Asignacion;
+    var Else = require('../app/Compilador/InstruccionJ/Else').Else;
+    var IF = require('../app/Compilador/InstruccionJ/IF').IF;
+    var DoWhile = require('../app/Compilador/InstruccionJ/DoWhile').DoWhile;
     var While = require('../app/Compilador/InstruccionJ/While').While;
     var Print = require('../app/Compilador/InstruccionJ/Print').Print;
     var DecFun = require('../app/Compilador/InstruccionJ/DecFun').DecFun;
@@ -239,6 +242,44 @@ SENT:
     |   ASIGNACION PTCOMA       { $$ = $1; }
     |   ASIGNACION              { $$ = $1; }
     |   WHILE                   { $$ = $1; }
+    |   DOWHILE PTCOMA          { $$ = $1; }
+    |   DOWHILE                 { $$ = $1; }
+    |   IF                      { $$ = $1; }
+    |   FOR                     { $$ = $1; }
+;
+
+FOR:
+        RFOR PARIZQ FOR_INIT PTCOMA EXP PTCOMA ACTUALIZACION PARDER BLOCK_SENT
+    |   RFOR PARIZQ FOR_INIT PTCOMA PTCOMA PARDER BLOCK_SENT
+    |   RFOR PARIZQ FOR_INIT PTCOMA EXP PTCOMA PARDER BLOCK_SENT
+    |   RFOR PARIZQ PTCOMA EXP PTCOMA ACTUALIZACION BLOCK_SENT
+    |   RFOR PARIZQ PTCOMA PTCOMA ACTUALIZACION BLOCK_SENT
+    |   RFOR PARIZQ PTCOMA EXP PTCOMA BLOCK_SENT
+    |   RFOR PARIZQ PTCOMA PTCOMA PTCOMA PARDER BLOCK_SENT
+;
+
+ACTUALIZACION:
+        EXP
+    |   ASIGNACION
+;
+
+FOR_INIT:
+        VAR_DEC
+    |   ASIGNACION
+;
+
+IF:
+        RIF PARIZQ EXP PARDER BLOCK_SENT        { $$ = new IF($3,$5,null,@1.first_line,@1.first_column); }
+    |   RIF PARIZQ EXP PARDER BLOCK_SENT ELSE   { $$ = new IF($3,$5,$6,@1.first_line,@1.first_column); }
+;
+
+ELSE:
+        RELSE IF            { $$ = new Else(null,$2,@1.first_line,@1.first_column); }
+    |   RELSE BLOCK_SENT    { $$ = new Else($2,null,@1.first_line,@1.first_column); }
+;
+
+DOWHILE:
+        RDO BLOCK_SENT RWHILE PARIZQ EXP PARDER     { $$ = new DoWhile($2,$5,@1.first_line,@1.first_column); }
 ;
 
 WHILE:

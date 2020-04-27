@@ -24,10 +24,13 @@ export class Print extends InstruccionJ{
         let temp = getTempAct()
         if(tipo.isInteger()){
             concatCodigo('print("%i",' + temp + ');');
+            concatCodigo('print("%c",10);');
         }else if(tipo.isDouble()){
             concatCodigo('print("%d",' + temp + ');');
+            concatCodigo('print("%c",10);');
         }else if(tipo.isChar()){
             concatCodigo('print("%c",' + temp + ');');
+            concatCodigo('print("%c",10);');
         }
     }
 
