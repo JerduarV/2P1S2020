@@ -66,26 +66,39 @@ export class LiteralJ extends ExpresionJ {
                 ts.guardarTemporal(temp);
                 break;
             case TipoLit.LIT_STRING:
-                let valor: string = this.val.toString().substring(1,this.val.toString().length - 1);
-                valor = valor.replace(/\\t/g,'\t');
-                valor = valor.replace(/\\n/g,'\n');
-                valor = valor.replace(/\\r/g,'\r');
-                valor = valor.replace(/\\"/g,'"');
-                console.log(valor);
+                let valor: string = this.val.toString().substring(1, this.val.toString().length - 1);
+                valor = valor.replace(/\\t/g, '\t');
+                valor = valor.replace(/\\n/g, '\n');
+                valor = valor.replace(/\\r/g, '\r');
+                valor = valor.replace(/\\"/g, '"');
+                this.TraducirStringLit(valor, ts);
+                break;
         }
     }
 
-    private ProcesarChar(val: string):string{
-        if(this.val.toString() == "'\\n'"){
+    private TraducirStringLit(val: string, ts: TablaSimbJ) {
+        let temp: string = genTemp();
+        concatCodigo(temp + ' = H;');
+        concatCodigo('Heap[H] = ' + val.length + ';');
+        concatCodigo('H = H + 1;');
+        for (let i = 0; i < val.length; i++) {
+            concatCodigo('Heap[H] = ' + val.charCodeAt(i) + ';');
+            concatCodigo('H = H + 1;');
+        }
+        ts.guardarTemporal(temp);
+    }
+
+    private ProcesarChar(val: string): string {
+        if (this.val.toString() == "'\\n'") {
             return '\n'
         }
-        if(this.val.toString() == "'\\t'"){
+        if (this.val.toString() == "'\\t'") {
             return '\t'
         }
-        if(this.val.toString() == "'\\r'"){
+        if (this.val.toString() == "'\\r'") {
             return '\r'
-        }else{
-            return val.substring(1,val.length-1);
+        } else {
+            return val.substring(1, val.length - 1);
         }
     }
 
