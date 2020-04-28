@@ -2,6 +2,7 @@ import { InstruccionJ } from './InstruccionJ';
 import { ExpresionJ } from '../ExpresionJ/ExpresionJ';
 import { Tipo } from '../TSJ/Tipo';
 import { concatCodigo, getTempAct } from 'src/app/Auxiliares/Utilidades';
+import { ErrorLup } from 'src/app/Auxiliares/Error';
 
 export class Print extends InstruccionJ{
 
@@ -14,7 +15,7 @@ export class Print extends InstruccionJ{
 
     public Traducir(ts: import("../TSJ/TablaSimbJ").TablaSimbJ): void {
         let o: Object = this.exp.getTipo(ts);
-        if(o instanceof Error){
+        if(o instanceof ErrorLup){
             ts.GenerarError('Print: Error al evaluar la expresión', this.getFila(),this.getCol());
             return;
         }

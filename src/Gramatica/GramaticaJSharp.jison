@@ -271,23 +271,30 @@ RETURN:
 ;
 
 FOR:
-        RFOR PARIZQ FOR_INIT PTCOMA EXP PTCOMA ACTUALIZACION PARDER BLOCK_SENT
-    |   RFOR PARIZQ FOR_INIT PTCOMA PTCOMA PARDER BLOCK_SENT
-    |   RFOR PARIZQ FOR_INIT PTCOMA EXP PTCOMA PARDER BLOCK_SENT
-    |   RFOR PARIZQ PTCOMA EXP PTCOMA ACTUALIZACION BLOCK_SENT
-    |   RFOR PARIZQ PTCOMA PTCOMA ACTUALIZACION BLOCK_SENT
-    |   RFOR PARIZQ PTCOMA EXP PTCOMA BLOCK_SENT
-    |   RFOR PARIZQ PTCOMA PTCOMA PTCOMA PARDER BLOCK_SENT
+        //INIT EXP ACT
+        RFOR PARIZQ FOR_INIT PTCOMA EXP PTCOMA ACTUALIZACION PARDER BLOCK_SENT  { $$ = new For($3,$5,$7,$9,@1.first_line,@1.first_column); }
+        //INIT NULL NULL
+    |   RFOR PARIZQ FOR_INIT PTCOMA PTCOMA PARDER BLOCK_SENT                    { $$ = new For($3,null,null,$7,@1.first_line,@1.first_column); }
+        //INIT EXP NULL
+    |   RFOR PARIZQ FOR_INIT PTCOMA EXP PTCOMA PARDER BLOCK_SENT                { $$ = new For($3,$5,null,$8,@1.first_line,@1.first_column); }
+        //NULL EXP ACT
+    |   RFOR PARIZQ PTCOMA EXP PTCOMA ACTUALIZACION PARDER BLOCK_SENT           { $$ = new For(null,$4,$6,$8,@1.first_line,@1.first_column); }
+        //NULL NULL ACT
+    |   RFOR PARIZQ PTCOMA PTCOMA ACTUALIZACION PARDER BLOCK_SENT               { $$ = new For(null,null,$5,$7,@1.first_line,@1.first_column); }
+        //NULL EXP NULL
+    |   RFOR PARIZQ PTCOMA EXP PTCOMA PARDER BLOCK_SENT                         { $$ = new For(null,$4,null,$7,@1.first_line,@1.first_column); }
+        //NULL NULL NULL
+    |   RFOR PARIZQ PTCOMA PTCOMA PARDER BLOCK_SENT                             { $$ = new For(null,null,null,$6,@1.first_line,@1.first_column); }
 ;
 
 ACTUALIZACION:
-        EXP
-    |   ASIGNACION
+        EXP         { $$ = $1; }
+    |   ASIGNACION  { $$ = $1; }
 ;
 
 FOR_INIT:
-        VAR_DEC
-    |   ASIGNACION
+        VAR_DEC     { $$ = $1; }
+    |   ASIGNACION  { $$ = $1; }
 ;
 
 IF:

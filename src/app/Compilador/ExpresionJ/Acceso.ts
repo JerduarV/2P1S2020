@@ -23,8 +23,7 @@ export class Acceso extends ExpresionJ {
             if (this.lista_exp[0] instanceof Identificador) {
                 let variable: SimbVar = ts.BuscarVariable((<Identificador>this.lista_exp[0]).getId())
                 if (variable == null) {
-                    ts.GenerarError('No existe la variable ' + (<Identificador>this.lista_exp[0]).getId(), this.getFila(), this.getCol());
-                    return;
+                    return ts.GenerarError('No existe la variable ' + (<Identificador>this.lista_exp[0]).getId(), this.getFila(), this.getCol());
                 }
                 return variable.getTipo();
             }

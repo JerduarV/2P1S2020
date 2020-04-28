@@ -58,12 +58,16 @@ export class OpeLogica extends OperacionJ {
         switch (this.getTipoOpe()) {
             case TipoOpeJ.AND:
                 this.TraducirAnd(ts);
+                break;
             case TipoOpeJ.OR:
                 this.TraducirOr(ts);
+                break;
             case TipoOpeJ.NOT:
                 this.TraducirNot(ts);
+                break;
             case TipoOpeJ.XOR:
                 this.TraducirXor(ts);
+                break;
         }
     }
 

@@ -267,7 +267,7 @@ export class OpeArit extends OperacionJ {
         concatCodigo(temp + ' = ' + t1 + ' * ' + t2 + ';');
         ts.SacarTemporal(t1);
         ts.SacarTemporal(t2);
-        ts.SacarTemporal(temp);
+        ts.guardarTemporal(temp);
     }
 
     /**
