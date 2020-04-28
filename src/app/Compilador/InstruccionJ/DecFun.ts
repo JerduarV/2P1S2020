@@ -10,6 +10,7 @@ export class DecFun extends InstruccionJ {
     private readonly TipoRet: Tipo;
     private readonly nombre: string;
     private parametroFormales: ParametroFormal[];
+    public tamanio: number;
 
     /**
      * Constructor de la Declaración de una función
@@ -25,19 +26,19 @@ export class DecFun extends InstruccionJ {
         this.TipoRet = t;
         this.nombre = nombre;
         this.parametroFormales = p;
+        this.tamanio = 1 + this.parametroFormales.length;
     }
 
     public Traducir(ts: import("../TSJ/TablaSimbJ").TablaSimbJ): void {
-        ts.tam_fun_actual = 1;
-        ts.nivel_actual = 1;
+        ts.tam_fun_actual = 1 + this.parametroFormales.length;
         let etq_salida = getEtiqueta();
         ts.etq_fun_salida = etq_salida;
         ts.funcion_actual = this;
+        ts.tabla_temporales = new Map();
         concatCodigo('\nproc ' + this.nombre + this.concatTipo() + ' begin');
         this.TraducirCuerpo(NewTablaLocal(ts));
         concatCodigo('\n' + ts.etq_fun_salida + ':\nend\n');
         ts.tam_fun_actual = -1;
-        ts.nivel_actual = 0;
     }
 
     public concatTipo():string{

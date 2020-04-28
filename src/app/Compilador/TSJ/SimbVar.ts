@@ -17,8 +17,8 @@ export class SimbVar extends SimboloJ{
      * @param esConstante Indica si es constante
      * @param pos Posicion
      */
-    constructor(nombre: string, tipo: Tipo, esGlobal: boolean, esConstante: boolean, pos: number, nivel: number){
-        super(nombre,nivel);
+    constructor(nombre: string, tipo: Tipo, esGlobal: boolean, esConstante: boolean, pos: number){
+        super(nombre);
         this.tipo = tipo;
         this.esGlobal = esGlobal;
         this.esConstante = esConstante;

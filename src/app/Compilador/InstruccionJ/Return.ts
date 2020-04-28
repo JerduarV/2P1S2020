@@ -31,6 +31,7 @@ export class Return extends InstruccionJ{
             let temp: string = getTempAct();
             concatCodigo('Stack[P] = ' + temp + ';#* RETORNO *#');
             concatCodigo('goto ' + ts.etq_fun_salida + ';');
+            ts.SacarTemporal(temp);
         }
     }
 

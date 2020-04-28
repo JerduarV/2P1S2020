@@ -5,6 +5,7 @@ import { TablaSimbJ } from '../TSJ/TablaSimbJ';
 import { ErrorLup } from 'src/app/Auxiliares/Error';
 import { SimbVar } from '../TSJ/SimbVar';
 import { concatCodigo, genTemp, getTempAct } from 'src/app/Auxiliares/Utilidades';
+import { DecFun } from './DecFun';
 
 export class DeclaracionJ extends InstruccionJ {
 
@@ -75,10 +76,18 @@ export class DeclaracionJ extends InstruccionJ {
                 let temp: string = genTemp();
                 concatCodigo(temp + ' = P + ' + variable.getPosicion() + ';');
                 concatCodigo('Stack[' + temp + '] = ' + t1 + ';');
+                ts.SacarTemporal(t1);
 
             }
         }
 
+    }
+
+    public DeterminarTamanioFuncion(funcion: DecFun):void{
+        if(this.esGlobal()){
+            return;
+        }
+        funcion.tamanio += this.lista_ids.length;
     }
 
     public getExp(): ExpresionJ {

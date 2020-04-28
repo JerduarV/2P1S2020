@@ -10,11 +10,11 @@ import { Display } from './Display';
 export function NewTablaLocal(padre: TablaSimbJ): TablaSimbJ {
     let t: TablaSimbJ = new TablaSimbJ(padre.getArchivo(), padre.getConsola());
     t.padre = padre;
-    t.nivel_actual = padre.nivel_actual + 1;
     t.tam_fun_actual = padre.tam_fun_actual;
     t.etq_fun_salida = padre.etq_fun_salida;
     t.display = padre.display;
     t.funcion_actual = padre.funcion_actual;
+    t.tabla_temporales = padre.tabla_temporales;
     return t;
 }
 
@@ -23,12 +23,12 @@ export class TablaSimbJ {
     private readonly Archivo: string;
     private readonly consola: Consola;
     private readonly tabla: Map<string, SimboloJ>
-    public nivel_actual: number;
     public tam_fun_actual: number;
     public etq_fun_salida: string;
     public padre: TablaSimbJ;
     public display: Display;
     public funcion_actual: DecFun;
+    public tabla_temporales: Map<string,string>;
 
     /**
      * Cosntructor de la tabla de simbolos
@@ -39,12 +39,12 @@ export class TablaSimbJ {
         this.tabla = new Map();
         this.Archivo = file;
         this.consola = con;
-        this.nivel_actual = 0;
         this.tam_fun_actual = -1;
         this.etq_fun_salida = '';
         this.padre = null;
         this.display = new Display();
         this.funcion_actual = null;
+        this.tabla_temporales = null;
     }
 
     public BuscarVariable(id: string): SimbVar{
@@ -73,7 +73,7 @@ export class TablaSimbJ {
     public GuardarVarible(nombre: string, tipo: Tipo, esGlobal: boolean, esConstante: boolean, pos: number, fila: number, col: number): SimbVar {
         let key: string = this.getKeyVar('var', nombre);
         if (!this.tabla.has(key)) {
-            let s: SimbVar = new SimbVar(nombre, tipo, esGlobal, esConstante, pos, this.nivel_actual);
+            let s: SimbVar = new SimbVar(nombre, tipo, esGlobal, esConstante, pos);
             this.tabla.set(key, s);
             return s;
         }
@@ -127,6 +127,30 @@ export class TablaSimbJ {
 
     public getConsola(): Consola {
         return this.consola;
+    }
+
+    /**
+     * Función que saca los temporales
+     * @param temp Temporal a sacar
+     */
+    public SacarTemporal(temp: string):void{
+        if(this.tabla_temporales.has(temp)){
+            this.tabla_temporales.delete(temp);
+            return;
+        }
+        console.log('No existe el temporal ' + temp);
+    }
+
+    /**
+     * Método que guarda temporales
+     * @param temp Temporal a guardar
+     */
+    public guardarTemporal(temp: string):void{
+        if(this.tabla_temporales.has(temp)){
+            console.log('Ya existe este temporal : ' + temp);
+            return;
+        }
+        this.tabla_temporales.set(temp,temp);
     }
 
     /**

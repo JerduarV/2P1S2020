@@ -4,15 +4,12 @@ export abstract class SimboloJ {
      */
     private readonly nombre: string;
 
-    private readonly nivel: number;
-
     /**
      * Constructor de la clase SimboloJ
      * @param nombre Nombre propio
      */
-    constructor(nombre: string, nivel: number) {
+    constructor(nombre: string) {
         this.nombre = nombre;
-        this.nivel = nivel;
     }
 
     /**

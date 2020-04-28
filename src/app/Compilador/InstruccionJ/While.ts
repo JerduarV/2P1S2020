@@ -36,7 +36,7 @@ export class While extends InstruccionJ{
 
         this.cond.Traducir(ts);
         let temp: string = getTempAct();
-
+        ts.SacarTemporal(temp);
         ts.display.insertar(etq_ini, etq_sal);
         concatCodigo('if(' + temp + ' == 1) goto ' + etqv + ';');
         concatCodigo('goto ' + etqf + ';');

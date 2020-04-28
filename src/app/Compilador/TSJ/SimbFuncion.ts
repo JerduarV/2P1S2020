@@ -7,7 +7,7 @@ export class SimbFuncion extends SimboloJ {
     private readonly ListaDefiniciones: DecFun[];
 
     constructor(nombre: string) {
-        super(nombre, 0);
+        super(nombre);
         this.ListaDefiniciones = [];
     }
 

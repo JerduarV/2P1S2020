@@ -1,6 +1,7 @@
 import { NodoASTJ } from '../ASTJ/NodoASTJ';
 import { TablaSimbJ } from '../TSJ/TablaSimbJ';
 import { DeclaracionJ } from './DeclaracionJ';
+import { DecFun } from './DecFun';
 
 export abstract class InstruccionJ extends NodoASTJ{
 
@@ -21,6 +22,16 @@ export abstract class InstruccionJ extends NodoASTJ{
         }
     }
 
+    public DeterminarTamanioFuncion(funcion: DecFun):void{
+        if(this.cuerpo != null){
+            for(let i = 0; i < this.cuerpo.length; i++){
+                if(this.cuerpo[i] instanceof InstruccionJ){
+                    (<InstruccionJ>this.cuerpo[i]).DeterminarTamanioFuncion(funcion);
+                }
+            }
+        }
+    }
+
     public TraducirCuerpo(ts: TablaSimbJ):void{
         if(this.cuerpo == null){
             return;
@@ -29,6 +40,10 @@ export abstract class InstruccionJ extends NodoASTJ{
             let n: NodoASTJ = this.cuerpo[i];
             n.Traducir(ts);
         }
+    }
+
+    public getCuerpo():NodoASTJ[]{
+        return this.cuerpo;
     }
 
 }

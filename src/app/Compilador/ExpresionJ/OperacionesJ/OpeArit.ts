@@ -220,6 +220,9 @@ export class OpeArit extends OperacionJ {
 
         let temp: string = genTemp();
         concatCodigo(temp + ' = ' + t1 + ' + ' + t2 + ';');
+        ts.SacarTemporal(t1);
+        ts.SacarTemporal(t2);
+        ts.guardarTemporal(temp);
     }
 
     /**
@@ -235,6 +238,9 @@ export class OpeArit extends OperacionJ {
 
         let temp: string = genTemp();
         concatCodigo(temp + ' = ' + t1 + ' - ' + t2 + ';');
+        ts.SacarTemporal(t1);
+        ts.SacarTemporal(t2);
+        ts.guardarTemporal(temp);
     }
 
     private TraducirNegativo(ts: TablaSimbJ): void {
@@ -242,6 +248,8 @@ export class OpeArit extends OperacionJ {
         let t1: string = getTempAct();
         let temp: string = genTemp();
         concatCodigo(temp + ' = -' + t1 + ';');
+        ts.SacarTemporal(t1);
+        ts.guardarTemporal(temp);
     }
 
     /**
@@ -257,6 +265,9 @@ export class OpeArit extends OperacionJ {
 
         let temp: string = genTemp();
         concatCodigo(temp + ' = ' + t1 + ' * ' + t2 + ';');
+        ts.SacarTemporal(t1);
+        ts.SacarTemporal(t2);
+        ts.SacarTemporal(temp);
     }
 
     /**
@@ -270,6 +281,7 @@ export class OpeArit extends OperacionJ {
         this.getIzq().Traducir(ts);
         let t1: string = getTempAct();
 
+
         this.getDer().Traducir(ts);
         let t2: string = getTempAct();
 
@@ -278,6 +290,9 @@ export class OpeArit extends OperacionJ {
 
         let temp: string = genTemp();
         concatCodigo(temp + ' = ' + t1 + ' / ' + t2 + ';');
+        ts.SacarTemporal(t1);
+        ts.SacarTemporal(t2);
+        ts.guardarTemporal(temp);
     }
 
     /**
@@ -307,6 +322,10 @@ export class OpeArit extends OperacionJ {
         concatCodigo('call jerduar_POTENCIA;')
         concatCodigo(temp + ' = Stack[P];');
         concatCodigo('P = P - ' + tam_fun_actual + ';\n');
+
+        ts.SacarTemporal(t1);
+        ts.SacarTemporal(t2);
+        ts.guardarTemporal(temp);
     }
 
     /**
@@ -323,6 +342,9 @@ export class OpeArit extends OperacionJ {
         let temp: string = genTemp();
 
         concatCodigo(temp + ' = ' + t1 + ' % ' + t2 + ';');
+        ts.SacarTemporal(t1);
+        ts.SacarTemporal(t2);
+        ts.guardarTemporal(temp);
             
     }
 

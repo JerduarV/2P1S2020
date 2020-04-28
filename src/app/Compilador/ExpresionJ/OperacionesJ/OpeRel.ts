@@ -76,6 +76,10 @@ export class OpeRel extends OperacionJ {
 
         concatCodigo('if (' + t1 + this.getSimbolo() + t2 + ') goto ' + etqv + ';\ngoto ' + etqf + ';');
         concatCodigo(etqv + ':\n' + t3 + ' = 1;\n' + etqf + ':');
+
+        ts.SacarTemporal(t1);
+        ts.SacarTemporal(t2);
+        ts.guardarTemporal(t3);
     }
 
     public getSimbolo(): string {

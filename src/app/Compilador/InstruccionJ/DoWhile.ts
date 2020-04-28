@@ -39,7 +39,7 @@ export class DoWhile extends InstruccionJ {
         concatCodigo(etq_sal + ':');
 
         ts.display.sacarEtiquetas();
-
+        ts.SacarTemporal(temp);
     }
 
 }

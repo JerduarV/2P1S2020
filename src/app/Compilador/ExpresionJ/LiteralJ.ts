@@ -41,27 +41,37 @@ export class LiteralJ extends ExpresionJ {
     }
 
 
-    public Traducir(): void {
+    public Traducir(ts: TablaSimbJ): void {
         let temp: string = genTemp();
         switch (this.tipo) {
             case TipoLit.LIT_CHAR:
                 let c: string = this.ProcesarChar(this.val.toString());
                 concatCodigo(temp + '=' + c.charCodeAt(0) + ';');
+                ts.guardarTemporal(temp);
                 break;
             case TipoLit.LIT_INT:
                 concatCodigo(temp + '=' + this.val + ';');
+                ts.guardarTemporal(temp);
                 break;
             case TipoLit.LIT_DOUBLE:
                 concatCodigo(temp + '=' + this.val + ';');
+                ts.guardarTemporal(temp);
                 break;
             case TipoLit.LIT_FALSE:
                 concatCodigo(temp + ' = 0;');
+                ts.guardarTemporal(temp);
                 break;
             case TipoLit.LIT_TRUE:
                 concatCodigo(temp + ' = 1;');
+                ts.guardarTemporal(temp);
                 break;
             case TipoLit.LIT_STRING:
-
+                let valor: string = this.val.toString().substring(1,this.val.toString().length - 1);
+                valor = valor.replace(/\\t/g,'\t');
+                valor = valor.replace(/\\n/g,'\n');
+                valor = valor.replace(/\\r/g,'\r');
+                valor = valor.replace(/\\"/g,'"');
+                console.log(valor);
         }
     }
 

@@ -60,9 +60,11 @@ export class Acceso extends ExpresionJ {
                     let tem_val: string = genTemp();
                     concatCodigo(temp + ' = P + ' + variable.getPosicion() + ';');
                     concatCodigo(tem_val + ' = Stack[' + temp + '];')
+                    ts.guardarTemporal(tem_val);
                 } else {
                     let tem_val: string = genTemp();
                     concatCodigo(tem_val + ' = Heap[' + variable.getPosicion() + '];');
+                    ts.guardarTemporal(tem_val);
                 }
             }
         }

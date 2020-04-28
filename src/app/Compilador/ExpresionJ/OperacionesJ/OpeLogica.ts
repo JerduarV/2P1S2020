@@ -84,6 +84,8 @@ export class OpeLogica extends OperacionJ {
         concatCodigo('if (' + t1 + ' == 1) goto ' + etqv + ';\ngoto ' + etqf + ';')
         concatCodigo(etqv + ':\n' + temp + ' = 0;\ngoto ' + etqsalida + ';')
         concatCodigo(etqf + ':\n' + temp + ' = 1;\n' + etqsalida + ':');
+        ts.SacarTemporal(t1);
+        ts.guardarTemporal(temp);
     }
 
     /**
@@ -108,6 +110,9 @@ export class OpeLogica extends OperacionJ {
         concatCodigo(etqf + ':');
         concatCodigo('if (' + t2 + ' == 1) goto ' + etqv2 + ';\ngoto ' + etqf2 + ';');
         concatCodigo(etqv + ':\n' + etqv2 + ':\n' + t3 + ' = 1;\n' + etqf2 + ':');
+        ts.SacarTemporal(t1);
+        ts.SacarTemporal(t2);
+        ts.guardarTemporal(t3);
     }
 
     /**
@@ -132,6 +137,10 @@ export class OpeLogica extends OperacionJ {
         concatCodigo(etqv + ':');
         concatCodigo('if (' + t2 + ' == 1) goto ' + etqv2 + ';\ngoto ' + etqf2 + ';');
         concatCodigo(etqv2 + ':\n' + t3 + ' = 1;\n' + etqf + ':\n' + etqf2 + ':');
+
+        ts.SacarTemporal(t1);
+        ts.SacarTemporal(t2);
+        ts.guardarTemporal(t3);
     }
 
     /**
@@ -152,6 +161,10 @@ export class OpeLogica extends OperacionJ {
         concatCodigo(temp + ' = 0;')
         concatCodigo('if (' + t1 + ' != ' + t2 + ') goto ' + etqv + ';\ngoto ' + etqf + ';');
         concatCodigo(etqv + ':\n' + temp + ' = 1;\n' + etqf + ':');
+
+        ts.SacarTemporal(t1);
+        ts.SacarTemporal(t2);
+        ts.guardarTemporal(temp);
     }
 
 }

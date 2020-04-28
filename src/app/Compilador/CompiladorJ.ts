@@ -34,6 +34,8 @@ export class CompiladorJ {
 
             //RECOLECTAR FUCIONES
             let d: DecFun[] = this.RecolectarFunciones(global, AST);
+            this.CalcularTamanioFunciones(d);
+            console.log(d);
 
             //RECOLECCION DE GLOBALES
             this.RecolectarGlobales(global, AST);
@@ -61,6 +63,12 @@ export class CompiladorJ {
         } catch (error) {
             console.log(error);
         }
+    }
+
+    private CalcularTamanioFunciones(funciones: DecFun[]){
+        funciones.forEach(element => {
+            element.DeterminarTamanioFuncion(element);
+        });
     }
 
     public TraducirFunciones(global: TablaSimbJ, funciones: DecFun[]): void {

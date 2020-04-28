@@ -6,6 +6,8 @@ import { ErrorLup } from 'src/app/Auxiliares/Error';
 import { Tipo } from '../TSJ/Tipo';
 import { getTempAct, getEtiqueta, concatCodigo } from 'src/app/Auxiliares/Utilidades';
 import { NewTablaLocal } from '../TSJ/TablaSimbJ';
+import { DeclaracionJ } from './DeclaracionJ';
+import { DecFun } from './DecFun';
 
 export class IF extends InstruccionJ {
 
@@ -39,7 +41,7 @@ export class IF extends InstruccionJ {
         let etqf: string = getEtiqueta();
         this.cond.Traducir(ts);
         let temp_cond = getTempAct();
-
+        ts.SacarTemporal(temp_cond);
         concatCodigo('if(' + temp_cond + ' == 1) goto ' + etqv + ';');
         concatCodigo('goto ' + etqf + ';')
         concatCodigo(etqv + ':');
@@ -54,8 +56,30 @@ export class IF extends InstruccionJ {
             this.sino.Traducir(ts);
         }
 
-        if(this.etiqueta_salida == null){
-            concatCodigo(etq_salida + ':'); 
+        if (this.etiqueta_salida == null) {
+            concatCodigo(etq_salida + ':');
+        }
+    }
+
+    public BuscarVariablesGlobales(lista_dec: DeclaracionJ[]): void {
+        for (let i = 0; i < this.getCuerpo().length; i++) {
+            if (this.getCuerpo()[i] instanceof InstruccionJ) {
+                (<InstruccionJ>this.getCuerpo()[i]).BuscarVariablesGlobales(lista_dec);
+            }
+        }
+        if(this.sino != null){
+            this.sino.BuscarVariablesGlobales(lista_dec);
+        }
+    }
+
+    public DeterminarTamanioFuncion(funcion: DecFun): void {
+        for (let i = 0; i < this.getCuerpo().length; i++) {
+            if (this.getCuerpo()[i] instanceof InstruccionJ) {
+                (<InstruccionJ>this.getCuerpo()[i]).DeterminarTamanioFuncion(funcion);
+            }
+        }
+        if(this.sino != null){
+            this.sino.DeterminarTamanioFuncion(funcion);
         }
     }
 
