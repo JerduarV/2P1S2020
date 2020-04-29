@@ -398,7 +398,7 @@ EXP2:
     |   L_ACCESO                    { $$ = new Acceso($1,@1.first_line,@1.first_column); }
     |   L_ACCESO        INCREMENTO
     |   L_ACCESO        DECREMENTO
-    |   MENOS   EXP2 %prec UMINUS
+    |   MENOS   EXP2 %prec UMINUS   { $$ = new OpeArit(TipoOpeJ.NEGATIVO,$2,null,@1.first_line,@1.first_column); }
     |   LITERAL                     { $$ = $1; }
     |   INSTANCIA_STRC
 ;

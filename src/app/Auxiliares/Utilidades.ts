@@ -1,4 +1,5 @@
 import { TablaSimbJ } from '../Compilador/TSJ/TablaSimbJ';
+import { concat } from 'rxjs';
 
 let contador_etq: number = 0;
 let contador_tempo: number = 0;
@@ -49,6 +50,8 @@ export function QuemarFunciones(ts: TablaSimbJ): void {
     GenerarConcat(ts);
     GenerarVoltearString();
     GenerarIntToString();
+    GenerarDoubleToString();
+    GenerarCharToStrig();
 }
 
 
@@ -93,7 +96,7 @@ export function GenerarPotencia(): void {
     concatCodigo('\nend\n');
 }
 
-export function GenerarPrint(ts: TablaSimbJ): void {
+function GenerarPrint(ts: TablaSimbJ): void {
     let t1: string = genTemp(),
         t2: string = genTemp(),
         t3: string = genTemp(),
@@ -128,7 +131,7 @@ export function GenerarPrint(ts: TablaSimbJ): void {
     concatCodigo('\nend\n');
 }
 
-export function GenerarConcat(ts: TablaSimbJ): void {
+function GenerarConcat(ts: TablaSimbJ): void {
     //#region Etiquetas
     let etq_ini1: string = getEtiqueta();
     let etq_ini2: string = getEtiqueta();
@@ -204,7 +207,7 @@ export function GenerarConcat(ts: TablaSimbJ): void {
     concatCodigo('Stack[P] = ' + t7 + ';\nend\n#*FIN CONCAT*#\n');
 }
 
-export function GenerarVoltearString(): void {
+function GenerarVoltearString(): void {
     //#region Etiquetas
     let etq_ini: string = getEtiqueta();
     let etq_sal: string = getEtiqueta();
@@ -247,7 +250,7 @@ export function GenerarVoltearString(): void {
     concatCodigo('end\n#*FIN VOLTEAR CADENA*#\n');
 }
 
-export function GenerarIntToString(): void {
+function GenerarIntToString(): void {
 
     //#region ETIQUETAS
     let etq_ini: string = getEtiqueta();
@@ -312,4 +315,102 @@ export function GenerarIntToString(): void {
 
     concatCodigo('end\n#*FIN DE IntToString*#\n');
 
+}
+
+function GenerarDoubleToString(): void {
+    //#region ETIQUETAS
+    let etq_ini1: string = getEtiqueta();
+    let etq_ini2: string = getEtiqueta();
+    let etq_sal: string = getEtiqueta();
+    //#endregion
+
+    //#region TEMPORALES
+    let t1: string = genTemp().toString();
+    let t2: string = genTemp().toString();
+    let t3: string = genTemp().toString();
+    let t4: string = genTemp().toString();
+    let t5: string = genTemp().toString();
+    let t6: string = genTemp().toString();
+    let t7: string = genTemp().toString();
+    let t8: string = genTemp().toString();
+    let t9: string = genTemp().toString();
+    let t10: string = genTemp().toString();
+    let t11: string = genTemp().toString();
+    let t12: string = genTemp().toString();
+    let t13: string = genTemp().toString();
+    let t14: string = genTemp().toString();
+    let t15: string = genTemp().toString();
+    let t16: string = genTemp().toString();
+    let t17: string = genTemp().toString();
+    let t18: string = genTemp().toString();
+    let t19: string = genTemp().toString();
+    let tcont1: string = genTemp().toString();
+    let tcont2: string = genTemp().toString();
+    let tval: string = genTemp().toString();
+    //#endregion
+
+    concatCodigo('\n#*DECIMAL A STRING*#');
+    concatCodigo('\nproc jerduar_DOUBLETOSTRING begin')
+
+    //OBTENIENDO EL VALOR ENVIADO
+    concatCodigo(t1 + ' = P + 1;\n' + t2 + ' = Stack[' + t1 + '];');
+    concatCodigo(tval + ' = ' + t2 + ';\nif(' + tval + ' >= 0) goto ' + etq_ini1 + ';');   //VALIDO SI EL VALOR ES NEGATIVO
+    concatCodigo(tval + ' = ' + tval + ' * -1;\n' + etq_ini1 + ':');
+
+    //SEPARANDO PARTE DECIMAL Y ENTERA
+    concatCodigo(t3 + ' = ' + tval + ' % 1.0; #*DECIMAL*#');
+    concatCodigo(t4 + ' = ' + tval + ' - ' + t3 + ';');
+
+    //PASO A CADENA DE LA PARTE ENTERA
+    concatCodigo(t5 + ' = P + 2;\n' + t5 + ' = ' + t5 + ' + 1;\nStack[' + t5 + '] = ' + t4 + ';'); //PASO DE PARAMETRO
+    concatCodigo('P = P + 2;\ncall jerduar_INTTOSTRING;\n' + t6 + ' = Stack[P];\nP = P - 2;');//LLAMADA DE LA FUNCION ENTERO A STRING
+
+    //PASANDO A CADENA LA PARTE DECIMAL
+    concatCodigo(t7 + ' = H;\n' + t8 + ' = ' + t7 + ' + 1;\nHeap[' + t8 + '] = 46;')//CREO LA CADENA E INSERTO EL PUNTO DECIMAL "46"
+    concatCodigo(tcont1 + ' = 1;\n' + tcont2 + ' = 2;');
+    concatCodigo(t19 + ' = ' + t3 + ' - ' + t3 + ';\n' + etq_ini2 + ':');
+
+    //INICIA CICLO
+    //concatCodigo('print("%d",' + t3 + ');');
+    //concatCodigo('print("%c",10);');
+    concatCodigo(t9 + ' = ' + t3 + ' * 10;');
+    concatCodigo(t10 + ' = ' + t9 + ' % 1.0;\n' + t11 + ' = ' + t9 + ' - ' + t10 + ';\n' + t12 + ' = ' + t11 + ' + 48;');
+    concatCodigo(t13 + ' = ' + t7 + ' + ' + tcont2 + ';\nHeap[' + t13 + '] = ' + t12 + ';');
+    concatCodigo(tcont1 + ' = ' + tcont1 + ' + 1;\n' + tcont2 + ' = ' + tcont2 + ' + 1;\n' + t3 + ' = ' + t10 + ';');
+    concatCodigo('if(' + t10 + ' >= 0.00000001) goto ' + etq_ini2 + ';');
+
+    //RESERVANDO LA MEMORIA PARA LA PRIMERA VARIABLE
+    concatCodigo('Heap[' + t7 + '] = ' + tcont1 + ';\nH = H + ' + tcont2 + ';');
+
+    //SI EL VALOR TIENE UN VALOR NEGATIVO HAY QUE CONCATENAR EL SIGNO MENOS
+    concatCodigo('if(' + t2 + ' >= 0) goto ' + etq_sal + ';');
+    concatCodigo(t14 + ' = H;\nH = H + 2;\nHeap[' + t14 + '] = 1;\n' + t15 + ' = ' + t14 + ' + 1;');
+    concatCodigo('Heap[' + t15 + '] = 45;\n' + t16 + ' = P + 3;\nStack[' + t16 + '] = ' + t14 + ';');
+    concatCodigo(t16 + ' = ' + t16 + ' + 1;\nStack[' + t16 + '] = ' + t6 + ';');
+    concatCodigo('P = P + 2;\ncall jerduar_CONCAT;\n' + t6 + ' = Stack[P];\nP = P - 2;\n' + etq_sal + ':');
+
+    //CONCATENACIÓN DE LA PARTE ENTERA Y LA PARTE DECIMAL
+    concatCodigo(t17 + ' = P + 3;\nStack[' + t17 + '] = ' + t6 + ';');
+    concatCodigo(t17 + ' = ' + t17 + ' + 1;\nStack[' + t17 + '] = ' + t7 + ';');
+    concatCodigo('P = P + 2;\ncall jerduar_CONCAT;\n' + t18 + ' = stack[P];\nP = P - 2;');
+
+    //RETORNO DE LA NUEVA CADENA
+    concatCodigo('Stack[P] = ' + t18 + ';\nend\n#*FIN DOUBLE TO STRING*#');
+
+}
+
+function GenerarCharToStrig(): void {
+    //#region Temporales
+    let t1: string = genTemp().toString();
+    let t2: string = genTemp().toString();
+    let t3: string = genTemp().toString();
+    let t4: string = genTemp().toString();
+    //#endregion
+
+    concatCodigo('\n#*CHAR A STRING*#');
+    concatCodigo('\nproc jerduar_CHARTOSTRING begin')
+    concatCodigo(t3 + ' = P + 1;');
+    concatCodigo(t4 + ' = Stack[' + t3 + '];');
+    concatCodigo(t1 + ' = H;\nH = H + 2;\nHeap[ ' + t1 + '] = 1;\n' + t2 + ' = ' + t1 + ' + 1;');
+    concatCodigo('Heap[' + t2 + '] = ' + t4 + ';\nStack[P] = ' + t1 + ';\nend\n#*FIN CHAR TO STRING*#');
 }

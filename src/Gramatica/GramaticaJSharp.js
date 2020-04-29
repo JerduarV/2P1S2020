@@ -305,6 +305,9 @@ break;
 case 123:
  this.$ = new Acceso($$[$0],_$[$0].first_line,_$[$0].first_column); 
 break;
+case 126:
+ this.$ = new OpeArit(TipoOpeJ.NEGATIVO,$$[$0],null,_$[$0-1].first_line,_$[$0-1].first_column); 
+break;
 case 129:
  this.$ = new LiteralJ($$[$0],TipoLit.LIT_INT,_$[$0].first_line,_$[$0].first_column);      
 break;

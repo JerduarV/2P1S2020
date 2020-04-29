@@ -54,8 +54,8 @@ export class OpeArit extends OperacionJ {
             return this.AnalizarDivision(ts, opIzq, opDer);
         } else if (this.getTipoOpe() == TipoOpeJ.POT) {
             return this.AnalizarPotencia(ts, opIzq, opDer);
-        }else if(this.getTipoOpe() == TipoOpeJ.MOD){
-            return this.AnalizarModulo(ts,opIzq,opDer);
+        } else if (this.getTipoOpe() == TipoOpeJ.MOD) {
+            return this.AnalizarModulo(ts, opIzq, opDer);
         }
 
         return null;
@@ -139,7 +139,7 @@ export class OpeArit extends OperacionJ {
                 return opDer;
             }//CHAR + CHAR
             else if (opDer.isChar()) {
-                //return getTipoString();
+                return getTipoString();
             }
         }
 
@@ -165,7 +165,7 @@ export class OpeArit extends OperacionJ {
      * @param opIzq Tipo del operador izquierdo
      * @param opDer Tipo del operador derecho
      */
-    private AnalizarModulo(ts: TablaSimbJ, opIzq: Tipo, opDer: Tipo):Object{
+    private AnalizarModulo(ts: TablaSimbJ, opIzq: Tipo, opDer: Tipo): Object {
         if (opIzq.isInteger() && opDer.isInteger()) {
             return opIzq;
         }
@@ -187,7 +187,7 @@ export class OpeArit extends OperacionJ {
 
     public Traducir(ts: TablaSimbJ): void {
 
-        if(this.getTipo(ts) instanceof ErrorLup){
+        if (this.getTipo(ts) instanceof ErrorLup) {
             return;
         }
 
@@ -203,7 +203,7 @@ export class OpeArit extends OperacionJ {
             this.TraducirDivision(ts);
         } else if (this.getTipoOpe() == TipoOpeJ.POT) {
             this.TraducirPotencia(ts);
-        }else if(this.getTipoOpe() == TipoOpeJ.MOD){
+        } else if (this.getTipoOpe() == TipoOpeJ.MOD) {
             this.TraducirModulo(ts);
         }
     }
@@ -217,25 +217,53 @@ export class OpeArit extends OperacionJ {
         let tipoIzq: Tipo = <Tipo>this.getIzq().getTipo(ts);
         let tipoDer: Tipo = <Tipo>this.getDer().getTipo(ts);
 
-        if(tipoIzq.isString() || tipoDer.isString()){
+        if (tipoIzq.isString() || tipoDer.isString()) {
             this.TraducirConcat(tipoIzq, tipoDer, ts);
-            return;
+        } else if (tipoIzq.isChar() && tipoDer.isChar()) {
+            this.TraducirConcatChar(ts);
+        } else {
+            this.getIzq().Traducir(ts);
+            let t1: string = getTempAct();
+
+            this.getDer().Traducir(ts);
+            let t2: string = getTempAct();
+
+            let temp: string = genTemp();
+            concatCodigo(temp + ' = ' + t1 + ' + ' + t2 + ';');
+            ts.SacarTemporal(t1);
+            ts.SacarTemporal(t2);
+            ts.guardarTemporal(temp);
         }
-
-        this.getIzq().Traducir(ts);
-        let t1: string = getTempAct();
-
-        this.getDer().Traducir(ts);
-        let t2: string = getTempAct();
-
-        let temp: string = genTemp();
-        concatCodigo(temp + ' = ' + t1 + ' + ' + t2 + ';');
-        ts.SacarTemporal(t1);
-        ts.SacarTemporal(t2);
-        ts.guardarTemporal(temp);
     }
 
-    private TraducirConcat(tipoIzq: Tipo, tipoDer: Tipo, ts: TablaSimbJ){
+    private TraducirConcatChar(ts: TablaSimbJ) {
+        this.getIzq().Traducir(ts);
+        let t1: string = getTempAct();
+
+        this.getDer().Traducir(ts);
+        let t2: string = getTempAct();
+
+        let tr: string = genTemp();
+
+        concatCodigo('P = P + ' + ts.getTamanioFunTotal() + ';');
+        concatCodigo(tr + ' = P + 1;');
+        concatCodigo('Stack[' + tr + '] = ' + t1 + ';');
+        concatCodigo('call jerduar_CHARTOSTRING;');
+        concatCodigo(t1 + ' = Stack[P];');
+        concatCodigo('P = P - ' + ts.getTamanioFunTotal() + ';');
+
+        concatCodigo('P = P + ' + ts.getTamanioFunTotal() + ';');
+        concatCodigo(tr + ' = P + 1;');
+        concatCodigo('Stack[' + tr + '] = ' + t2 + ';');
+        concatCodigo('call jerduar_CHARTOSTRING;');
+        concatCodigo(t2 + ' = Stack[P];');
+        concatCodigo('P = P - ' + ts.getTamanioFunTotal() + ';');
+
+        this.ConcatStringString(t1, t2, ts);
+
+    }
+
+    private TraducirConcat(tipoIzq: Tipo, tipoDer: Tipo, ts: TablaSimbJ) {
 
         this.getIzq().Traducir(ts);
         let t1: string = getTempAct();
@@ -243,10 +271,10 @@ export class OpeArit extends OperacionJ {
         this.getDer().Traducir(ts);
         let t2: string = getTempAct();
 
-        if(tipoIzq.isString() && tipoDer.isString()){
-            this.ConcatStringString(t1,t2,ts);
-        }else if(tipoIzq.isString()){
-            if(tipoDer.isBoolean()){
+        if (tipoIzq.isString() && tipoDer.isString()) {
+            this.ConcatStringString(t1, t2, ts);
+        } else if (tipoIzq.isString()) {
+            if (tipoDer.isBoolean()) {
                 //#region STRING + BOOLEAN
                 let tempb: string = genTemp();
                 let etqv: string = getEtiqueta();
@@ -259,9 +287,9 @@ export class OpeArit extends OperacionJ {
                 concatCodigo(etqv + ':');
                 concatCodigo(tempb + ' = ' + ts.temp_true + ';')
                 concatCodigo(etqf + ':');
-                this.ConcatStringString(t1,tempb,ts);
+                this.ConcatStringString(t1, tempb, ts);
                 //#endregion
-            }else if(tipoDer.isInteger()){
+            } else if (tipoDer.isInteger()) {
                 //#region STRING + INT
                 let tr: string = genTemp();
                 concatCodigo('P = P + ' + ts.getTamanioFunTotal() + ';');
@@ -270,11 +298,33 @@ export class OpeArit extends OperacionJ {
                 concatCodigo('call jerduar_INTTOSTRING;');
                 concatCodigo(t2 + ' = Stack[P];');
                 concatCodigo('P = P - ' + ts.getTamanioFunTotal() + ';');
-                this.ConcatStringString(t1,t2,ts);
+                this.ConcatStringString(t1, t2, ts);
+                //#endregion
+            } else if (tipoDer.isDouble()) {
+                //#region STRING + DOUBLE
+                let tr: string = genTemp();
+                concatCodigo('P = P + ' + ts.getTamanioFunTotal() + ';');
+                concatCodigo(tr + ' = P + 1;');
+                concatCodigo('Stack[' + tr + '] = ' + t2 + ';');
+                concatCodigo('call jerduar_DOUBLETOSTRING;');
+                concatCodigo(t2 + ' = Stack[P];');
+                concatCodigo('P = P - ' + ts.getTamanioFunTotal() + ';');
+                this.ConcatStringString(t1, t2, ts);
+                //#endregion
+            } else if (tipoDer.isChar()) {
+                //#region STRING + CHAR
+                let tr: string = genTemp();
+                concatCodigo('P = P + ' + ts.getTamanioFunTotal() + ';');
+                concatCodigo(tr + ' = P + 1;');
+                concatCodigo('Stack[' + tr + '] = ' + t2 + ';');
+                concatCodigo('call jerduar_CHARTOSTRING;');
+                concatCodigo(t2 + ' = Stack[P];');
+                concatCodigo('P = P - ' + ts.getTamanioFunTotal() + ';');
+                this.ConcatStringString(t1, t2, ts);
                 //#endregion
             }
-        }else if(tipoDer.isString()){
-            if(tipoIzq.isBoolean()){
+        } else if (tipoDer.isString()) {
+            if (tipoIzq.isBoolean()) {
                 //#region BOOLEAN + STRING
                 let tempb: string = genTemp();
                 let etqv: string = getEtiqueta();
@@ -287,9 +337,9 @@ export class OpeArit extends OperacionJ {
                 concatCodigo(etqv + ':');
                 concatCodigo(tempb + ' = ' + ts.temp_true + ';')
                 concatCodigo(etqf + ':');
-                this.ConcatStringString(tempb,t2,ts);
+                this.ConcatStringString(tempb, t2, ts);
                 //#endregion
-            }else if(tipoIzq.isInteger()){
+            } else if (tipoIzq.isInteger()) {
                 //#region INT + STRING
                 let tr: string = genTemp();
                 concatCodigo('P = P + ' + ts.getTamanioFunTotal() + ';');
@@ -298,21 +348,43 @@ export class OpeArit extends OperacionJ {
                 concatCodigo('call jerduar_INTTOSTRING;');
                 concatCodigo(t1 + ' = Stack[P];');
                 concatCodigo('P = P - ' + ts.getTamanioFunTotal() + ';');
-                this.ConcatStringString(t1,t2,ts);
+                this.ConcatStringString(t1, t2, ts);
+                //#endregion
+            } else if (tipoIzq.isDouble()) {
+                //#region DOUBLE + STRING
+                let tr: string = genTemp();
+                concatCodigo('P = P + ' + ts.getTamanioFunTotal() + ';');
+                concatCodigo(tr + ' = P + 1;');
+                concatCodigo('Stack[' + tr + '] = ' + t1 + ';');
+                concatCodigo('call jerduar_DOUBLETOSTRING;');
+                concatCodigo(t1 + ' = Stack[P];');
+                concatCodigo('P = P - ' + ts.getTamanioFunTotal() + ';');
+                this.ConcatStringString(t1, t2, ts);
+                //#endregion
+            } else if (tipoIzq.isChar()) {
+                //#region CHAR + STRING
+                let tr: string = genTemp();
+                concatCodigo('P = P + ' + ts.getTamanioFunTotal() + ';');
+                concatCodigo(tr + ' = P + 1;');
+                concatCodigo('Stack[' + tr + '] = ' + t1 + ';');
+                concatCodigo('call jerduar_CHARTOSTRING;');
+                concatCodigo(t1 + ' = Stack[P];');
+                concatCodigo('P = P - ' + ts.getTamanioFunTotal() + ';');
+                this.ConcatStringString(t1, t2, ts);
                 //#endregion
             }
         }
     }
 
-    private ConcatStringString(tempIzq: string, tempDer: string, ts: TablaSimbJ):void{
+    private ConcatStringString(tempIzq: string, tempDer: string, ts: TablaSimbJ): void {
         let t1: string = genTemp();
         let t2: string = genTemp();
         let tr: string = genTemp();
         concatCodigo('P = P + ' + ts.getTamanioFunTotal() + ';');
         concatCodigo(t1 + ' = P + 1;');
         concatCodigo('Stack[' + t1 + '] = ' + tempIzq + ';');
-        concatCodigo(t2 +  ' = P + 2;');
-        concatCodigo('Stack[' + t2 + '] = '  + tempDer + ';');
+        concatCodigo(t2 + ' = P + 2;');
+        concatCodigo('Stack[' + t2 + '] = ' + tempDer + ';');
         concatCodigo('call jerduar_CONCAT;');
         concatCodigo(tr + ' = Stack[P];');
         concatCodigo('P = P - ' + ts.getTamanioFunTotal() + ';');
@@ -429,7 +501,7 @@ export class OpeArit extends OperacionJ {
      * Traducción modulo
      * @param ts Tabla de símbolos
      */
-    private TraducirModulo(ts: TablaSimbJ){
+    private TraducirModulo(ts: TablaSimbJ) {
         this.getIzq().Traducir(ts);
         let t1: string = getTempAct();
 
@@ -442,7 +514,7 @@ export class OpeArit extends OperacionJ {
         ts.SacarTemporal(t1);
         ts.SacarTemporal(t2);
         ts.guardarTemporal(temp);
-            
+
     }
 
 }
