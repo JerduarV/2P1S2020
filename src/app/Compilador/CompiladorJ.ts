@@ -47,11 +47,14 @@ export class CompiladorJ {
             global.temp_true = this.EscrbirPalabras('true');
             global.temp_false = this.EscrbirPalabras('false');
             global.temp_null = this.EscrbirPalabras('null');
+            console.log(global.temp_false)
+            console.log(global.temp_true);
+
 
             //ETAPA DE TRADUCCIÓN
 
             let etiqueta_salida: string = getEtiqueta();
-            concatCodigo('#* IR AL FIN DEL PROGRAMA *#\ngoto ' + etiqueta_salida + ';');
+            concatCodigo('#* IR AL FIN DEL PROGRAMA *#\ncall main;\ngoto ' + etiqueta_salida + ';');
 
             //TRADUCCIÓN DE FUNCIONES
             this.TraducirFunciones(global, d);
