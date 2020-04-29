@@ -44,7 +44,10 @@ export class OpeRel extends OperacionJ {
             return ts.GenerarError('No se puede comparar ' + opIzq.getString() + ' con ' + opDer.getString(), this.getFila(), this.getCol());
         }
 
-        if (opIzq.esIgualA(opDer) || opIzq.isNumerico() && opDer.isNumerico() || opIzq.isNumerico() && opDer.isChar() || opIzq.isChar() && opDer.isNumerico()) {
+        if (opIzq.esIgualA(opDer)
+            || opIzq.isNumerico() && opDer.isNumerico()
+            || opIzq.isNumerico() && opDer.isChar()
+            || opIzq.isChar() && opDer.isNumerico()) {
             return getTipoBool();
         }
         return ts.GenerarError('No se puede comparar ' + opIzq.getString() + ' con ' + opDer.getString(), this.getFila(), this.getCol());
@@ -58,7 +61,15 @@ export class OpeRel extends OperacionJ {
     }
 
     public Traducir(ts: import("../../TSJ/TablaSimbJ").TablaSimbJ): void {
-        if(this.getTipo(ts) instanceof ErrorLup){
+        if (this.getTipo(ts) instanceof ErrorLup) {
+            return;
+        }
+
+        let tipoIzq: Tipo = <Tipo>this.getIzq().getTipo(ts);
+        let tipoDer: Tipo = <Tipo>this.getDer().getTipo(ts);
+
+        if ((this.getTipoOpe() == TipoOpeJ.IGUALQUE || this.getTipoOpe() == TipoOpeJ.DIFERENTE) && tipoIzq.isString() && tipoDer.isString()) {
+            this.TraducirCompString(ts);
             return;
         }
 
@@ -80,6 +91,43 @@ export class OpeRel extends OperacionJ {
         ts.SacarTemporal(t1);
         ts.SacarTemporal(t2);
         ts.guardarTemporal(t3);
+    }
+
+    private TraducirCompString(ts: TablaSimbJ): void {
+        this.getIzq().Traducir(ts);
+        let t1: string = getTempAct();
+
+        this.getDer().Traducir(ts);
+        let t2: string = getTempAct();
+
+        let t3: string = genTemp();
+        let t4: string = genTemp();
+        let t5: string = genTemp();
+        let t6: string = genTemp();
+
+        let etqv: string = getEtiqueta();
+        let etqf: string = getEtiqueta();
+
+        concatCodigo('P = P + ' + ts.getTamanioFunTotal() + ';');
+        concatCodigo(t4 + ' = P + 1;');
+        concatCodigo('Stack[' + t4 + '] = ' + t1 + ';')
+        concatCodigo(t5 + ' = P + 2;');
+        concatCodigo('Stack[' + t5 + '] = ' + t2 + ';');
+        concatCodigo('call jerduar_COMPSTRING;');
+        concatCodigo(t3 + ' = Stack[P];');
+        concatCodigo('P = P - ' + ts.getTamanioFunTotal() + ';');
+
+        concatCodigo(t6 + ' = 0;');
+        concatCodigo('if(' + t3 + this.getSimbolo() + '1) goto ' + etqv + ';');
+        concatCodigo('goto ' + etqf + ';');
+        concatCodigo(etqv + ':');
+        concatCodigo(t6 + ' = 1;');
+        concatCodigo(etqf + ':');
+
+        ts.SacarTemporal(t1);
+        ts.SacarTemporal(t2);
+        ts.guardarTemporal(t6);
+
     }
 
     public getSimbolo(): string {

@@ -52,6 +52,7 @@ export function QuemarFunciones(ts: TablaSimbJ): void {
     GenerarIntToString();
     GenerarDoubleToString();
     GenerarCharToStrig();
+    GenerarCompString(ts.temp_null);
 }
 
 
@@ -413,4 +414,72 @@ function GenerarCharToStrig(): void {
     concatCodigo(t4 + ' = Stack[' + t3 + '];');
     concatCodigo(t1 + ' = H;\nH = H + 2;\nHeap[ ' + t1 + '] = 1;\n' + t2 + ' = ' + t1 + ' + 1;');
     concatCodigo('Heap[' + t2 + '] = ' + t4 + ';\nStack[P] = ' + t1 + ';\nend\n#*FIN CHAR TO STRING*#');
+}
+
+function GenerarCompString(tnull: string): void {
+
+    //#region TEMPORALES
+    let t1: string = genTemp();
+    let t2: string = genTemp();
+    let t3: string = genTemp();
+    let t4: string = genTemp();
+    let t5: string = genTemp();
+    let t6: string = genTemp();
+    let t7: string = genTemp();
+    let t8: string = genTemp();
+    let t9: string = genTemp();
+    let t10: string = genTemp();
+    let tr: string = genTemp();
+    //#endregion
+
+    //#region ETIQUETAS
+    let etqv1: string = getEtiqueta();
+    let etqf1: string = getEtiqueta();
+    let etqv2: string = getEtiqueta();
+    let etqf2: string = getEtiqueta();
+    let etqsv: string = getEtiqueta();
+    let etqsf: string = getEtiqueta();
+    let etqini: string = getEtiqueta();
+    //#endregion
+
+    //#region CODIGO
+    concatCodigo('\n#*COMPARACION STRING*#');
+    concatCodigo('\nproc jerduar_COMPSTRING begin');
+
+    concatCodigo(t1 + ' = P + 1;');
+    concatCodigo(t2 + ' = Stack[' + t1 + '];');
+    concatCodigo(t3 + ' = P + 2;');
+    concatCodigo(t4 + ' = Stack[' + t3 + '];');
+    concatCodigo(tr + ' = 0;');
+    concatCodigo('if(' + t2 + ' == -1) goto ' + etqv1 + ';');
+    concatCodigo('goto ' + etqf1 + ';');
+    concatCodigo(etqv1 + ':');
+    concatCodigo(t2 + ' = ' + tnull + ';');
+    concatCodigo(etqf1 + ':');
+    concatCodigo('if(' + t4 + ' == -1) goto ' + etqv2 + ';');
+    concatCodigo('goto ' + etqf2 + ';');
+    concatCodigo(etqv2 + ':');
+    concatCodigo(t4 + ' = ' + tnull + ';');
+    concatCodigo(etqf2 + ':');
+    concatCodigo(t5 + ' = Heap[' + t2 + '];');
+    concatCodigo(t6 + ' = Heap[' + t4 + '];');
+    concatCodigo('if(' + t5 + ' <> ' + t6 + ') goto ' + etqsf + ';');
+    concatCodigo(t7 + ' = ' + t2 + ' + 1;');
+    concatCodigo(t8 + ' = ' + t4 + ' + 1;');
+    concatCodigo(etqini + ':');
+    concatCodigo('if(' + t5 + ' == 0) goto ' + etqsv + ';');
+    concatCodigo(t9 + ' = Heap[' + t7 + '];');
+    concatCodigo(t10 + ' = Heap[' + t8 + '];');
+    concatCodigo('if(' + t9 + ' <> ' + t10 + ') goto ' + etqsf + ';');
+    concatCodigo(t7 + ' = ' + t7 + ' + 1;');
+    concatCodigo(t8 + ' = ' + t8 + ' + 1;');
+    concatCodigo(t5 + ' = ' + t5 + ' - 1;');
+    concatCodigo('goto ' + etqini + ';');
+    concatCodigo(etqsv + ':');
+    concatCodigo(tr + ' = 1;');
+    concatCodigo(etqsf + ':');
+    concatCodigo('Stack[P] = ' + tr + ';');
+
+    concatCodigo('end\n#* FIN COMPARACION STRING*#');
+    //#endregion
 }
