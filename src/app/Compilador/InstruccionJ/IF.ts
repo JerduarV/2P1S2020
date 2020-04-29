@@ -8,6 +8,7 @@ import { getTempAct, getEtiqueta, concatCodigo } from 'src/app/Auxiliares/Utilid
 import { NewTablaLocal } from '../TSJ/TablaSimbJ';
 import { DeclaracionJ } from './DeclaracionJ';
 import { DecFun } from './DecFun';
+import { DefStruct } from './DefStruct';
 
 export class IF extends InstruccionJ {
 
@@ -72,6 +73,17 @@ export class IF extends InstruccionJ {
         }
     }
 
+    public RecolectarStruct(lista: DefStruct[]):void{
+        for (let i = 0; i < this.getCuerpo().length; i++) {
+            if (this.getCuerpo()[i] instanceof InstruccionJ) {
+                (<InstruccionJ>this.getCuerpo()[i]).RecolectarStruct(lista);
+            }
+        }
+        if(this.sino != null){
+            this.sino.RecolectarStruct(lista);
+        }
+    }
+
     public DeterminarTamanioFuncion(funcion: DecFun): void {
         for (let i = 0; i < this.getCuerpo().length; i++) {
             if (this.getCuerpo()[i] instanceof InstruccionJ) {
@@ -82,5 +94,4 @@ export class IF extends InstruccionJ {
             this.sino.DeterminarTamanioFuncion(funcion);
         }
     }
-
 }

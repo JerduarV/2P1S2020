@@ -2,6 +2,7 @@ import { NodoASTJ } from '../ASTJ/NodoASTJ';
 import { TablaSimbJ } from '../TSJ/TablaSimbJ';
 import { DeclaracionJ } from './DeclaracionJ';
 import { DecFun } from './DecFun';
+import { DefStruct } from './DefStruct';
 
 export abstract class InstruccionJ extends NodoASTJ{
 
@@ -12,6 +13,10 @@ export abstract class InstruccionJ extends NodoASTJ{
         this.cuerpo = cuper;
     }
 
+    /**
+     * Método que busca las variables globales
+     * @param lista_dec Lista para almecenar las variables globales
+     */
     public BuscarVariablesGlobales(lista_dec: DeclaracionJ[]): void{
         if(this.cuerpo != null){
             for(let i = 0; i < this.cuerpo.length; i++){
@@ -22,11 +27,25 @@ export abstract class InstruccionJ extends NodoASTJ{
         }
     }
 
+    /**
+     * Método que determina el tamanio de una función
+     * @param funcion Función de la que se requiere saber su tamanio
+     */
     public DeterminarTamanioFuncion(funcion: DecFun):void{
         if(this.cuerpo != null){
             for(let i = 0; i < this.cuerpo.length; i++){
                 if(this.cuerpo[i] instanceof InstruccionJ){
                     (<InstruccionJ>this.cuerpo[i]).DeterminarTamanioFuncion(funcion);
+                }
+            }
+        }
+    }
+
+    public RecolectarStruct(lista: DefStruct[]):void{
+        if(this.cuerpo != null){
+            for(let i = 0; i < this.cuerpo.length; i++){
+                if(this.cuerpo[i] instanceof InstruccionJ){
+                    (<InstruccionJ>this.cuerpo[i]).RecolectarStruct(lista);
                 }
             }
         }
@@ -38,6 +57,10 @@ export abstract class InstruccionJ extends NodoASTJ{
         }
         for(let i = 0; i < this.cuerpo.length; i++){
             let n: NodoASTJ = this.cuerpo[i];
+            //IGNORO LOS ESTRUCTS
+            if(n.constructor.name == 'DefStruct'){
+                continue;
+            }
             n.Traducir(ts);
         }
     }

@@ -311,7 +311,7 @@ export class OpeArit extends OperacionJ {
             exponente: string = genTemp();
         let temp: string = genTemp();
 
-        let tam_fun_actual: number = ts.getTamanioFunActual();
+        let tam_fun_actual: number = ts.getTamanioFunTotal();
 
         concatCodigo('\n' + temp_pivote + ' = P + ' + tam_fun_actual + ';')
         concatCodigo(base + ' = ' + temp_pivote + ' + 1;');

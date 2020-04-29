@@ -139,6 +139,8 @@
     var For = require('../app/Compilador/InstruccionJ/For').For;
     var Break = require('../app/Compilador/InstruccionJ/Break').Break;
     var Continue = require('../app/Compilador/InstruccionJ/Continue').Continue;
+    var DefStruct = require('../app/Compilador/InstruccionJ/DefStruct').DefStruct;
+    var Atributo = require('../app/Compilador/InstruccionJ/DefStruct').Atributo;
     var Return = require('../app/Compilador/InstruccionJ/Return').Return;
     var Asignacion = require('../app/Compilador/InstruccionJ/Asignacion').Asignacion;
     var Else = require('../app/Compilador/InstruccionJ/Else').Else;
@@ -180,26 +182,26 @@ JS_BODY_DEC:
 ;
 
 STRC_DEC:
-        RDEFINE ID RAS CORIZQ LISTA_ATRIB CORDER
-    |   RDEFINE ID RAS CORIZQ CORDER
+        RDEFINE ID RAS CORIZQ LISTA_ATRIB CORDER    { $$ = new DefStruct($2,$5,@1.first_line,@1.first_column); }
+    |   RDEFINE ID RAS CORIZQ CORDER                { $$ = new DefStruct($2,[],@1.first_line,@1.first_column); }
 ;
 
 LISTA_ATRIB:
-        LISTA_ATRIB COMA ATRIB
-    |   ATRIB
+        LISTA_ATRIB COMA ATRIB  { $$ = $1; $$.push($3); }
+    |   ATRIB                   { $$ = [$1]; }
 ;
 
 ATRIB:
-        TYPE ID
-    |   ID ID
-    |   TYPE ID IGUAL VAR_INIT
-    |   ID ID IGUAL VAR_INIT
+        TYPE ID                                 { $$ = new Atributo(new Tipo($1,0),$2,null,@1.first_line,@1.first_column); }
+    |   ID ID                                   { $$ = new Atributo(new Tipo($1,0),$2,null,@1.first_line,@1.first_column); }
+    |   TYPE ID IGUAL VAR_INIT                  { $$ = new Atributo(new Tipo($1,0),$2,$4,@1.first_line,@1.first_column); }
+    |   ID ID IGUAL VAR_INIT                    { $$ = new Atributo(new Tipo($1,0),$2,$4,@1.first_line,@1.first_column); }
 
     /* PARA ARREGLOS */
-    |   TYPE CORIZQ CORDER ID
-    |   ID CORIZQ CORDER ID
-    |   TYPE CORIZQ CORDER ID IGUAL VAR_INIT
-    |   ID CORIZQ CORDER ID IGUAL VAR_INIT
+    |   TYPE CORIZQ CORDER ID                   { $$ = new Atributo(new Tipo($1,1),$4,null,@1.first_line,@1.first_column); }
+    |   ID CORIZQ CORDER ID                     { $$ = new Atributo(new Tipo($1,1),$4,null,@1.first_line,@1.first_column); }
+    |   TYPE CORIZQ CORDER ID IGUAL VAR_INIT    { $$ = new Atributo(new Tipo($1,1),$4,$6,@1.first_line,@1.first_column); }
+    |   ID CORIZQ CORDER ID IGUAL VAR_INIT      { $$ = new Atributo(new Tipo($1,1),$4,$6,@1.first_line,@1.first_column); }
 ;
 
 METHOD_DEC:
@@ -255,6 +257,7 @@ SENT:
     |   BREAK                   { $$ = $1; }
     |   CONTINUE PTCOMA         { $$ = $1; }
     |   CONTINUE                { $$ = $1; }
+    |   STRC_DEC                { $$ = $1; }
 ;
 
 BREAK:

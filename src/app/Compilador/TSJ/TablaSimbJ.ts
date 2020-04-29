@@ -6,6 +6,7 @@ import { ErrorLup } from 'src/app/Auxiliares/Error';
 import { SimbFuncion } from './SimbFuncion';
 import { DecFun } from '../InstruccionJ/DecFun';
 import { Display } from './Display';
+import { DefStruct } from '../InstruccionJ/DefStruct';
 
 export function NewTablaLocal(padre: TablaSimbJ): TablaSimbJ {
     let t: TablaSimbJ = new TablaSimbJ(padre.getArchivo(), padre.getConsola());
@@ -15,6 +16,11 @@ export function NewTablaLocal(padre: TablaSimbJ): TablaSimbJ {
     t.display = padre.display;
     t.funcion_actual = padre.funcion_actual;
     t.tabla_temporales = padre.tabla_temporales;
+    t.tabla_structs = padre.tabla_structs;
+    t.tam_fun_total = padre.tam_fun_total;
+    t.temp_true = padre.temp_true;
+    t.temp_false = padre.temp_false;
+    t.temp_null = padre.temp_null;
     return t;
 }
 
@@ -24,11 +30,16 @@ export class TablaSimbJ {
     private readonly consola: Consola;
     private readonly tabla: Map<string, SimboloJ>
     public tam_fun_actual: number;
+    public tam_fun_total: number;
     public etq_fun_salida: string;
     public padre: TablaSimbJ;
     public display: Display;
     public funcion_actual: DecFun;
+    public temp_true: string;
+    public temp_false: string;
+    public temp_null: string;
     public tabla_temporales: Map<string,string>;
+    public tabla_structs: Map<string,DefStruct>;
 
     /**
      * Cosntructor de la tabla de simbolos
@@ -40,11 +51,13 @@ export class TablaSimbJ {
         this.Archivo = file;
         this.consola = con;
         this.tam_fun_actual = -1;
+        this.tam_fun_total = 0;
         this.etq_fun_salida = '';
         this.padre = null;
         this.display = new Display();
         this.funcion_actual = null;
-        this.tabla_temporales = null;
+        this.tabla_temporales = new Map();
+        this.tabla_structs = new Map();
     }
 
     public BuscarVariable(id: string): SimbVar{
@@ -117,12 +130,20 @@ export class TablaSimbJ {
         return this.consola.InsertError(desc, 'Semantico', fila, col);
     }
 
-    public getTamanioFunActual(): number {
-        //SIGNIFICA QUE ESTOY EN EL AMBIENTE GLOBAL
-        if (this.tam_fun_actual == -1) {
-            return 0;
+    public getTamanioFunTotal(): number {
+        return this.tam_fun_total;
+    }
+
+    /**
+     * Método que guarda una estructura en la tabla de símbolo
+     * @param strc Struct que se quiere guardar
+     */
+    public GuardarStruct(strc: DefStruct):void{
+        let key: string = strc.getId().toUpperCase();
+        if(this.tabla_structs.has(key)){
+            this.GenerarError('Ya existe el struct: ' + strc.getId(), strc.getFila(),strc.getCol());
         }
-        return this.tam_fun_actual;
+        this.tabla_structs.set(key,strc);
     }
 
     public getConsola(): Consola {
@@ -133,7 +154,7 @@ export class TablaSimbJ {
      * Función que saca los temporales
      * @param temp Temporal a sacar
      */
-    public SacarTemporal(temp: string):void{
+    public  SacarTemporal(temp: string):void{
         if(this.tabla_temporales.has(temp)){
             this.tabla_temporales.delete(temp);
             return;
@@ -158,7 +179,7 @@ export class TablaSimbJ {
      * @param tipo Tipo a valida
      */
     public getExisteTipo(tipo: Tipo): boolean {
-        return tipo.esNativo();
+        return tipo.esNativo() || this.tabla_structs.has(tipo.getNombreTipo().toUpperCase());
     }
 
     public esValidaBreak():boolean{

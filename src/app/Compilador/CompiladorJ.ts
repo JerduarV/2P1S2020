@@ -1,14 +1,15 @@
 import * as parser from 'src/Gramatica/GramaticaJSharp';
 import { Consola } from '../Auxiliares/Consola';
-import { TablaSimbJ } from './TSJ/TablaSimbJ';
+import { TablaSimbJ, NewTablaLocal } from './TSJ/TablaSimbJ';
 import { DeclaracionJ } from './InstruccionJ/DeclaracionJ';
 import { NodoASTJ } from './ASTJ/NodoASTJ';
 import { Tipo } from './TSJ/Tipo';
 import { SimbVar } from './TSJ/SimbVar';
 import { ExpresionJ } from './ExpresionJ/ExpresionJ';
-import { inicializarTodo, concatCodigo, getTempAct, ImprimitCodigo, QuemarFunciones, GenerarEncabezado, getEtiqueta } from '../Auxiliares/Utilidades';
+import { inicializarTodo, concatCodigo, getTempAct, ImprimitCodigo, QuemarFunciones, GenerarEncabezado, getEtiqueta, genTemp } from '../Auxiliares/Utilidades';
 import { DecFun } from './InstruccionJ/DecFun';
 import { InstruccionJ } from './InstruccionJ/InstruccionJ';
+import { DefStruct } from './InstruccionJ/DefStruct';
 
 export class CompiladorJ {
     constructor() {
@@ -29,16 +30,23 @@ export class CompiladorJ {
             //PARSEO
             AST = parser.parse(entrada3d);
 
-            console.log(AST);
+            //console.log(AST);
             let global: TablaSimbJ = new TablaSimbJ(archivo, cons);
+
+            //RECOLECCIÓN DE STRUCT
+            let strc: DefStruct[] = this.RecolectarStructs(AST);
+            this.GuardarStructs(strc,global);
 
             //RECOLECTAR FUCIONES
             let d: DecFun[] = this.RecolectarFunciones(global, AST);
             this.CalcularTamanioFunciones(d);
-            console.log(d);
 
             //RECOLECCION DE GLOBALES
             this.RecolectarGlobales(global, AST);
+
+            global.temp_true = this.EscrbirPalabras('true');
+            global.temp_false = this.EscrbirPalabras('false');
+            global.temp_null = this.EscrbirPalabras('null');
 
             //ETAPA DE TRADUCCIÓN
 
@@ -48,8 +56,11 @@ export class CompiladorJ {
             //TRADUCCIÓN DE FUNCIONES
             this.TraducirFunciones(global, d);
 
-            //QUEMAR FUNCOINES NATIVAS
-            QuemarFunciones();
+            //TRADUCCIÓN STRUCT
+            this.TraducirStructs(strc,global);
+
+            //QUEMAR FUNCIONES NATIVAS
+            QuemarFunciones(global);
 
             //GENERAR ENCABEZADO
             GenerarEncabezado();
@@ -63,6 +74,23 @@ export class CompiladorJ {
         } catch (error) {
             console.log(error);
         }
+    }
+
+    private TraducirStructs(lista: DefStruct[], ts: TablaSimbJ):void{
+        lista.forEach(strc => {
+            strc.Traducir(NewTablaLocal(ts));
+        });
+    }
+
+    /**
+     * Método que guarda los structs en la tabla de símbolos
+     * @param lista Lista de structs encontrados el archivo de entrada
+     * @param ts Tabla de símbolos global
+     */
+    private GuardarStructs(lista: DefStruct[], ts: TablaSimbJ):void{
+        lista.forEach(strc => {
+            ts.GuardarStruct(strc);
+        });
     }
 
     private CalcularTamanioFunciones(funciones: DecFun[]){
@@ -92,6 +120,18 @@ export class CompiladorJ {
             }
         }
         return d;
+    }
+
+    private RecolectarStructs(AST: NodoASTJ[]):DefStruct[]{
+            let lista_strc: DefStruct[] = [];
+            AST.forEach(nodo => {
+                if(nodo instanceof DefStruct){
+                    lista_strc.push(nodo);
+                }else{
+                    (<InstruccionJ>nodo).RecolectarStruct(lista_strc);
+                }
+            });
+            return lista_strc;
     }
 
     /**
@@ -152,5 +192,18 @@ export class CompiladorJ {
             }
         }
         //console.log(VariableGlobales);
+    }
+
+    private EscrbirPalabras(val: string):string{
+        let temp: string = genTemp();
+        concatCodigo('\n#* GUARDANDO LA PALABRA ' + val.toUpperCase() + '*#\n')
+        concatCodigo(temp + ' = H;');
+        concatCodigo('Heap[H] = ' + val.length + ';');
+        concatCodigo('H = H + 1;');
+        for(let i = 0; i < val.length; i++){
+            concatCodigo('Heap[H] = ' + val.charCodeAt(i) + ';');
+            concatCodigo('H = H + 1;');
+        }
+        return temp;
     }
 }

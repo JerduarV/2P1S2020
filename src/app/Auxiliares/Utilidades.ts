@@ -1,3 +1,5 @@
+import { TablaSimbJ } from '../Compilador/TSJ/TablaSimbJ';
+
 let contador_etq: number = 0;
 let contador_tempo: number = 0;
 let temAct = 0;
@@ -41,8 +43,9 @@ export function ImprimitCodigo(): string {
     return codigo_gen;
 }
 
-export function QuemarFunciones(): void {
+export function QuemarFunciones(ts: TablaSimbJ): void {
     GenerarPotencia();
+    GenerarConcat(ts);
 }
 
 
@@ -64,7 +67,8 @@ export function GenerarPotencia(): void {
         etqv2: string = getEtiqueta(),
         etqf: string = getEtiqueta();
 
-    concatCodigo('\nproc jerduar_POTENCIA begin')
+    concatCodigo('\n#* FUNCIÓN DE PONTENCIA *#')
+    concatCodigo('proc jerduar_POTENCIA begin')
     concatCodigo(t1 + ' = P + 1;');
     concatCodigo(t2 + ' = Stack[' + t1 + '];');
     concatCodigo(t3 + ' = P + 2;')
@@ -83,5 +87,40 @@ export function GenerarPotencia(): void {
     concatCodigo(t5 + ' = 1 / ' + t5 + ';');
     concatCodigo(etqv2 + ':');
     concatCodigo('Stack[P] = ' + t5 + ';');
-    concatCodigo('end');
+    concatCodigo('\nend\n');
+}
+
+export function GenerarConcat(ts: TablaSimbJ): void {
+    let t1: string = genTemp(),
+        t2: string = genTemp(),
+        t3: string = genTemp(),
+        t4: string = genTemp(),
+        t5: string = genTemp();
+
+    let etq1: string = getEtiqueta(),
+        etq2: string = getEtiqueta(),
+        etq_ini: string = getEtiqueta(),
+        etq_sal: string = getEtiqueta();
+
+    concatCodigo('\n#* FUNCION PARA IMPRIMIR CADENA *#')
+    concatCodigo('proc jerduar_PRINT begin')
+    concatCodigo(t1 + ' = P + 1;');
+    concatCodigo(t2 + ' = Stack[' + t1 + '];');
+    concatCodigo('if(' + t2 + ' == -1) goto ' + etq1 + ';');
+    concatCodigo('goto ' + etq2 + ';');
+    concatCodigo(etq1 + ':');
+    concatCodigo(t2 + ' = ' + ts.temp_null + ';');
+    concatCodigo(etq2 + ':');
+    concatCodigo(t3 + ' = Heap[' + t2 + '];');
+    concatCodigo(t4 + ' = ' + t2 + '  + 1;');
+    concatCodigo(etq_ini + ':');
+    concatCodigo('if(' + t3 + ' == 0) goto ' + etq_sal + ';');
+    concatCodigo(t5 + ' = Heap[' + t4 + '];');
+    concatCodigo('print("%c",' + t5 + ');');
+    concatCodigo(t4 + ' = ' + t4 + ' + 1;');
+    concatCodigo(t3 + ' = ' + t3 + ' - 1;');
+    concatCodigo('goto ' + etq_ini + ';');
+    concatCodigo(etq_sal + ':');
+    concatCodigo('print("%c",10);');
+    concatCodigo('\nend\n');
 }

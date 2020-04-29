@@ -30,13 +30,11 @@ export class For extends InstruccionJ{
         etq_act: string = getEtiqueta(),
         etq_v: string = getEtiqueta(),
         etq_f: string = getEtiqueta();
-        console.log('INIT');
-        console.log(this.init);
+        
         //SE ESCRIBE EL CÓDIGO DE LA INICIALIZACIÓN SI HUBIERA
         if(this.init != null){
             this.init.Traducir(ts);
-            console.log('INIT');
-            console.log(ts);
+            
         }
 
         if(this.cond != null){

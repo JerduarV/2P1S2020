@@ -78,6 +78,6 @@ export class Tipo{
     }
 
     public esNativo():boolean{
-        return this.tipo == 'INT' || this.tipo == 'BOOL' || this.tipo == 'CHAR' || this.tipo == 'DOUBLE' || this.tipo == '$VOID';
+        return this.tipo == 'INT' || this.tipo == 'BOOL' || this.tipo == 'CHAR' || this.tipo == 'DOUBLE' || this.tipo == '$VOID' || this.tipo == 'STRING';
     }
 }
