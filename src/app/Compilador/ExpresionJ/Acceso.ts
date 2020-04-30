@@ -8,7 +8,7 @@ import { Tipo } from '../TSJ/Tipo';
 
 export class Acceso extends ExpresionJ {
 
-    private readonly lista_exp: ExpresionJ[];
+    public readonly lista_exp: ExpresionJ[];
 
     //ESTA VARIABLE LA MODIFICO EN LA ASIGNACIÓN
     public exp: ExpresionJ;

@@ -47,8 +47,8 @@ export class CompiladorJ {
             global.temp_true = this.EscrbirPalabras('true');
             global.temp_false = this.EscrbirPalabras('false');
             global.temp_null = this.EscrbirPalabras('null');
-            console.log(global.temp_false)
-            console.log(global.temp_true);
+            //console.log(global.temp_false)
+            //console.log(global.temp_true);
 
 
             //ETAPA DE TRADUCCIÓN
@@ -72,7 +72,7 @@ export class CompiladorJ {
 
             //IMPRESIÓN DEL CÓDIGO
             cons.salida = ImprimitCodigo();
-            console.log(global.getConsola().lista_errores);
+            //console.log(global.getConsola().lista_errores);
 
         } catch (error) {
             console.log(error);

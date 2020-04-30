@@ -103,12 +103,12 @@ export class TablaSimbJ {
         if (!this.tabla.has(key)) {
             let f: SimbFuncion = new SimbFuncion(fun.getNombre());
             f.AgregarDef(fun);
-            console.log('Se agregó ' + fun.getNombre());
+            //console.log('Se agregó ' + fun.getNombre());
         } else {
             let f: SimbFuncion = <SimbFuncion>this.tabla.get(key);
             let b: boolean = f.AgregarDef(fun);
             if (b) {
-                console.log('Se agregó ' + fun.getNombre());
+                //console.log('Se agregó ' + fun.getNombre());
                 return null;
             } else {
                 return this.GenerarError('Ya existe la función ' + fun.getNombre(), fun.getFila(), fun.getCol());

@@ -61,6 +61,10 @@
 ("'")([^\\']|"\\n"|"\\t"|"\\r"|"\\")("'")	    return  'LIT_CHAR'
 
 
+/* AUMENTO Y DECREMENTO */
+"++"                    return  'INCREMENTO'
+"--"                    return  'DECREMENTO'
+
 /* OPERADORES ARITMETICOS */
 "*"                     return  'POR'
 "/"                     return  'DIV'
@@ -87,10 +91,6 @@
 
 /* TERNARIO */
 "?"                     return  'TERNARIO'
-
-/* AUMENTO Y DECREMENTO */
-"++"                    return  'INCREMENTO'
-"--"                    return  'DECREMENTO'
 
 /* AGRUPADORES */
 "("                     return  'PARIZQ'
@@ -152,6 +152,7 @@
     var LiteralJ = require('../app/Compilador/ExpresionJ/LiteralJ').LiteralJ;
     var Identificador = require('../app/Compilador/ExpresionJ/Identificador').Identificador;
     var Acceso = require('../app/Compilador/ExpresionJ/Acceso').Acceso;
+    var IncDec = require('../app/Compilador/ExpresionJ/IncDec').IncDec;
     var TipoLit = require('../app/Compilador/ExpresionJ/LiteralJ').TipoLit;
     var TipoOpeJ = require('../app/Compilador/ExpresionJ/OperacionesJ/OperacionJ').TipoOpeJ;
     var OpeArit = require('../app/Compilador/ExpresionJ/OperacionesJ/OpeArit').OpeArit;
@@ -241,23 +242,27 @@ L_SENT:
 ;
 
 SENT:
-        PRINT PTCOMA            { $$ = $1; }
-    |   PRINT                   { $$ = $1; }
-    |   VAR_DEC PTCOMA          { $$ = $1; }
-    |   VAR_DEC                 { $$ = $1; }
-    |   ASIGNACION PTCOMA       { $$ = $1; }
-    |   ASIGNACION              { $$ = $1; }
-    |   WHILE                   { $$ = $1; }
-    |   DOWHILE PTCOMA          { $$ = $1; }
-    |   DOWHILE                 { $$ = $1; }
-    |   IF                      { $$ = $1; }
-    |   FOR                     { $$ = $1; }
-    |   RETURN                  { $$ = $1; }
-    |   BREAK PTCOMA            { $$ = $1; }
-    |   BREAK                   { $$ = $1; }
-    |   CONTINUE PTCOMA         { $$ = $1; }
-    |   CONTINUE                { $$ = $1; }
-    |   STRC_DEC                { $$ = $1; }
+        PRINT PTCOMA                { $$ = $1; }
+    |   PRINT                       { $$ = $1; }
+    |   VAR_DEC PTCOMA              { $$ = $1; }
+    |   VAR_DEC                     { $$ = $1; }
+    |   ASIGNACION PTCOMA           { $$ = $1; }
+    |   ASIGNACION                  { $$ = $1; }
+    |   WHILE                       { $$ = $1; }
+    |   DOWHILE PTCOMA              { $$ = $1; }
+    |   DOWHILE                     { $$ = $1; }
+    |   IF                          { $$ = $1; }
+    |   FOR                         { $$ = $1; }
+    |   RETURN                      { $$ = $1; }
+    |   BREAK PTCOMA                { $$ = $1; }
+    |   BREAK                       { $$ = $1; }
+    |   CONTINUE PTCOMA             { $$ = $1; }
+    |   CONTINUE                    { $$ = $1; }
+    |   STRC_DEC                    { $$ = $1; }
+    |   L_ACCESO INCREMENTO PTCOMA  { $$ = new IncDec(new Acceso($1,@1.first_line,@1.first_column),1,@1.first_line,@1.first_column); }
+    |   L_ACCESO DECREMENTO PTCOMA  { $$ = new IncDec(new Acceso($1,@1.first_line,@1.first_column),-1,@1.first_line,@1.first_column); }
+    |   L_ACCESO INCREMENTO         { $$ = new IncDec(new Acceso($1,@1.first_line,@1.first_column),1,@1.first_line,@1.first_column); }
+    |   L_ACCESO DECREMENTO         { $$ = new IncDec(new Acceso($1,@1.first_line,@1.first_column),-1,@1.first_line,@1.first_column); }
 ;
 
 BREAK:
@@ -396,8 +401,8 @@ EXP2:
     |   EXP2    POT     EXP2        { $$ = new OpeArit(TipoOpeJ.POT,$1,$3,@1.first_line,@1.first_column); }
     |   PARIZQ EXP  PARDER          { $$ = $2; }
     |   L_ACCESO                    { $$ = new Acceso($1,@1.first_line,@1.first_column); }
-    |   L_ACCESO        INCREMENTO
-    |   L_ACCESO        DECREMENTO
+    |   L_ACCESO        INCREMENTO  { $$ = new IncDec(new Acceso($1,@1.first_line,@1.first_column),1,@1.first_line,@1.first_column); }
+    |   L_ACCESO        DECREMENTO  { $$ = new IncDec(new Acceso($1,@1.first_line,@1.first_column),-1,@1.first_line,@1.first_column); }
     |   MENOS   EXP2 %prec UMINUS   { $$ = new OpeArit(TipoOpeJ.NEGATIVO,$2,null,@1.first_line,@1.first_column); }
     |   LITERAL                     { $$ = $1; }
     |   INSTANCIA_STRC
