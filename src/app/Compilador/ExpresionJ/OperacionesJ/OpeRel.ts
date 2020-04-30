@@ -33,7 +33,11 @@ export class OpeRel extends OperacionJ {
         if (this.getTipoOpe() == TipoOpeJ.IGUALQUE || this.getTipoOpe() == TipoOpeJ.DIFERENTE) {
             return this.AnalizarIgualdad(ts, opIzq, opDer);
         } else if (this.getTipoOpe() == TipoOpeJ.IGUALREF) {
-
+            if (opIzq.isString() && opDer.isString()) {
+                return getTipoBool();
+            } else {
+                return ts.GenerarError('No se puede comparar === entre ' + opIzq.getString() + ' y ' + opDer.getString(), this.getFila(), this.getCol());
+            }
         } else {
             return this.AnalizarComparadores(ts, opIzq, opDer);
         }
@@ -68,7 +72,8 @@ export class OpeRel extends OperacionJ {
         let tipoIzq: Tipo = <Tipo>this.getIzq().getTipo(ts);
         let tipoDer: Tipo = <Tipo>this.getDer().getTipo(ts);
 
-        if ((this.getTipoOpe() == TipoOpeJ.IGUALQUE || this.getTipoOpe() == TipoOpeJ.DIFERENTE) && tipoIzq.isString() && tipoDer.isString()) {
+        if ((this.getTipoOpe() == TipoOpeJ.IGUALQUE || this.getTipoOpe() == TipoOpeJ.DIFERENTE)
+            && tipoIzq.isString() && tipoDer.isString()) {
             this.TraducirCompString(ts);
             return;
         }

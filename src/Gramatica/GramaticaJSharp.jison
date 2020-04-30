@@ -76,8 +76,8 @@
 /* OPERADORES RELACIONALES */
 '>='                    return  'MAYORIGUAL'
 "<="                    return  'MENORIGUAL'
-"=="                    return  'IGUALQUE'
 "==="                   return  'IGUALREF'
+"=="                    return  'IGUALQUE'
 "<"                     return  'MENOR'
 ">"                     return  'MAYOR'
 "!="                    return  'DIFERENTE'
