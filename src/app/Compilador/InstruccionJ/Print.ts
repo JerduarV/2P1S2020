@@ -24,7 +24,7 @@ export class Print extends InstruccionJ {
         let tipo: Tipo = <Tipo>o;
         this.exp.Traducir(ts);
         let temp = getTempAct()
-        if (tipo.isInteger()) {
+        if (tipo.isInteger() || tipo.soyArreglo()) {
             concatCodigo('print("%i",' + temp + ');');
             concatCodigo('print("%c",10);');
             ts.SacarTemporal(temp);

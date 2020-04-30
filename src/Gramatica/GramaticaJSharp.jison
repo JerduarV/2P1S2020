@@ -58,7 +58,7 @@
 [0-9]+\b                                        return  'LIT_INTEGER'
 [a-zA-Z_ñ]([a-zA-Z0-9_Ñ]*)                      return  'ID'
 ('"')([^\\"]|\\.)*('"')		                    return  'LIT_STRING'
-("'")([^\\']|"\\n"|"\\t"|"\\r"|"\\")("'")	    return  'LIT_CHAR'
+("'")([^\\']|"\\n"|"\\t"|"\\r"|"\\"|"\\0")("'") return  'LIT_CHAR'
 
 
 /* AUMENTO Y DECREMENTO */
@@ -155,6 +155,7 @@
     var IncDec = require('../app/Compilador/ExpresionJ/IncDec').IncDec;
     var TipoLit = require('../app/Compilador/ExpresionJ/LiteralJ').TipoLit;
     var TipoOpeJ = require('../app/Compilador/ExpresionJ/OperacionesJ/OperacionJ').TipoOpeJ;
+    var StrcArray = require('../app/Compilador/ExpresionJ/STRC/StrcArray').StrcArray;
     var OpeArit = require('../app/Compilador/ExpresionJ/OperacionesJ/OpeArit').OpeArit;
     var OpeRel = require('../app/Compilador/ExpresionJ/OperacionesJ/OpeRel').OpeRel;
     var OpeLogica = require('../app/Compilador/ExpresionJ/OperacionesJ/OpeLogica').OpeLogica;
@@ -405,7 +406,7 @@ EXP2:
     |   L_ACCESO        DECREMENTO  { $$ = new IncDec(new Acceso($1,@1.first_line,@1.first_column),-1,@1.first_line,@1.first_column); }
     |   MENOS   EXP2 %prec UMINUS   { $$ = new OpeArit(TipoOpeJ.NEGATIVO,$2,null,@1.first_line,@1.first_column); }
     |   LITERAL                     { $$ = $1; }
-    |   INSTANCIA_STRC
+    |   INSTANCIA_STRC              { $$ = $1; }
 ;
 
 LITERAL:
@@ -419,7 +420,8 @@ LITERAL:
 
 INSTANCIA_STRC:
         RSTRC ID
-    |   RSTRC ID CORIZQ EXP CORDER
+    |   RSTRC ID CORIZQ EXP CORDER      { $$ = new StrcArray(new Tipo($2,1),$4,@1.first_line,@1.first_column); }
+    |   RSTRC TYPE CORIZQ EXP CORDER    { $$ = new StrcArray(new Tipo($2,1),$4,@1.first_line,@1.first_column); }
 ;
 
 L_ACCESO:

@@ -92,12 +92,17 @@ export class LiteralJ extends ExpresionJ {
         if (this.val.toString() == "'\\n'") {
             return '\n'
         }
-        if (this.val.toString() == "'\\t'") {
+        else if (this.val.toString() == "'\\t'") {
             return '\t'
         }
-        if (this.val.toString() == "'\\r'") {
+        else if (this.val.toString() == "'\\r'") {
             return '\r'
-        } else {
+
+        }
+        else if(this.val.toString() == "'\\0'"){
+            return '\0';
+        } 
+        else {
             return val.substring(1, val.length - 1);
         }
     }

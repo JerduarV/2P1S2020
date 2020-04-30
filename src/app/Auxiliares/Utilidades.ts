@@ -53,6 +53,7 @@ export function QuemarFunciones(ts: TablaSimbJ): void {
     GenerarDoubleToString();
     GenerarCharToStrig();
     GenerarCompString(ts.temp_null);
+    GenerarConsArreglo1();
 }
 
 
@@ -482,4 +483,41 @@ function GenerarCompString(tnull: string): void {
 
     concatCodigo('end\n#* FIN COMPARACION STRING*#');
     //#endregion
+}
+
+function GenerarConsArreglo1(): void {
+    //#region TEMPORALES
+    let tx: string = genTemp();
+    let ty: string = genTemp();
+    let tvf: string = genTemp();
+    let t1: string = genTemp();
+    let t0: string = genTemp();
+    //#endregion
+
+    //#region ETIQUETAS
+    let etqini: string = getEtiqueta();
+    let etqsal: string = getEtiqueta();
+    //#endregion
+
+    //#region CODIGO
+    concatCodigo('\n#*INSTANCIA ARREGLOS DE LA FORMA ID[E]*#');
+    concatCodigo('\nproc jerduar_CONSARRAY1 begin');
+    concatCodigo(tx + ' = P + 1;')
+    concatCodigo(t0 + ' = Stack[' + tx + '];');
+    concatCodigo(ty + ' = P + 2;');
+    concatCodigo(tvf + ' = Stack[' + ty + '];');
+    concatCodigo(t1 + ' = H;');
+    concatCodigo('Heap[H] = ' + t0 + ';');
+    concatCodigo('H = H + 1;');
+    concatCodigo(etqini + ':');
+    concatCodigo('if(' + t0 + ' == 0) goto ' + etqsal + ';');
+    concatCodigo('Heap[H] = ' + tvf + ';');
+    concatCodigo('H = H + 1;');
+    concatCodigo(t0 + ' = ' + t0 + ' - 1;');
+    concatCodigo('goto ' + etqini + ';');
+    concatCodigo(etqsal + ':');
+    concatCodigo('Stack[P] = ' + t1 + ';');
+    concatCodigo('end\n#* FIN INSTANCIA ARREGLOS*#');
+    //#endregion
+
 }

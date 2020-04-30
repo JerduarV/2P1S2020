@@ -5,7 +5,7 @@ export class ParametroFormal {
     nombre: string;
     tipoDato: Tipo;
 
-    constructor(nombre: string, tipo: Tipo) {
+    constructor(tipo: Tipo, nombre: string) {
         this.nombre = nombre;
         this.tipoDato = tipo;
     }
