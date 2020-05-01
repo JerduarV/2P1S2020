@@ -32,8 +32,15 @@ export class OpeRel extends OperacionJ {
 
         if (this.getTipoOpe() == TipoOpeJ.IGUALQUE || this.getTipoOpe() == TipoOpeJ.DIFERENTE) {
             return this.AnalizarIgualdad(ts, opIzq, opDer);
-        } else if (this.getTipoOpe() == TipoOpeJ.IGUALREF) {
-            if (opIzq.isString() && opDer.isString() || opIzq.soyArreglo() && opDer.soyArreglo()) {
+
+        }
+        //OPERADOR DE REFERENCIA === 
+        else if (this.getTipoOpe() == TipoOpeJ.IGUALREF) {
+            if (opIzq.isString() && opDer.isString()
+                || opIzq.soyArreglo() && opDer.soyArreglo()
+                || opIzq.esStruct() && opDer.esStruct() && opIzq.esIgualA(opDer)
+                || (opIzq.isString() || opIzq.soyArreglo() || opIzq.esStruct()) && opDer.isNull()
+                || opIzq.isNull() && (opDer.isString() || opIzq.soyArreglo() || opIzq.esStruct())) {
                 return getTipoBool();
             } else {
                 return ts.GenerarError('No se puede comparar === entre ' + opIzq.getString() + ' y ' + opDer.getString(), this.getFila(), this.getCol());
@@ -58,7 +65,7 @@ export class OpeRel extends OperacionJ {
     }
 
     public AnalizarIgualdad(ts: TablaSimbJ, opIzq: Tipo, opDer: Tipo): Object {
-        if (!opIzq.soyArreglo() && !opDer.soyArreglo() && opIzq.esIgualA(opDer)) {
+        if (!opIzq.soyArreglo() && !opDer.soyArreglo() && !opIzq.esStruct() && !opDer.esStruct() && opIzq.esIgualA(opDer)) {
             return getTipoBool();
         }
         return ts.GenerarError('No se puede comparar ' + opIzq.getString() + ' con ' + opDer.getString(), this.getFila(), this.getCol());

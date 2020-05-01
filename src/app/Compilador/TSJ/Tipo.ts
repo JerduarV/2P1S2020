@@ -101,6 +101,10 @@ export class Tipo {
         return this.tipo == INT || this.tipo == BOOL || this.tipo == CHAR || this.tipo == DOUBLE || this.tipo == VOID || this.tipo == STRING;
     }
 
+    public esStruct():boolean{
+        return !this.esNativo() && this.dim == 0;
+    }
+
     public AplicaCasteo(contenido: Tipo):boolean{
         if(this.dim != contenido.dim){
             return false;

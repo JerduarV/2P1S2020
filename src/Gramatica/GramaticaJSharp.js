@@ -344,6 +344,9 @@ break;
 case 140:
  this.$ = new LiteralJ($$[$0],TipoLit.LIT_FALSE,_$[$0].first_line,_$[$0].first_column);    
 break;
+case 141:
+ this.$ = new StrcStruct($$[$0],_$[$0-1].first_line,_$[$0-1].first_column); 
+break;
 case 142: case 143:
  this.$ = new StrcArray(new Tipo($$[$0-3],1),$$[$0-1],_$[$0-4].first_line,_$[$0-4].first_column); 
 break;
@@ -530,6 +533,7 @@ parse: function parse(input) {
     var CallFun = require('../app/Compilador/ExpresionJ/CallFun').CallFun;
     var TipoOpeJ = require('../app/Compilador/ExpresionJ/OperacionesJ/OperacionJ').TipoOpeJ;
     var StrcArray = require('../app/Compilador/ExpresionJ/STRC/StrcArray').StrcArray;
+    var StrcStruct = require('../app/Compilador/ExpresionJ/STRC/StrcStruct').StrcStruct;
     var OpeArit = require('../app/Compilador/ExpresionJ/OperacionesJ/OpeArit').OpeArit;
     var OpeRel = require('../app/Compilador/ExpresionJ/OperacionesJ/OpeRel').OpeRel;
     var OpeLogica = require('../app/Compilador/ExpresionJ/OperacionesJ/OpeLogica').OpeLogica;

@@ -105,9 +105,10 @@ export class CallFun extends ExpresionJ {
         });
         concatCodigo('#* FIN RECUPERACION DE TEMPORALES *#')
         let trest: string = genTemp();
-        concatCodigo(trest + ' = ' + tr + ';');
         //REGRESANDO A LA FUNCIÓN ACTUAL
         concatCodigo('P = P - ' + ts.getTamanioFunTotal() + ';');
+        
+        concatCodigo(trest + ' = ' + tr + ';');
         ts.guardarTemporal(trest);
         lista_temp_param.forEach(temp => {
             ts.SacarTemporal(temp);

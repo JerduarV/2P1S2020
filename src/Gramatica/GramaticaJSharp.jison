@@ -158,6 +158,7 @@
     var CallFun = require('../app/Compilador/ExpresionJ/CallFun').CallFun;
     var TipoOpeJ = require('../app/Compilador/ExpresionJ/OperacionesJ/OperacionJ').TipoOpeJ;
     var StrcArray = require('../app/Compilador/ExpresionJ/STRC/StrcArray').StrcArray;
+    var StrcStruct = require('../app/Compilador/ExpresionJ/STRC/StrcStruct').StrcStruct;
     var OpeArit = require('../app/Compilador/ExpresionJ/OperacionesJ/OpeArit').OpeArit;
     var OpeRel = require('../app/Compilador/ExpresionJ/OperacionesJ/OpeRel').OpeRel;
     var OpeLogica = require('../app/Compilador/ExpresionJ/OperacionesJ/OpeLogica').OpeLogica;
@@ -434,7 +435,7 @@ LITERAL:
 ;
 
 INSTANCIA_STRC:
-        RSTRC ID
+        RSTRC ID                        { $$ = new StrcStruct($2,@1.first_line,@1.first_column); }
     |   RSTRC ID CORIZQ EXP CORDER      { $$ = new StrcArray(new Tipo($2,1),$4,@1.first_line,@1.first_column); }
     |   RSTRC TYPE CORIZQ EXP CORDER    { $$ = new StrcArray(new Tipo($2,1),$4,@1.first_line,@1.first_column); }
 ;
