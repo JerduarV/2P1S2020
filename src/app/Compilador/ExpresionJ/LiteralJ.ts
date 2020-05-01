@@ -1,6 +1,6 @@
 import { ExpresionJ } from './ExpresionJ';
 import { TablaSimbJ } from '../TSJ/TablaSimbJ';
-import { Tipo } from '../TSJ/Tipo';
+import { Tipo, DOUBLE, CHAR, INT, BOOL, STRING } from '../TSJ/Tipo';
 import { concatCodigo, genTemp } from 'src/app/Auxiliares/Utilidades';
 
 export enum TipoLit {
@@ -27,16 +27,16 @@ export class LiteralJ extends ExpresionJ {
     public getTipo(ts: TablaSimbJ): Object {
         switch (this.tipo) {
             case TipoLit.LIT_CHAR:
-                return new Tipo('CHAR', 0);
+                return new Tipo(CHAR, 0);
             case TipoLit.LIT_INT:
-                return new Tipo('INT', 0);
+                return new Tipo(INT, 0);
             case TipoLit.LIT_DOUBLE:
-                return new Tipo('DOUBLE', 0);
+                return new Tipo(DOUBLE, 0);
             case TipoLit.LIT_FALSE:
             case TipoLit.LIT_TRUE:
-                return new Tipo('BOOL', 0);
+                return new Tipo(BOOL, 0);
             case TipoLit.LIT_STRING:
-                return new Tipo('STRING', 0);
+                return new Tipo(STRING, 0);
         }
     }
 

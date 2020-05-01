@@ -10,6 +10,7 @@ import { inicializarTodo, concatCodigo, getTempAct, ImprimitCodigo, QuemarFuncio
 import { DecFun } from './InstruccionJ/DecFun';
 import { InstruccionJ } from './InstruccionJ/InstruccionJ';
 import { DefStruct } from './InstruccionJ/DefStruct';
+import { ErrorLup } from '../Auxiliares/Error';
 
 export class CompiladorJ {
     constructor() {
@@ -35,7 +36,7 @@ export class CompiladorJ {
 
             //RECOLECCIÓN DE STRUCT
             let strc: DefStruct[] = this.RecolectarStructs(AST);
-            this.GuardarStructs(strc,global);
+            this.GuardarStructs(strc, global);
 
             //RECOLECTAR FUCIONES
             let d: DecFun[] = this.RecolectarFunciones(global, AST);
@@ -60,7 +61,7 @@ export class CompiladorJ {
             this.TraducirFunciones(global, d);
 
             //TRADUCCIÓN STRUCT
-            this.TraducirStructs(strc,global);
+            this.TraducirStructs(strc, global);
 
             //QUEMAR FUNCIONES NATIVAS
             QuemarFunciones(global);
@@ -79,7 +80,7 @@ export class CompiladorJ {
         }
     }
 
-    private TraducirStructs(lista: DefStruct[], ts: TablaSimbJ):void{
+    private TraducirStructs(lista: DefStruct[], ts: TablaSimbJ): void {
         lista.forEach(strc => {
             strc.Traducir(NewTablaLocal(ts));
         });
@@ -90,13 +91,13 @@ export class CompiladorJ {
      * @param lista Lista de structs encontrados el archivo de entrada
      * @param ts Tabla de símbolos global
      */
-    private GuardarStructs(lista: DefStruct[], ts: TablaSimbJ):void{
+    private GuardarStructs(lista: DefStruct[], ts: TablaSimbJ): void {
         lista.forEach(strc => {
             ts.GuardarStruct(strc);
         });
     }
 
-    private CalcularTamanioFunciones(funciones: DecFun[]){
+    private CalcularTamanioFunciones(funciones: DecFun[]) {
         funciones.forEach(element => {
             element.DeterminarTamanioFuncion(element);
         });
@@ -125,16 +126,16 @@ export class CompiladorJ {
         return d;
     }
 
-    private RecolectarStructs(AST: NodoASTJ[]):DefStruct[]{
-            let lista_strc: DefStruct[] = [];
-            AST.forEach(nodo => {
-                if(nodo instanceof DefStruct){
-                    lista_strc.push(nodo);
-                }else{
-                    (<InstruccionJ>nodo).RecolectarStruct(lista_strc);
-                }
-            });
-            return lista_strc;
+    private RecolectarStructs(AST: NodoASTJ[]): DefStruct[] {
+        let lista_strc: DefStruct[] = [];
+        AST.forEach(nodo => {
+            if (nodo instanceof DefStruct) {
+                lista_strc.push(nodo);
+            } else {
+                (<InstruccionJ>nodo).RecolectarStruct(lista_strc);
+            }
+        });
+        return lista_strc;
     }
 
     /**
@@ -146,6 +147,7 @@ export class CompiladorJ {
         let expresiones_ini: ExpresionJ[] = [];
         let contador: number = 0;
 
+        //BUSCO TODAS LAS DECLARACIONES GLOBALES
         for (let i = 0; i < AST.length; i++) {
             if (AST[i] instanceof DeclaracionJ) {
                 lista_dec_global.push(<DeclaracionJ>AST[i]);
@@ -166,12 +168,9 @@ export class CompiladorJ {
             for (let k = 0; k < dec.getListaIDs().length; k++) {
                 //console.log(dec.getListaIDs()[k]);
                 let s: SimbVar = ts.GuardarVarible(dec.getListaIDs()[k], t, true, dec.esConstante(), contador, dec.getFila(), dec.getCol());
-
                 if (s != null) {
                     VariableGlobales.push(s);
                     expresiones_ini.push(dec.getExp());
-                } else {
-
                 }
                 contador++;
             }
@@ -187,23 +186,56 @@ export class CompiladorJ {
         concatCodigo('H = ' + contador + ';')
 
         //SETENDO VALOR SI APLICA
-        for (let u = 0; u < VariableGlobales.length; u++) {
+        /*for (let u = 0; u < VariableGlobales.length; u++) {
             if (expresiones_ini[u] != null) {
                 expresiones_ini[u].Traducir(ts);
                 let temp: string = getTempAct();
                 concatCodigo('Heap[' + VariableGlobales[u].getPosicion() + '] = ' + temp + ';')
             }
+        }*/
+        for (let i = 0; i < lista_dec_global.length; i++) {
+            let dec: DeclaracionJ = lista_dec_global[i];
+            console.log(dec);
+            if (dec.getExp() == null) {
+                continue;
+            }
+            let o: Object = dec.getExp().getTipo(ts);
+            if (o instanceof ErrorLup) {
+                ts.GenerarError('Hubo un error en la expresión ', dec.getFila(), dec.getCol());
+                continue;
+            }
+
+            let tipo = <Tipo>o;
+            dec.getExp().Traducir(ts);
+            let t1 = getTempAct();
+            console.log('holita');
+            for (let y = 0; y < dec.getListaIDs().length; y++) {
+                console.log('hola');
+                let variable: SimbVar = ts.BuscarVariable(dec.lista_ids[y]);
+                if (variable == null) {
+                    ts.GenerarError('La varible ' + dec.lista_ids[y] + ' no existe', dec.getFila(), dec.getCol());
+                    continue;
+                }
+                if (!variable.getTipo().esIgualA(tipo) && !variable.getTipo().AplicaCasteo(tipo)) {
+                    ts.GenerarError('Los tipos no coinciden ' + variable.getTipo().getString() + ' : ' + tipo.getString(), dec.getFila(), dec.getCol());
+                    continue;
+                }
+                concatCodigo('Heap[' + variable.getPosicion() + '] = ' + t1 + ';');
+            }
+            ts.SacarTemporal(t1);
         }
+
+
         //console.log(VariableGlobales);
     }
 
-    private EscrbirPalabras(val: string):string{
+    private EscrbirPalabras(val: string): string {
         let temp: string = genTemp();
         concatCodigo('\n#* GUARDANDO LA PALABRA ' + val.toUpperCase() + '*#\n')
         concatCodigo(temp + ' = H;');
         concatCodigo('Heap[H] = ' + val.length + ';');
         concatCodigo('H = H + 1;');
-        for(let i = 0; i < val.length; i++){
+        for (let i = 0; i < val.length; i++) {
             concatCodigo('Heap[H] = ' + val.charCodeAt(i) + ';');
             concatCodigo('H = H + 1;');
         }

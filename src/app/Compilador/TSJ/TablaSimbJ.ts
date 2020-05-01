@@ -38,8 +38,8 @@ export class TablaSimbJ {
     public temp_true: string;
     public temp_false: string;
     public temp_null: string;
-    public tabla_temporales: Map<string,string>;
-    public tabla_structs: Map<string,DefStruct>;
+    public tabla_temporales: Map<string, string>;
+    public tabla_structs: Map<string, DefStruct>;
 
     /**
      * Cosntructor de la tabla de simbolos
@@ -60,12 +60,12 @@ export class TablaSimbJ {
         this.tabla_structs = new Map();
     }
 
-    public BuscarVariable(id: string): SimbVar{
-        let key: string = this.getKeyVar('var',id);
-        if(this.tabla.has(key)){
+    public BuscarVariable(id: string): SimbVar {
+        let key: string = this.getKeyVar('var', id);
+        if (this.tabla.has(key)) {
             return <SimbVar>this.tabla.get(key);
-        }else{
-            if(this.padre != null){
+        } else {
+            if (this.padre != null) {
                 return this.padre.BuscarVariable(id);
             }
             return null;
@@ -103,12 +103,13 @@ export class TablaSimbJ {
         if (!this.tabla.has(key)) {
             let f: SimbFuncion = new SimbFuncion(fun.getNombre());
             f.AgregarDef(fun);
-            //console.log('Se agregó ' + fun.getNombre());
+            this.tabla.set(key, f);
+            //console.log('Se agregó ' + key);
         } else {
             let f: SimbFuncion = <SimbFuncion>this.tabla.get(key);
             let b: boolean = f.AgregarDef(fun);
             if (b) {
-                //console.log('Se agregó ' + fun.getNombre());
+                //console.log('Se agregó ' + key);
                 return null;
             } else {
                 return this.GenerarError('Ya existe la función ' + fun.getNombre(), fun.getFila(), fun.getCol());
@@ -138,12 +139,12 @@ export class TablaSimbJ {
      * Método que guarda una estructura en la tabla de símbolo
      * @param strc Struct que se quiere guardar
      */
-    public GuardarStruct(strc: DefStruct):void{
+    public GuardarStruct(strc: DefStruct): void {
         let key: string = strc.getId().toUpperCase();
-        if(this.tabla_structs.has(key)){
-            this.GenerarError('Ya existe el struct: ' + strc.getId(), strc.getFila(),strc.getCol());
+        if (this.tabla_structs.has(key)) {
+            this.GenerarError('Ya existe el struct: ' + strc.getId(), strc.getFila(), strc.getCol());
         }
-        this.tabla_structs.set(key,strc);
+        this.tabla_structs.set(key, strc);
     }
 
     public getConsola(): Consola {
@@ -154,8 +155,8 @@ export class TablaSimbJ {
      * Función que saca los temporales
      * @param temp Temporal a sacar
      */
-    public  SacarTemporal(temp: string):void{
-        if(this.tabla_temporales.has(temp)){
+    public SacarTemporal(temp: string): void {
+        if (this.tabla_temporales.has(temp)) {
             this.tabla_temporales.delete(temp);
             return;
         }
@@ -166,12 +167,12 @@ export class TablaSimbJ {
      * Método que guarda temporales
      * @param temp Temporal a guardar
      */
-    public guardarTemporal(temp: string):void{
-        if(this.tabla_temporales.has(temp)){
+    public guardarTemporal(temp: string): void {
+        if (this.tabla_temporales.has(temp)) {
             console.log('Ya existe este temporal : ' + temp);
             return;
         }
-        this.tabla_temporales.set(temp,temp);
+        this.tabla_temporales.set(temp, temp);
     }
 
     /**
@@ -179,22 +180,40 @@ export class TablaSimbJ {
      * @param tipo Tipo a valida
      */
     public getExisteTipo(tipo: Tipo): boolean {
+        //console.log(tipo);
         return tipo.esNativo() || this.tabla_structs.has(tipo.getNombreTipo().toUpperCase());
     }
 
-    public esValidaBreak():boolean{
+    public esValidaBreak(): boolean {
         return this.display.esValidoBreak();
     }
 
-    public esValidoContinue():boolean{
+    public esValidoContinue(): boolean {
         return this.display.esValidoContinue();
     }
 
-    public getEtqSalida():string{
+    public getEtqSalida(): string {
         return this.display.lista_etqs[this.display.lista_etqs.length - 1].etq_salida;
     }
 
-    public getEtqInicio():string{
+    public getEtqInicio(): string {
         return this.display.lista_etqs[this.display.lista_etqs.length - 1].etq_inicio;
+    }
+
+    public BuscarFuncion(id: string, tiposParam: Tipo[]): DecFun {
+        let key: string = this.getKeyVar('fun', id);
+        let global: TablaSimbJ = this.GetGlobal();
+        if (!global.tabla.has(key)) {
+            return null;
+        }
+        let funcion: SimbFuncion = <SimbFuncion>global.tabla.get(key);
+        return funcion.BuscarDefinicion(tiposParam);
+    }
+
+    public GetGlobal():TablaSimbJ{
+        if(this.padre == null){
+            return this;
+        }
+        return this.padre.GetGlobal();
     }
 }

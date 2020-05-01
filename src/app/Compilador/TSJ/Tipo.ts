@@ -1,14 +1,26 @@
 export function getTipoString(): Tipo {
-    return new Tipo('STRING', 0);
+    return new Tipo(STRING, 0);
 }
 
 export function getTipoDouble(): Tipo {
-    return new Tipo('DOUBLE', 0);
+    return new Tipo(DOUBLE, 0);
 }
 
 export function getTipoBool(): Tipo {
-    return new Tipo('BOOL', 0)
+    return new Tipo(BOOL, 0)
 }
+
+export function getTipoNull():Tipo{
+    return new Tipo(NULL,0);
+}
+
+export const DOUBLE = 'DOUBLE';
+export const BOOL = 'BOOLEAN';
+export const STRING = 'STRING';
+export const INT = 'INTEGER';
+export const CHAR = 'CHAR';
+export const NULL = 'NULL';
+export const VOID = '$VOID';
 
 export class Tipo {
     private readonly tipo: string;
@@ -24,23 +36,27 @@ export class Tipo {
     }
 
     public isInteger(): boolean {
-        return this.tipo == 'INT' && this.dim == 0;
+        return this.tipo == INT && this.dim == 0;
     }
 
     public isDouble(): boolean {
-        return this.tipo == 'DOUBLE' && this.dim == 0;
+        return this.tipo == DOUBLE && this.dim == 0;
+    }
+
+    public isNull():boolean {
+        return this.tipo == NULL;
     }
 
     public isBoolean(): boolean {
-        return this.tipo == 'BOOL' && this.dim == 0;
+        return this.tipo == BOOL && this.dim == 0;
     }
 
     public isChar(): boolean {
-        return this.tipo == 'CHAR' && this.dim == 0;
+        return this.tipo == CHAR && this.dim == 0;
     }
 
     public isString(): boolean {
-        return this.tipo == 'STRING' && this.dim == 0;
+        return this.tipo == STRING && this.dim == 0;
     }
 
     public esIgualA(t: Tipo): boolean {
@@ -82,6 +98,19 @@ export class Tipo {
     }
 
     public esNativo(): boolean {
-        return this.tipo == 'INT' || this.tipo == 'BOOL' || this.tipo == 'CHAR' || this.tipo == 'DOUBLE' || this.tipo == '$VOID' || this.tipo == 'STRING';
+        return this.tipo == INT || this.tipo == BOOL || this.tipo == CHAR || this.tipo == DOUBLE || this.tipo == VOID || this.tipo == STRING;
+    }
+
+    public AplicaCasteo(contenido: Tipo):boolean{
+        if(this.dim != contenido.dim){
+            return false;
+        }
+        if(this.tipo == INT){
+            return contenido.tipo == CHAR;
+        }else if(this.tipo == DOUBLE){
+            return contenido.tipo == INT || contenido.tipo == CHAR;
+        }else if(this.tipo == STRING || this.soyArreglo()){
+            return contenido.tipo == NULL;
+        }
     }
 }

@@ -36,25 +36,38 @@ export class DecFun extends InstruccionJ {
         ts.etq_fun_salida = etq_salida;
         ts.funcion_actual = this;
         ts.tabla_temporales = new Map();
+
+
+        //METER PARAMETROS EN LA TABLA LOCAL
+        let local: TablaSimbJ = NewTablaLocal(ts);
+        for (let i = 0; i < this.parametroFormales.length; i++) {
+            let param: ParametroFormal = this.parametroFormales[i];
+            local.GuardarVarible(param.nombre, param.getTipo(), false, false, i + 1, this.getFila(), this.getCol());
+        }
+
         concatCodigo('\nproc ' + this.nombre + this.concatTipo() + ' begin');
-        this.TraducirCuerpo(NewTablaLocal(ts));
+        this.TraducirCuerpo(local);
         concatCodigo('\n' + ts.etq_fun_salida + ':\nend\n');
         ts.tam_fun_actual = -1;
     }
 
-    public concatTipo():string{
+    public concatTipo(): string {
         let cad: string = '';
-        for(let i = 0; i < this.parametroFormales.length; i++){
+        for (let i = 0; i < this.parametroFormales.length; i++) {
             cad += '_' + this.parametroFormales[i].getTipo().getNombreParaFuncion();
         }
         return cad;
+    }
+
+    public getNombreLlamada(): string {
+        return this.nombre + this.concatTipo();
     }
 
     /**
      * Función que hace un análsis previo para validar la metadata de la función
      * @param ts Tabla de símbolos
      */
-    public preAnalisis(ts: TablaSimbJ):void{
+    public preAnalisis(ts: TablaSimbJ): void {
 
         let hubo_error: boolean = false;
 
@@ -72,19 +85,19 @@ export class DecFun extends InstruccionJ {
             if (mapa.has(param.nombre.toUpperCase())) {
                 ts.GenerarError('Ya hay un parámetro con nombre' + param.nombre, this.getFila(), this.getCol());
                 hubo_error = true;
-            }else{
-                mapa.set(param.nombre.toUpperCase(),param.nombre.toUpperCase());
+            } else {
+                mapa.set(param.nombre.toUpperCase(), param.nombre.toUpperCase());
             }
 
             //VALIDO QUE EXISTA EL TIPO DEL PARÁMETRO
-            if(!ts.getExisteTipo(param.getTipo())){
+            if (!ts.getExisteTipo(param.getTipo())) {
                 ts.GenerarError('No existe el tipo del parametro ' + param.nombre + ' : ' + param.getTipo().getString(), this.getFila(), this.getCol());
                 hubo_error = true;
             }
         }
 
         //SI TODO LO DEMÁS ESTA BIEN TRATO DE GUARDAR LA FUNCIÓN EN LA TABLA DE SÍMBOLOS
-        if(!hubo_error){
+        if (!hubo_error) {
             let o: Object = ts.GuardarFuncion(this);
         }
     }

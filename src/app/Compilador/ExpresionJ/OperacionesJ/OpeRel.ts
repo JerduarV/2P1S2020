@@ -33,7 +33,7 @@ export class OpeRel extends OperacionJ {
         if (this.getTipoOpe() == TipoOpeJ.IGUALQUE || this.getTipoOpe() == TipoOpeJ.DIFERENTE) {
             return this.AnalizarIgualdad(ts, opIzq, opDer);
         } else if (this.getTipoOpe() == TipoOpeJ.IGUALREF) {
-            if (opIzq.isString() && opDer.isString()) {
+            if (opIzq.isString() && opDer.isString() || opIzq.soyArreglo() && opDer.soyArreglo()) {
                 return getTipoBool();
             } else {
                 return ts.GenerarError('No se puede comparar === entre ' + opIzq.getString() + ' y ' + opDer.getString(), this.getFila(), this.getCol());
@@ -90,7 +90,7 @@ export class OpeRel extends OperacionJ {
         let etqv: string = getEtiqueta();
         let etqf: string = getEtiqueta();
 
-        concatCodigo('if (' + t1 + this.getSimbolo() + t2 + ') goto ' + etqv + ';\ngoto ' + etqf + ';');
+        concatCodigo('if(' + t1 + this.getSimbolo() + t2 + ') goto ' + etqv + ';\ngoto ' + etqf + ';');
         concatCodigo(etqv + ':\n' + t3 + ' = 1;\n' + etqf + ':');
 
         ts.SacarTemporal(t1);

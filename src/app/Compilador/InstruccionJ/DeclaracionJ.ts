@@ -60,8 +60,8 @@ export class DeclaracionJ extends InstruccionJ {
 
         for (let i = 0; i < this.lista_ids.length; i++) {
             let variable: SimbVar = ts.BuscarVariable(this.lista_ids[i]);
-            if(variable == null){
-                ts.GenerarError('No se encontro variable: ' + this.lista_ids[i],this.getFila(),this.getCol());
+            if (variable == null) {
+                ts.GenerarError('No se encontro variable: ' + this.lista_ids[i], this.getFila(), this.getCol());
                 return;
             }
             let temp: string = genTemp();
@@ -77,23 +77,23 @@ export class DeclaracionJ extends InstruccionJ {
             }
 
             tipo = <Tipo>o;
+            this.exp.Traducir(ts);
+            let t1 = getTempAct();
             for (let i = 0; i < this.lista_ids.length; i++) {
-                this.exp.Traducir(ts);
-                let t1 = getTempAct();
                 let variable: SimbVar = ts.BuscarVariable(this.lista_ids[i]);
                 if (variable == null) {
                     ts.GenerarError('La varible ' + this.lista_ids[i] + ' no existe', this.getFila(), this.getCol());
                     continue;
                 }
-                if (!variable.getTipo().esIgualA(tipo)) {
+                if (!variable.getTipo().esIgualA(tipo) && !variable.getTipo().AplicaCasteo(tipo)) {
                     ts.GenerarError('Los tipos no coinciden ' + variable.getTipo().getString() + ' : ' + tipo.getString(), this.getFila(), this.getCol());
                     return;
                 }
                 let temp: string = genTemp();
                 concatCodigo(temp + ' = P + ' + variable.getPosicion() + ';');
                 concatCodigo('Stack[' + temp + '] = ' + t1 + ';');
-                ts.SacarTemporal(t1);
             }
+            ts.SacarTemporal(t1);
         }
 
     }

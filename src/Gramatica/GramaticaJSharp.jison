@@ -154,12 +154,25 @@
     var Acceso = require('../app/Compilador/ExpresionJ/Acceso').Acceso;
     var IncDec = require('../app/Compilador/ExpresionJ/IncDec').IncDec;
     var TipoLit = require('../app/Compilador/ExpresionJ/LiteralJ').TipoLit;
+    var Null = require('../app/Compilador/ExpresionJ/Null').Null;
+    var CallFun = require('../app/Compilador/ExpresionJ/CallFun').CallFun;
     var TipoOpeJ = require('../app/Compilador/ExpresionJ/OperacionesJ/OperacionJ').TipoOpeJ;
     var StrcArray = require('../app/Compilador/ExpresionJ/STRC/StrcArray').StrcArray;
     var OpeArit = require('../app/Compilador/ExpresionJ/OperacionesJ/OpeArit').OpeArit;
     var OpeRel = require('../app/Compilador/ExpresionJ/OperacionesJ/OpeRel').OpeRel;
     var OpeLogica = require('../app/Compilador/ExpresionJ/OperacionesJ/OpeLogica').OpeLogica;
     var Tipo = require('../app/Compilador/TSJ/Tipo').Tipo;
+
+    var DOUBLE = require('../app/Compilador/TSJ/Tipo').DOUBLE;
+    var BOOL = require('../app/Compilador/TSJ/Tipo').BOOL;
+    var STRING = require('../app/Compilador/TSJ/Tipo').STRING;
+    var INT = require('../app/Compilador/TSJ/Tipo').INT;
+    var CHAR = require('../app/Compilador/TSJ/Tipo').CHAR;
+    var NULL = require('../app/Compilador/TSJ/Tipo').NULL;
+    var VOID = require('../app/Compilador/TSJ/Tipo').VOID;
+
+
+
     var ParametroFormal = require('../app/Compilador/TSJ/ParametroFormal').ParametroFormal;
 %}
 
@@ -208,10 +221,10 @@ ATRIB:
 
 METHOD_DEC:
         TYPE ID PARIZQ PARDER BLOCK_SENT                        { $$ = new DecFun(new Tipo($1,0),$2,[],$5,@1.first_line,@1.first_column); }
-    |   RVOID ID PARIZQ PARDER BLOCK_SENT                       { $$ = new DecFun(new Tipo('$VOID',0),$2,[],$5,@1.first_line,@1.first_column); }
+    |   RVOID ID PARIZQ PARDER BLOCK_SENT                       { $$ = new DecFun(new Tipo(VOID,0),$2,[],$5,@1.first_line,@1.first_column); }
     |   ID ID PARIZQ PARDER BLOCK_SENT                          { $$ = new DecFun(new Tipo($1,0),$2,[],$5,@1.first_line,@1.first_column);}
     |   TYPE ID PARIZQ L_PARAMS PARDER BLOCK_SENT               { $$ = new DecFun(new Tipo($1,0),$2,$4,$6,@1.first_line,@1.first_column); }
-    |   RVOID ID PARIZQ L_PARAMS PARDER BLOCK_SENT              { $$ = new DecFun(new Tipo('$VOID',0),$2,$4,$6,@1.first_line,@1.first_column); }
+    |   RVOID ID PARIZQ L_PARAMS PARDER BLOCK_SENT              { $$ = new DecFun(new Tipo(VOID,0),$2,$4,$6,@1.first_line,@1.first_column); }
     |   ID ID PARIZQ L_PARAMS PARDER BLOCK_SENT                 { $$ = new DecFun(new Tipo($1,0),$2,$4,$6,@1.first_line,@1.first_column); }
     /* PARA ARREGLOS */
     |   TYPE CORIZQ CORDER ID PARIZQ PARDER BLOCK_SENT          { $$ = new DecFun(new Tipo($1,1),$4,[],$7,@1.first_line,@1.first_column); }
@@ -221,10 +234,10 @@ METHOD_DEC:
 ;
 
 TYPE:
-        RINTEGER    { $$ = 'INT' }
-    |   RDOUBLE     { $$ = 'DOUBLE' }
-    |   RCHAR       { $$ = 'CHAR' }
-    |   RBOOLEAN    { $$ = 'BOOL' }
+        RINTEGER    { $$ = INT }
+    |   RDOUBLE     { $$ = DOUBLE }
+    |   RCHAR       { $$ = CHAR }
+    |   RBOOLEAN    { $$ = BOOL }
 ;
 
 L_PARAMS:
@@ -243,27 +256,28 @@ L_SENT:
 ;
 
 SENT:
-        PRINT PTCOMA                { $$ = $1; }
-    |   PRINT                       { $$ = $1; }
-    |   VAR_DEC PTCOMA              { $$ = $1; }
-    |   VAR_DEC                     { $$ = $1; }
-    |   ASIGNACION PTCOMA           { $$ = $1; }
-    |   ASIGNACION                  { $$ = $1; }
-    |   WHILE                       { $$ = $1; }
-    |   DOWHILE PTCOMA              { $$ = $1; }
-    |   DOWHILE                     { $$ = $1; }
-    |   IF                          { $$ = $1; }
-    |   FOR                         { $$ = $1; }
-    |   RETURN                      { $$ = $1; }
-    |   BREAK PTCOMA                { $$ = $1; }
-    |   BREAK                       { $$ = $1; }
-    |   CONTINUE PTCOMA             { $$ = $1; }
-    |   CONTINUE                    { $$ = $1; }
-    |   STRC_DEC                    { $$ = $1; }
-    |   L_ACCESO INCREMENTO PTCOMA  { $$ = new IncDec(new Acceso($1,@1.first_line,@1.first_column),1,@1.first_line,@1.first_column); }
-    |   L_ACCESO DECREMENTO PTCOMA  { $$ = new IncDec(new Acceso($1,@1.first_line,@1.first_column),-1,@1.first_line,@1.first_column); }
-    |   L_ACCESO INCREMENTO         { $$ = new IncDec(new Acceso($1,@1.first_line,@1.first_column),1,@1.first_line,@1.first_column); }
-    |   L_ACCESO DECREMENTO         { $$ = new IncDec(new Acceso($1,@1.first_line,@1.first_column),-1,@1.first_line,@1.first_column); }
+        PRINT PTCOMA                        { $$ = $1; }
+    |   PRINT                               { $$ = $1; }
+    |   VAR_DEC PTCOMA                      { $$ = $1; }
+    |   VAR_DEC                             { $$ = $1; }
+    |   ASIGNACION PTCOMA                   { $$ = $1; }
+    |   ASIGNACION                          { $$ = $1; }
+    |   WHILE                               { $$ = $1; }
+    |   DOWHILE PTCOMA                      { $$ = $1; }
+    |   DOWHILE                             { $$ = $1; }
+    |   IF                                  { $$ = $1; }
+    |   FOR                                 { $$ = $1; }
+    |   RETURN                              { $$ = $1; }
+    |   BREAK PTCOMA                        { $$ = $1; }
+    |   BREAK                               { $$ = $1; }
+    |   CONTINUE PTCOMA                     { $$ = $1; }
+    |   CONTINUE                            { $$ = $1; }
+    |   STRC_DEC                            { $$ = $1; }
+    |   L_ACCESO PTCOMA                     { $$ = new Acceso($1,@1.first_line,@1.first_column); }
+    |   L_ACCESO INCREMENTO PTCOMA          { $$ = new IncDec(new Acceso($1,@1.first_line,@1.first_column),1,@1.first_line,@1.first_column); }
+    |   L_ACCESO DECREMENTO PTCOMA          { $$ = new IncDec(new Acceso($1,@1.first_line,@1.first_column),-1,@1.first_line,@1.first_column); }
+    |   L_ACCESO INCREMENTO                 { $$ = new IncDec(new Acceso($1,@1.first_line,@1.first_column),1,@1.first_line,@1.first_column); }
+    |   L_ACCESO DECREMENTO                 { $$ = new IncDec(new Acceso($1,@1.first_line,@1.first_column),-1,@1.first_line,@1.first_column); }
 ;
 
 BREAK:
@@ -340,7 +354,7 @@ PARAM:
 ;
 
 VAR_DEC:
-        TYPE L_ID IGUAL VAR_INIT                { $$ = new DeclaracionJ(new Tipo($1,0),$2,false,false,$4,@1.first_line,@1.first_column); console.log($$);     }
+        TYPE L_ID IGUAL VAR_INIT                { $$ = new DeclaracionJ(new Tipo($1,0),$2,false,false,$4,@1.first_line,@1.first_column);  }
     |   ID L_ID IGUAL VAR_INIT                  { $$ = new DeclaracionJ(new Tipo($1,0),$2,false,false,$4,@1.first_line,@1.first_column);        }
     |   RVAR ID DOSPTIGUAL VAR_INIT             { $$ = new DeclaracionJ(new Tipo('$VAR',0),[$2],false,false,$4,@1.first_line,@1.first_column);  }
     |   RCONST ID DOSPTIGUAL VAR_INIT           { $$ = new DeclaracionJ(null,[$2],true,false,$4,@1.first_line,@1.first_column);     }
@@ -369,8 +383,8 @@ ARRAY_INIT:
 ;
 
 LISTA_EXP:
-        LISTA_EXP COMA EXP
-    |   EXP
+        LISTA_EXP COMA EXP  { $$ = $1; $$.push($3); }
+    |   EXP                 { $$ = [$1]; }
 ;
 
 EXP:
@@ -407,6 +421,7 @@ EXP2:
     |   MENOS   EXP2 %prec UMINUS   { $$ = new OpeArit(TipoOpeJ.NEGATIVO,$2,null,@1.first_line,@1.first_column); }
     |   LITERAL                     { $$ = $1; }
     |   INSTANCIA_STRC              { $$ = $1; }
+    |   RNULL                       { $$ = new Null(@1.first_line,@1.first_column); }
 ;
 
 LITERAL:
@@ -432,7 +447,7 @@ L_ACCESO:
 ACCESO:
         ID              { $$ = new Identificador($1,@1.first_line,@1.first_column); }              
     |   ACCESO_ARREGLO
-    |   CALL_METHOD
+    |   CALL_METHOD     { $$ = $1; }
 ;
 
 ACCESO_ARREGLO:
@@ -440,6 +455,6 @@ ACCESO_ARREGLO:
 ;
 
 CALL_METHOD:
-        ID PARIZQ LISTA_EXP PARDER
-    |   ID PARIZQ PARDER
+        ID PARIZQ LISTA_EXP PARDER  { $$ = new CallFun($1,$3,@1.first_line,@1.first_column); }
+    |   ID PARIZQ PARDER            { $$ = new CallFun($1,[],@1.first_line,@1.first_column); }
 ;

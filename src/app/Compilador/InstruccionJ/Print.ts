@@ -28,7 +28,8 @@ export class Print extends InstruccionJ {
             concatCodigo('print("%i",' + temp + ');');
             concatCodigo('print("%c",10);');
             ts.SacarTemporal(temp);
-        } else if (tipo.isDouble()) {
+        } 
+        else if (tipo.isDouble()) {
             concatCodigo('print("%d",' + temp + ');');
             concatCodigo('print("%c",10);');
             ts.SacarTemporal(temp);
