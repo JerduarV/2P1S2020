@@ -7,6 +7,7 @@ import { SimbFuncion } from './SimbFuncion';
 import { DecFun } from '../InstruccionJ/DecFun';
 import { Display } from './Display';
 import { DefStruct } from '../InstruccionJ/DefStruct';
+import { ParamT2 } from '../ExpresionJ/CallFun2';
 
 export function NewTablaLocal(padre: TablaSimbJ): TablaSimbJ {
     let t: TablaSimbJ = new TablaSimbJ(padre.getArchivo(), padre.getConsola());
@@ -208,6 +209,16 @@ export class TablaSimbJ {
         }
         let funcion: SimbFuncion = <SimbFuncion>global.tabla.get(key);
         return funcion.BuscarDefinicion(tiposParam);
+    }
+
+    public BuscarFuncion2(id: string, tiposParam: ParamT2[], lista_tipo: Tipo[]): DecFun {
+        let key: string = this.getKeyVar('fun', id);
+        let global: TablaSimbJ = this.GetGlobal();
+        if (!global.tabla.has(key)) {
+            return null;
+        }
+        let funcion: SimbFuncion = <SimbFuncion>global.tabla.get(key);
+        return funcion.BuscarDefinicionPorNombre(tiposParam,lista_tipo);
     }
 
     public GetGlobal():TablaSimbJ{

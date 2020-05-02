@@ -6,6 +6,7 @@ import { ErrorLup } from 'src/app/Auxiliares/Error';
 import { genTemp, concatCodigo, getTempAct } from 'src/app/Auxiliares/Utilidades';
 import { Tipo } from '../TSJ/Tipo';
 import { CallFun } from './CallFun';
+import { CallFun2 } from './CallFun2';
 
 export class Acceso extends ExpresionJ {
 
@@ -29,6 +30,8 @@ export class Acceso extends ExpresionJ {
                 return variable.getTipo();
             }else if(this.lista_exp[0] instanceof CallFun){
                 return (<CallFun>this.lista_exp[0]).getTipo(ts);
+            }else if(this.lista_exp[0] instanceof CallFun2){
+                return (<CallFun2>this.lista_exp[0].getTipo(ts));
             }
         }
     }
@@ -78,6 +81,11 @@ export class Acceso extends ExpresionJ {
             //#region CALL FUN
             else if(this.lista_exp[0] instanceof CallFun){
                 (<CallFun>this.lista_exp[0]).Traducir(ts);
+            }
+            //#endregion
+            //#region CALL FUN 2
+            else if(this.lista_exp[0] instanceof CallFun2){
+                (<CallFun2>this.lista_exp[0]).Traducir(ts);
             }
             //#endregion
         }

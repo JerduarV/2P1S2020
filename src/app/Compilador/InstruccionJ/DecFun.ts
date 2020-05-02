@@ -102,6 +102,26 @@ export class DecFun extends InstruccionJ {
         }
     }
 
+    public hasParametroIgual(nombre: string, tipo: Tipo):boolean{
+        for(let i=0; i < this.parametroFormales.length; i++){
+            let param: ParametroFormal = this.parametroFormales[i];
+            if(param.nombre.toUpperCase() == nombre.toUpperCase() && param.getTipo().esIgualA(tipo)){
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public hasParametroCasteo(nombre: string, tipo: Tipo):boolean{
+        for(let i=0; i < this.parametroFormales.length; i++){
+            let param: ParametroFormal = this.parametroFormales[i];
+            if(param.nombre.toUpperCase() == nombre.toUpperCase() && param.getTipo().AplicaCasteo(tipo)){
+                return true;
+            }
+        }
+        return false;
+    }
+
     public getNombre(): string {
         return this.nombre;
     }

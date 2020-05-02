@@ -153,9 +153,12 @@
     var Identificador = require('../app/Compilador/ExpresionJ/Identificador').Identificador;
     var Acceso = require('../app/Compilador/ExpresionJ/Acceso').Acceso;
     var IncDec = require('../app/Compilador/ExpresionJ/IncDec').IncDec;
+    var CasteoExplicito = require('../app/Compilador/ExpresionJ/CasteoExplicito').CasteoExplicito;
     var TipoLit = require('../app/Compilador/ExpresionJ/LiteralJ').TipoLit;
     var Null = require('../app/Compilador/ExpresionJ/Null').Null;
     var CallFun = require('../app/Compilador/ExpresionJ/CallFun').CallFun;
+    var CallFun2 = require('../app/Compilador/ExpresionJ/CallFun2').CallFun2;
+    var ParamT2 = require('../app/Compilador/ExpresionJ/CallFun2').ParamT2;
     var TipoOpeJ = require('../app/Compilador/ExpresionJ/OperacionesJ/OperacionJ').TipoOpeJ;
     var StrcArray = require('../app/Compilador/ExpresionJ/STRC/StrcArray').StrcArray;
     var StrcStruct = require('../app/Compilador/ExpresionJ/STRC/StrcStruct').StrcStruct;
@@ -380,21 +383,26 @@ VAR_INIT:
 ;
 
 ARRAY_INIT:
-        LLAVEIZQ LISTA_EXP LLAVEDER
+        LLAVEIZQ LISTA_ARRAY LLAVEDER
+;
+
+LISTA_ARRAY:
+        LISTA_ARRAY COMA EXP
+    |   EXP
 ;
 
 LISTA_EXP:
-        LISTA_EXP COMA EXP  { $$ = $1; $$.push($3); }
-    |   EXP                 { $$ = [$1]; }
+        LISTA_EXP COMA VAR_INIT  { $$ = $1; $$.push($3); }
+    |   VAR_INIT                 { $$ = [$1]; }
 ;
 
 EXP:
-        EXP     AND     EXP                     { $$ = new OpeLogica(TipoOpeJ.AND,$1,$3,@1.first_line,@1.first_column); }
-    |   EXP     OR      EXP                     { $$ = new OpeLogica(TipoOpeJ.OR,$1,$3,@1.first_line,@1.first_column); }
-    |   EXP     XOR     EXP                     { $$ = new OpeLogica(TipoOpeJ.XOR,$1,$3,@1.first_line,@1.first_column); }
-    |   NOT     EXP                             { $$ = new OpeLogica(TipoOpeJ.NOT,$2,null,@1.first_line,@1.first_column); }
-    |   PARIZQ TYPE PARDER EXP %prec CASTEO
-    |   EXPR                                    { $$ = $1; }
+        EXP     AND     EXP         { $$ = new OpeLogica(TipoOpeJ.AND,$1,$3,@1.first_line,@1.first_column); }
+    |   EXP     OR      EXP         { $$ = new OpeLogica(TipoOpeJ.OR,$1,$3,@1.first_line,@1.first_column); }
+    |   EXP     XOR     EXP         { $$ = new OpeLogica(TipoOpeJ.XOR,$1,$3,@1.first_line,@1.first_column); }
+    |   NOT     EXP                 { $$ = new OpeLogica(TipoOpeJ.NOT,$2,null,@1.first_line,@1.first_column); }
+    |   PARIZQ TYPE PARDER EXP      { $$ = new CasteoExplicito(new Tipo($2,0),$4,@1.first_line,@1.first_column); }
+    |   EXPR                        { $$ = $1; }
 ;
 
 EXPR:
@@ -458,4 +466,14 @@ ACCESO_ARREGLO:
 CALL_METHOD:
         ID PARIZQ LISTA_EXP PARDER  { $$ = new CallFun($1,$3,@1.first_line,@1.first_column); }
     |   ID PARIZQ PARDER            { $$ = new CallFun($1,[],@1.first_line,@1.first_column); }
+    |   ID PARIZQ L_PARAM2 PARDER   { $$ = new CallFun2($1,$3,@1.first_line,@1.first_column); }
+;
+
+L_PARAM2:
+        L_PARAM2 COMA PARAM2    { $$ = $1; $$.push($3); }
+    |   PARAM2                  { $$ = [$1]; }
+;
+
+PARAM2:
+        ID IGUAL VAR_INIT   { $$ = new ParamT2($1,$3); }
 ;

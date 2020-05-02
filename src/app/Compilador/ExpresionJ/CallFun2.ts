@@ -3,61 +3,68 @@ import { Tipo } from '../TSJ/Tipo';
 import { ErrorLup } from 'src/app/Auxiliares/Error';
 import { DecFun } from '../InstruccionJ/DecFun';
 import { getTempAct, concatCodigo, genTemp } from 'src/app/Auxiliares/Utilidades';
-import { concat } from 'rxjs';
 
-export class CallFun extends ExpresionJ {
+export class ParamT2 {
+    nombre: string;
+    exp: ExpresionJ;
 
-    private readonly id: string
-    private readonly paramAct: ExpresionJ[];
+    constructor(nombre: string, exp: ExpresionJ) {
+        this.nombre = nombre;
+        this.exp = exp;
+    }
+}
 
+export class CallFun2 extends ExpresionJ {
 
-    constructor(id: string, param: ExpresionJ[], fila: number, col: number) {
+    private readonly id: string;
+    private readonly lista_param: ParamT2[];
+
+    constructor(id: string, lista: ParamT2[], fila: number, col: number) {
         super(fila, col);
         this.id = id;
-        this.paramAct = param;
+        this.lista_param = lista;
     }
 
     public getTipo(ts: import("../TSJ/TablaSimbJ").TablaSimbJ): Object {
         let lista_tipos: Tipo[] = [];
-        for (let i = 0; i < this.paramAct.length; i++) {
-            let o: Object = this.paramAct[i].getTipo(ts);
+        for (let i = 0; i < this.lista_param.length; i++) {
+            let o: Object = this.lista_param[i].exp.getTipo(ts);
             if (o instanceof ErrorLup) {
                 return o;
             }
             lista_tipos.push(<Tipo>o);
         }
 
-        let funcion: DecFun = ts.BuscarFuncion(this.id, lista_tipos);
+        let funcion: DecFun = ts.BuscarFuncion2(this.id, this.lista_param, lista_tipos);
         if (funcion == null) {
             return ts.GenerarError('No se encuentra la función ' + this.id, this.getFila(), this.getCol());
         }
+        //console.log(funcion);
         return funcion.getTipoRet();
     }
 
     public Traducir(ts: import("../TSJ/TablaSimbJ").TablaSimbJ): void {
-        //#region BUSCQUEDA FUNCIÓN
+
+        //#region BUSQUEDA FUNCIÓN
         let lista_tipos: Tipo[] = [];
-        for (let i = 0; i < this.paramAct.length; i++) {
-            let o: Object = this.paramAct[i].getTipo(ts);
+        for (let i = 0; i < this.lista_param.length; i++) {
+            let o: Object = this.lista_param[i].exp.getTipo(ts);
             if (o instanceof ErrorLup) {
-                //console.log('error');
                 return;
             }
             lista_tipos.push(<Tipo>o);
         }
 
-        let funcion: DecFun = ts.BuscarFuncion(this.id, lista_tipos);
+        let funcion: DecFun = ts.BuscarFuncion2(this.id, this.lista_param, lista_tipos);
         if (funcion == null) {
             return;
         }
         //#endregion
 
-        //console.log(this.paramAct);
-        
         //RESOLUCIÓN DE PARAMETROS ACTUALES
         let lista_temp_param: string[] = [];
-        this.paramAct.forEach(param => {
-            param.Traducir(ts);
+        this.lista_param.forEach(param => {
+            param.exp.Traducir(ts);
             let p: string = getTempAct();
             lista_temp_param.push(p);
             //ts.guardarTemporal(p);
@@ -74,19 +81,19 @@ export class CallFun extends ExpresionJ {
             concatCodigo(t1 + ' = P + ' + (cont++) + ';');
             concatCodigo('Stack[' + t1 + '] = ' + temp + ';');
         });
-        concatCodigo('#* FIN GUARDADO TEMPORALES *#')
+        concatCodigo('#* FIN GUARDADO TEMPORALES *#');
 
         //ESCRIBO SALIDA DEL ESPACIO DE TEMPORALES GUARDADOS
         concatCodigo('P = P + ' + ts.tabla_temporales.size + ';');
 
         //PASO DE PARAMETROS
         concatCodigo('#* PASANDO PARAMETROS *#');
-        for (let i = 0; i < lista_temp_param.length; i++) {
+        for (let i = 0; i < funcion.getParamatrosFormales().length; i++) {
             let t1: string = genTemp();
             concatCodigo(t1 + ' = P + ' + (i + 1) + ';');
-            concatCodigo('Stack[' + t1 + '] = ' + lista_temp_param[i] + ';');
+            concatCodigo('Stack[' + t1 + '] = ' + lista_temp_param[this.BuscarTemporal(funcion.getParamatrosFormales()[i].nombre)] + ';');
         }
-        concatCodigo('#* FIN PASO DE PARAMETROS *#')
+        concatCodigo('#* FIN PASO DE PARAMETROS *#');
 
         concatCodigo('#* LLAMANDO FUNCION *#');
         concatCodigo('call ' + funcion.getNombreLlamada() + ';');
@@ -108,7 +115,7 @@ export class CallFun extends ExpresionJ {
         let trest: string = genTemp();
         //REGRESANDO A LA FUNCIÓN ACTUAL
         concatCodigo('P = P - ' + ts.getTamanioFunTotal() + ';');
-        
+
         concatCodigo(trest + ' = ' + tr + ';');
         ts.guardarTemporal(trest);
         lista_temp_param.forEach(temp => {
@@ -116,13 +123,16 @@ export class CallFun extends ExpresionJ {
         });
     }
 
-    public getId(): string {
-        return this.id;
-    }
 
-    public getParam(): ExpresionJ[] {
-        return this.paramAct;
-    }
 
+    private BuscarTemporal(nombre_param: string): number {
+        for (let i = 0; i < this.lista_param.length; i++) {
+            if (this.lista_param[i].nombre.toUpperCase() == nombre_param.toUpperCase()) {
+                return i;
+            }
+        }
+        console.log('No encontre el parametro');
+        return 0;
+    }
 
 }
