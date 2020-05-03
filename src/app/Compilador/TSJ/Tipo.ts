@@ -10,6 +10,10 @@ export function getTipoBool(): Tipo {
     return new Tipo(BOOL, 0)
 }
 
+export function getTipoInteger(): Tipo {
+    return new Tipo(INT, 0)
+}
+
 export function getTipoNull():Tipo{
     return new Tipo(NULL,0);
 }

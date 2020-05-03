@@ -149,6 +149,9 @@
     var While = require('../app/Compilador/InstruccionJ/While').While;
     var Print = require('../app/Compilador/InstruccionJ/Print').Print;
     var DecFun = require('../app/Compilador/InstruccionJ/DecFun').DecFun;
+    var Switch = require('../app/Compilador/InstruccionJ/Switch').Switch;
+    var Caso = require('../app/Compilador/InstruccionJ/Switch').Caso;
+
     var LiteralJ = require('../app/Compilador/ExpresionJ/LiteralJ').LiteralJ;
     var Identificador = require('../app/Compilador/ExpresionJ/Identificador').Identificador;
     var Acceso = require('../app/Compilador/ExpresionJ/Acceso').Acceso;
@@ -157,6 +160,7 @@
     var TipoLit = require('../app/Compilador/ExpresionJ/LiteralJ').TipoLit;
     var Null = require('../app/Compilador/ExpresionJ/Null').Null;
     var CallFun = require('../app/Compilador/ExpresionJ/CallFun').CallFun;
+    var ArrayInit = require('../app/Compilador/ExpresionJ/ArrayInit').ArrayInit;
     var CallFun2 = require('../app/Compilador/ExpresionJ/CallFun2').CallFun2;
     var ParamT2 = require('../app/Compilador/ExpresionJ/CallFun2').ParamT2;
     var TipoOpeJ = require('../app/Compilador/ExpresionJ/OperacionesJ/OperacionJ').TipoOpeJ;
@@ -277,11 +281,26 @@ SENT:
     |   CONTINUE PTCOMA                     { $$ = $1; }
     |   CONTINUE                            { $$ = $1; }
     |   STRC_DEC                            { $$ = $1; }
+    |   SWITCH                              { $$ = $1; }
     |   L_ACCESO PTCOMA                     { $$ = new Acceso($1,@1.first_line,@1.first_column); }
     |   L_ACCESO INCREMENTO PTCOMA          { $$ = new IncDec(new Acceso($1,@1.first_line,@1.first_column),1,@1.first_line,@1.first_column); }
     |   L_ACCESO DECREMENTO PTCOMA          { $$ = new IncDec(new Acceso($1,@1.first_line,@1.first_column),-1,@1.first_line,@1.first_column); }
     |   L_ACCESO INCREMENTO                 { $$ = new IncDec(new Acceso($1,@1.first_line,@1.first_column),1,@1.first_line,@1.first_column); }
     |   L_ACCESO DECREMENTO                 { $$ = new IncDec(new Acceso($1,@1.first_line,@1.first_column),-1,@1.first_line,@1.first_column); }
+;
+
+SWITCH:
+        RSWITCH PARIZQ EXP PARDER LLAVEIZQ L_CASOS LLAVEDER     { $$ = new Switch($3,$6,@1.first_line,@1.first_column); }
+;
+
+L_CASOS:
+        L_CASOS CASO    { $$ = $1; $$.push($2); }
+    |   CASO            { $$ = [$1]; }
+;
+
+CASO:
+        RCASE EXP DOSPT L_SENT  { $$ = new Caso($2,$4); }
+    |   RDEFAULT DOSPT L_SENT   { $$ = new Caso(null,$3); }
 ;
 
 BREAK:
@@ -379,16 +398,16 @@ L_ID:
 
 VAR_INIT:
         EXP         { $$ = $1; }
-    |   ARRAY_INIT
+    |   ARRAY_INIT  { $$ = $1; }
 ;
 
 ARRAY_INIT:
-        LLAVEIZQ LISTA_ARRAY LLAVEDER
+        LLAVEIZQ LISTA_ARRAY LLAVEDER   { $$ = new ArrayInit($2,@1.first_line,@1.first_column); }
 ;
 
 LISTA_ARRAY:
-        LISTA_ARRAY COMA EXP
-    |   EXP
+        LISTA_ARRAY COMA EXP    { $$ = $1; $$.push($3); }
+    |   EXP                     { $$ = [$1]; }
 ;
 
 LISTA_EXP:
