@@ -148,6 +148,18 @@ export class TablaSimbJ {
         this.tabla_structs.set(key, strc);
     }
 
+    /**
+     * Función que busca y retorna la definción de una estructura
+     * @param strc Nombre de la estructura que se quiere recuperar
+     */
+    public BuscarStruct(strc: string):DefStruct{
+        let key: string = strc.toUpperCase();
+        if (this.tabla_structs.has(key)) {
+            return this.tabla_structs.get(key);
+        }
+        return null;
+    }
+
     public getConsola(): Consola {
         return this.consola;
     }

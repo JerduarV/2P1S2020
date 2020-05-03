@@ -68,7 +68,7 @@ export class DefStruct extends InstruccionJ {
         concatCodigo('proc jerduarCons_' + this.id.toUpperCase() + ' begin');
         concatCodigo(t1 + ' = H;');
 
-        if(this.lista_atrib.length == 0){
+        if (this.lista_atrib.length == 0) {
             concatCodigo('H = H + 1;');
         }
 
@@ -146,8 +146,8 @@ export class DefStruct extends InstruccionJ {
     }
 
     private HayValores(): boolean {
-        for(let i = 0; i < this.lista_atrib.length; i++){
-            if(this.lista_atrib[i].exp != null){
+        for (let i = 0; i < this.lista_atrib.length; i++) {
+            if (this.lista_atrib[i].exp != null) {
                 return true;
             }
         }
@@ -156,6 +156,26 @@ export class DefStruct extends InstruccionJ {
 
     public getId(): string {
         return this.id;
+    }
+
+    public getPosAtributo(id: string): number {
+        for (let i = 0; i < this.lista_atrib.length; i++) {
+            const atrib = this.lista_atrib[i];
+            if (atrib.id.toUpperCase() == id.toUpperCase()) {
+                return i;
+            }
+        }
+        return -1;
+    }
+
+    public getAtributo(id: string):Tipo{
+        for (let i = 0; i < this.lista_atrib.length; i++) {
+            const atrib = this.lista_atrib[i];
+            if (atrib.id.toUpperCase() == id.toUpperCase()) {
+                return atrib.tipo;
+            }
+        }
+        return null;
     }
 
 }
