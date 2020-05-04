@@ -7,7 +7,7 @@ import { concat } from 'rxjs';
 
 export class CallFun extends ExpresionJ {
 
-    private readonly id: string
+    protected readonly id: string
     private readonly paramAct: ExpresionJ[];
 
 

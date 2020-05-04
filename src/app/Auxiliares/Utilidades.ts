@@ -54,6 +54,8 @@ export function QuemarFunciones(ts: TablaSimbJ): void {
     GenerarCharToStrig();
     GenerarCompString(ts.temp_null);
     GenerarConsArreglo1();
+    GenerarToUpperCase(ts.temp_null);
+    GenerarToLowerCase(ts.temp_null);
 }
 
 
@@ -520,4 +522,170 @@ function GenerarConsArreglo1(): void {
     concatCodigo('end\n#* FIN INSTANCIA ARREGLOS*#');
     //#endregion
 
+}
+
+function GenerarToUpperCase(temp_null: string): void {
+    //#region TEMPORALES
+    let t0: string = genTemp();
+    let t1: string = genTemp()
+    let t2: string = genTemp()
+    let t3: string = genTemp()
+    let t4: string = genTemp()
+    let t5: string = genTemp()
+    let t6: string = genTemp()
+    let t9: string = genTemp()
+    let t7: string = genTemp()
+    let t8: string = genTemp()
+    let t10: string = genTemp()
+    //#endregion
+
+    //#region ETIQUETAS
+    let etq_ini: string = getEtiqueta();
+    let etq_1: string = getEtiqueta();
+    let etq_actu: string = getEtiqueta();
+    let etq_sal: string = getEtiqueta();
+    let etq_enie: string = getEtiqueta();
+    let etqv: string = getEtiqueta();
+    let etqf: string = getEtiqueta();
+
+    //#endregion
+
+    concatCodigo('\n/*STRING TO UPPER CASE*/\n');
+    concatCodigo('proc jerduar_TOUPPERCASE begin\n');
+
+    concatCodigo(t0 + ' = P + 1;');
+    concatCodigo(t10 + ' = Stack[' + t0 + '];')
+
+    concatCodigo('if(' + t10 + ' == -1) goto ' + etqv + ';');
+    concatCodigo('goto ' + etqf + ';');
+    concatCodigo(etqv + ':');
+    concatCodigo(t10 + ' = ' + temp_null + ';');
+    concatCodigo(etqf + ':');
+
+
+    concatCodigo(t1 + ' = heap[' + t10 + '];\n' + t2 + ' = 0;\n' + t3 + ' = 1;\n' + t6 + ' = h;');
+    concatCodigo(t7 + ' = ' + t1 + ' + 1;\nh = h + ' + t7 + ';\nheap[' + t6 + '] = ' + t1 + ';\n' + etq_ini + ':');
+    concatCodigo('if(' + t2 + ' == ' + t1 + ') goto ' + etq_sal + ';\n' + t4 + ' = ' + t10 + ' + ' + t3 + ';');
+    concatCodigo(t8 + ' = ' + t6 + ' + ' + t3 + ';\n' + t5 + ' = heap[' + t4 + '];');
+
+    concatCodigo('if(' + t5 + ' == 97) goto ' + etq_1 + ';/*a*/');
+    concatCodigo('if(' + t5 + ' == 98) goto ' + etq_1 + ';/*b*/');
+    concatCodigo('if(' + t5 + ' == 99) goto ' + etq_1 + ';/*c*/');
+    concatCodigo('if(' + t5 + ' == 100) goto ' + etq_1 + ';/*d*/');
+    concatCodigo('if(' + t5 + ' == 101) goto ' + etq_1 + ';/*e*/');
+    concatCodigo('if(' + t5 + ' == 102) goto ' + etq_1 + ';/*f*/');
+    concatCodigo('if(' + t5 + ' == 103) goto ' + etq_1 + ';/*g*/');
+    concatCodigo('if(' + t5 + ' == 104) goto ' + etq_1 + ';/*h*/');
+    concatCodigo('if(' + t5 + ' == 105) goto ' + etq_1 + ';/*i*/');
+    concatCodigo('if(' + t5 + ' == 106) goto ' + etq_1 + ';/*j*/');
+    concatCodigo('if(' + t5 + ' == 107) goto ' + etq_1 + ';/*k*/');
+    concatCodigo('if(' + t5 + ' == 108) goto ' + etq_1 + ';/*l*/');
+    concatCodigo('if(' + t5 + ' == 109) goto ' + etq_1 + ';/*m*/');
+    concatCodigo('if(' + t5 + ' == 110) goto ' + etq_1 + ';/*n*/');
+    concatCodigo('if(' + t5 + ' == 111) goto ' + etq_1 + ';/*o*/');
+    concatCodigo('if(' + t5 + ' == 112) goto ' + etq_1 + ';/*p*/');
+    concatCodigo('if(' + t5 + ' == 113) goto ' + etq_1 + ';/*q*/');
+    concatCodigo('if(' + t5 + ' == 114) goto ' + etq_1 + ';/*r*/');
+    concatCodigo('if(' + t5 + ' == 115) goto ' + etq_1 + ';/*s*/');
+    concatCodigo('if(' + t5 + ' == 116) goto ' + etq_1 + ';/*t*/');
+    concatCodigo('if(' + t5 + ' == 117) goto ' + etq_1 + ';/*u*/');
+    concatCodigo('if(' + t5 + ' == 118) goto ' + etq_1 + ';/*v*/');
+    concatCodigo('if(' + t5 + ' == 119) goto ' + etq_1 + ';/*w*/');
+    concatCodigo('if(' + t5 + ' == 120) goto ' + etq_1 + ';/*x*/');
+    concatCodigo('if(' + t5 + ' == 121) goto ' + etq_1 + ';/*y*/');
+    concatCodigo('if(' + t5 + ' == 122) goto ' + etq_1 + ';/*z*/');
+    concatCodigo('if(' + t5 + ' == 241) goto ' + etq_enie + ';/*ñ*/');
+
+    concatCodigo('heap[' + t8 + '] = ' + t5 + ';\ngoto ' + etq_actu + ';');
+
+    concatCodigo(etq_1 + ':\n' + t9 + ' = ' + t5 + ' - 32;\nheap[' + t8 + '] = ' + t9 + ';\ngoto ' + etq_actu + ';');
+
+    concatCodigo(etq_enie + ':\nheap[' + t8 + '] = 209;\n' + etq_actu + ':');
+
+    concatCodigo(t2 + ' = ' + t2 + ' + 1;\n' + t3 + ' = ' + t3 + ' + 1;\ngoto ' + etq_ini + ';');
+    concatCodigo(etq_sal + ':\nstack[p] = ' + t6 + ';');
+    concatCodigo('\nend\n/*FIN STRING UPPERCASE*/\n');
+
+}
+
+function GenerarToLowerCase(temp_null: string): void {
+    //#region TEMPORALES
+    let t1: string = genTemp().toString();
+    let t2: string = genTemp().toString();
+    let t3: string = genTemp().toString();
+    let t4: string = genTemp().toString();
+    let t5: string = genTemp().toString();
+    let t6: string = genTemp().toString();
+    let t7: string = genTemp().toString();
+    let t8: string = genTemp().toString();
+    let t9: string = genTemp().toString();
+    let t0: string = genTemp().toString();
+    let t10: string = genTemp().toString();
+    //#endregion
+
+    //#region ETIQUETAS
+    let etq_ini: string = getEtiqueta();
+    let etq_1: string = getEtiqueta();
+    let etq_actu: string = getEtiqueta();
+    let etq_sal: string = getEtiqueta();
+    let etq_enie: string = getEtiqueta();
+    let etqv: string = getEtiqueta();
+    let etqf: string = getEtiqueta();
+
+    //#endregion
+
+    concatCodigo('\n/*STRING TO LOWER CASE*/\n');
+    concatCodigo('proc StringToLowerCase begin\n');
+
+    concatCodigo(t0 + ' = P + 1;');
+    concatCodigo(t10 + ' = Stack[' + t0 + '];')
+
+    concatCodigo('if(' + t10 + ' == -1) goto ' + etqv + ';');
+    concatCodigo('goto ' + etqf + ';');
+    concatCodigo(etqv + ':');
+    concatCodigo(t10 + ' = ' + temp_null + ';');
+    concatCodigo(etqf + ':');
+
+    concatCodigo(t1 + ' = heap[' + t10 + '];\n' + t2 + ' = 0;\n' + t3 + ' = 1;\n' + t6 + ' = h;');
+    concatCodigo(t7 + ' = ' + t1 + ' + 1;\nh = h + ' + t7 + ';\nheap[' + t6 + '] = ' + t1 + ';\n' + etq_ini + ':');
+    concatCodigo('if(' + t2 + ' == ' + t1 + ') goto ' + etq_sal + ';\n' + t4 + ' = ' + 10 + ' + ' + t3 + ';');
+    concatCodigo(t8 + ' = ' + t6 + ' + ' + t3 + ';\n' + t5 + ' = heap[' + t4 + '];');
+
+    concatCodigo('if(' + t5 + ' == 65) goto ' + etq_1 + ';/*A*/');
+    concatCodigo('if(' + t5 + ' == 66) goto ' + etq_1 + ';/*B*/');
+    concatCodigo('if(' + t5 + ' == 67) goto ' + etq_1 + ';/*C*/');
+    concatCodigo('if(' + t5 + ' == 68) goto ' + etq_1 + ';/*D*/');
+    concatCodigo('if(' + t5 + ' == 69) goto ' + etq_1 + ';/*E*/');
+    concatCodigo('if(' + t5 + ' == 70) goto ' + etq_1 + ';/*F*/');
+    concatCodigo('if(' + t5 + ' == 71) goto ' + etq_1 + ';/*G*/');
+    concatCodigo('if(' + t5 + ' == 72) goto ' + etq_1 + ';/*H*/');
+    concatCodigo('if(' + t5 + ' == 73) goto ' + etq_1 + ';/*I*/');
+    concatCodigo('if(' + t5 + ' == 74) goto ' + etq_1 + ';/*J*/');
+    concatCodigo('if(' + t5 + ' == 75) goto ' + etq_1 + ';/*K*/');
+    concatCodigo('if(' + t5 + ' == 76) goto ' + etq_1 + ';/*L*/');
+    concatCodigo('if(' + t5 + ' == 77) goto ' + etq_1 + ';/*M*/');
+    concatCodigo('if(' + t5 + ' == 78) goto ' + etq_1 + ';/*N*/');
+    concatCodigo('if(' + t5 + ' == 79) goto ' + etq_1 + ';/*O*/');
+    concatCodigo('if(' + t5 + ' == 80) goto ' + etq_1 + ';/*P*/');
+    concatCodigo('if(' + t5 + ' == 81) goto ' + etq_1 + ';/*Q*/');
+    concatCodigo('if(' + t5 + ' == 82) goto ' + etq_1 + ';/*R*/');
+    concatCodigo('if(' + t5 + ' == 83) goto ' + etq_1 + ';/*S*/');
+    concatCodigo('if(' + t5 + ' == 84) goto ' + etq_1 + ';/*T*/');
+    concatCodigo('if(' + t5 + ' == 85) goto ' + etq_1 + ';/*U*/');
+    concatCodigo('if(' + t5 + ' == 86) goto ' + etq_1 + ';/*V*/');
+    concatCodigo('if(' + t5 + ' == 87) goto ' + etq_1 + ';/*W*/');
+    concatCodigo('if(' + t5 + ' == 88) goto ' + etq_1 + ';/*X*/');
+    concatCodigo('if(' + t5 + ' == 89) goto ' + etq_1 + ';/*Y*/');
+    concatCodigo('if(' + t5 + ' == 90) goto ' + etq_1 + ';/*Z*/');
+    concatCodigo('if(' + t5 + ' == 209) goto ' + etq_enie + ';/*Ñ*/');
+
+    concatCodigo('heap[' + t8 + '] = ' + t5 + ';\ngoto ' + etq_actu + ';');
+
+    concatCodigo(etq_1 + ':\n' + t9 + ' = ' + t5 + ' + 32;\nheap[' + t8 + '] = ' + t9 + ';\ngoto ' + etq_actu + ';');
+
+    concatCodigo(etq_enie + ':\nheap[' + t8 + '] = 241;\n' + etq_actu + ':');
+
+    concatCodigo(t2 + ' = ' + t2 + ' + 1;\n' + t3 + ' = ' + t3 + ' + 1;\ngoto ' + etq_ini + ';');
+    concatCodigo(etq_sal + ':\nstack[p] = ' + t6 + ';');
+    concatCodigo('\nend\n/*FIN STRING LOWERCASE*/\n');
 }

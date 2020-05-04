@@ -3,6 +3,7 @@ import { Tipo } from '../TSJ/Tipo';
 import { ErrorLup } from 'src/app/Auxiliares/Error';
 import { DecFun } from '../InstruccionJ/DecFun';
 import { getTempAct, concatCodigo, genTemp } from 'src/app/Auxiliares/Utilidades';
+import { CallFun } from './CallFun';
 
 export class ParamT2 {
     nombre: string;
@@ -14,14 +15,13 @@ export class ParamT2 {
     }
 }
 
-export class CallFun2 extends ExpresionJ {
+export class CallFun2 extends CallFun {
 
-    private readonly id: string;
+
     private readonly lista_param: ParamT2[];
 
     constructor(id: string, lista: ParamT2[], fila: number, col: number) {
-        super(fila, col);
-        this.id = id;
+        super(id,null,fila, col);
         this.lista_param = lista;
     }
 

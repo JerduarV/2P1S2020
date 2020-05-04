@@ -92,7 +92,7 @@ break;
 case 3:
  this.$ = [$$[$0]];            
 break;
-case 4: case 5: case 7: case 41: case 43: case 45: case 46: case 48: case 49: case 50: case 51: case 53: case 55: case 56: case 57: case 79: case 80: case 81: case 82: case 108: case 109: case 120: case 128: case 140: case 141: case 156:
+case 4: case 5: case 7: case 41: case 43: case 45: case 46: case 48: case 49: case 50: case 51: case 53: case 55: case 56: case 57: case 79: case 80: case 81: case 82: case 108: case 109: case 120: case 128: case 140: case 141: case 155: case 156:
  this.$ = $$[$0]; 
 break;
 case 6: case 36: case 40: case 42: case 44: case 47: case 52: case 54: case 135:
@@ -368,6 +368,9 @@ break;
 case 154:
  this.$ = new Identificador($$[$0],_$[$0].first_line,_$[$0].first_column); 
 break;
+case 157:
+ this.$ = new AccesoArray($$[$0-3],$$[$0-1],_$[$0-3].first_line,_$[$0-3].first_column); 
+break;
 case 158:
  this.$ = new CallFun($$[$0-3],$$[$0-1],_$[$0-3].first_line,_$[$0-3].first_column); 
 break;
@@ -551,6 +554,7 @@ parse: function parse(input) {
     var LiteralJ = require('../app/Compilador/ExpresionJ/LiteralJ').LiteralJ;
     var Identificador = require('../app/Compilador/ExpresionJ/Identificador').Identificador;
     var Acceso = require('../app/Compilador/ExpresionJ/Acceso').Acceso;
+    var AccesoArray = require('../app/Compilador/ExpresionJ/AccesoArray').AccesoArray;
     var IncDec = require('../app/Compilador/ExpresionJ/IncDec').IncDec;
     var CasteoExplicito = require('../app/Compilador/ExpresionJ/CasteoExplicito').CasteoExplicito;
     var TipoLit = require('../app/Compilador/ExpresionJ/LiteralJ').TipoLit;

@@ -155,6 +155,7 @@
     var LiteralJ = require('../app/Compilador/ExpresionJ/LiteralJ').LiteralJ;
     var Identificador = require('../app/Compilador/ExpresionJ/Identificador').Identificador;
     var Acceso = require('../app/Compilador/ExpresionJ/Acceso').Acceso;
+    var AccesoArray = require('../app/Compilador/ExpresionJ/AccesoArray').AccesoArray;
     var IncDec = require('../app/Compilador/ExpresionJ/IncDec').IncDec;
     var CasteoExplicito = require('../app/Compilador/ExpresionJ/CasteoExplicito').CasteoExplicito;
     var TipoLit = require('../app/Compilador/ExpresionJ/LiteralJ').TipoLit;
@@ -474,12 +475,12 @@ L_ACCESO:
 
 ACCESO:
         ID              { $$ = new Identificador($1,@1.first_line,@1.first_column); }              
-    |   ACCESO_ARREGLO
+    |   ACCESO_ARREGLO  { $$ = $1; }
     |   CALL_METHOD     { $$ = $1; }
 ;
 
 ACCESO_ARREGLO:
-        ID CORIZQ EXP CORDER
+        ID CORIZQ EXP CORDER    { $$ = new AccesoArray($1,$3,@1.first_line,@1.first_column); }
 ;
 
 CALL_METHOD:
