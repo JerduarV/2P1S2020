@@ -110,6 +110,9 @@
 ","                     return  'COMA'
 "."                     return  'PUNTO'
 
+/* REFERENCIA */
+"$"                     return  'DOLAR'
+
 <<EOF>>                 return  'EOF'
 .                       return  'INVALID'
 
@@ -157,6 +160,7 @@
     var Acceso = require('../app/Compilador/ExpresionJ/Acceso').Acceso;
     var AccesoArray = require('../app/Compilador/ExpresionJ/AccesoArray').AccesoArray;
     var IncDec = require('../app/Compilador/ExpresionJ/IncDec').IncDec;
+    var Dolar = require('../app/Compilador/ExpresionJ/Dolar').Dolar;
     var CasteoExplicito = require('../app/Compilador/ExpresionJ/CasteoExplicito').CasteoExplicito;
     var TipoLit = require('../app/Compilador/ExpresionJ/LiteralJ').TipoLit;
     var Null = require('../app/Compilador/ExpresionJ/Null').Null;
@@ -412,8 +416,13 @@ LISTA_ARRAY:
 ;
 
 LISTA_EXP:
-        LISTA_EXP COMA VAR_INIT  { $$ = $1; $$.push($3); }
-    |   VAR_INIT                 { $$ = [$1]; }
+        LISTA_EXP COMA ELEMENTO  { $$ = $1; $$.push($3); }
+    |   ELEMENTO                 { $$ = [$1]; }
+;
+
+ELEMENTO:
+        VAR_INIT        { $$ = $1; }
+    |   DOLAR L_ACCESO  { $$ = new Dolar(new Acceso($2,@1.first_line,@1.first_column),@1.first_line,@1.first_column); }
 ;
 
 EXP:

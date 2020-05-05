@@ -66,6 +66,9 @@
 ":"                     return  'DOSPT'
 ","                     return  'COMA'
 
+/* POR VALOR */
+"$"                     return  'DOLAR'
+
 <<EOF>>                 return  'EOF'
 .                       return  'INVALID'
 
