@@ -73,6 +73,11 @@ export class TablaSimbJ {
         }
     }
 
+    public BuscarGlobal(id: string):SimbVar{
+        let tabla_globa: TablaSimbJ = this.GetGlobal();
+        return tabla_globa.BuscarVariable(id);
+    }
+
     /**
      * Método para guardar una variable en la tabla de símbolos de J#
      * @param nombre Nombre de la variable

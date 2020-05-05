@@ -92,11 +92,14 @@ break;
 case 3:
  this.$ = [$$[$0]];            
 break;
-case 4: case 5: case 7: case 41: case 43: case 45: case 46: case 48: case 49: case 50: case 51: case 53: case 55: case 56: case 57: case 79: case 80: case 81: case 82: case 108: case 109: case 120: case 128: case 140: case 141: case 155: case 156:
+case 4: case 5: case 41: case 43: case 45: case 46: case 48: case 49: case 50: case 51: case 53: case 55: case 56: case 57: case 79: case 80: case 81: case 82: case 108: case 109: case 120: case 128: case 140: case 141: case 155: case 156:
  this.$ = $$[$0]; 
 break;
-case 6: case 36: case 40: case 42: case 44: case 47: case 52: case 54: case 135:
- this.$ = $$[$0-1]; 
+case 6:
+ this.$ = $$[$0-1]; this.$.dec_interna = false; 
+break;
+case 7:
+ this.$ = $$[$0]; this.$.dec_interna = false; 
 break;
 case 8:
  this.$ = new DefStruct($$[$0-4],$$[$0-1],_$[$0-5].first_line,_$[$0-5].first_column); 
@@ -154,6 +157,9 @@ case 32:
 break;
 case 33:
  this.$ = BOOL 
+break;
+case 36: case 40: case 42: case 44: case 47: case 52: case 54: case 135:
+ this.$ = $$[$0-1]; 
 break;
 case 37:
  this.$ = []; 

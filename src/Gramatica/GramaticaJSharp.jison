@@ -201,8 +201,8 @@ JS_BODY:
 JS_BODY_DEC:
         METHOD_DEC              { $$ = $1; }
     |   STRC_DEC                { $$ = $1; }
-    |   VAR_DEC PTCOMA          { $$ = $1; }
-    |   VAR_DEC                 { $$ = $1; }       
+    |   VAR_DEC PTCOMA          { $$ = $1; $$.dec_interna = false; }
+    |   VAR_DEC                 { $$ = $1; $$.dec_interna = false; }       
 ;
 
 STRC_DEC:

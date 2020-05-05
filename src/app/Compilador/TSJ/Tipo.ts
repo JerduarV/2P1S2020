@@ -2,6 +2,10 @@ export function getTipoString(): Tipo {
     return new Tipo(STRING, 0);
 }
 
+export function getTipoChar():Tipo{
+    return new Tipo(CHAR,0);
+}
+
 export function getTipoDouble(): Tipo {
     return new Tipo(DOUBLE, 0);
 }
@@ -14,8 +18,8 @@ export function getTipoInteger(): Tipo {
     return new Tipo(INT, 0)
 }
 
-export function getTipoNull():Tipo{
-    return new Tipo(NULL,0);
+export function getTipoNull(): Tipo {
+    return new Tipo(NULL, 0);
 }
 
 export const DOUBLE = 'DOUBLE';
@@ -47,7 +51,7 @@ export class Tipo {
         return this.tipo == DOUBLE && this.dim == 0;
     }
 
-    public isNull():boolean {
+    public isNull(): boolean {
         return this.tipo == NULL;
     }
 
@@ -95,7 +99,7 @@ export class Tipo {
     }
 
     public getNombreParaFuncion(): string {
-        if (this.dim > 0){
+        if (this.dim > 0) {
             return this.tipo + 'ARRAY';
         }
         return this.tipo;
@@ -105,19 +109,19 @@ export class Tipo {
         return this.tipo == INT || this.tipo == BOOL || this.tipo == CHAR || this.tipo == DOUBLE || this.tipo == VOID || this.tipo == STRING;
     }
 
-    public esStruct():boolean{
+    public esStruct(): boolean {
         return !this.esNativo() && this.dim == 0;
     }
 
-    public AplicaCasteo(contenido: Tipo):boolean{
-        if(this.dim != contenido.dim){
+    public AplicaCasteo(contenido: Tipo): boolean {
+        if (this.dim != contenido.dim) {
             return false;
         }
-        if(this.tipo == INT){
+        if (this.tipo == INT) {
             return contenido.tipo == CHAR;
-        }else if(this.tipo == DOUBLE){
+        } else if (this.tipo == DOUBLE) {
             return contenido.tipo == INT || contenido.tipo == CHAR;
-        }else if(this.tipo == STRING || this.soyArreglo()){
+        } else if (this.tipo == STRING || this.soyArreglo() || this.esStruct()) {
             return contenido.tipo == NULL;
         }
     }

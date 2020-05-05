@@ -178,4 +178,8 @@ export class DefStruct extends InstruccionJ {
         return null;
     }
 
+    public getSize():number{
+        return this.lista_atrib.length;
+    }
+
 }

@@ -4,11 +4,24 @@ import { SimbVar } from '../TSJ/SimbVar';
 import { TablaSimbJ } from '../TSJ/TablaSimbJ';
 import { ErrorLup } from 'src/app/Auxiliares/Error';
 import { genTemp, concatCodigo, getTempAct, getEtiqueta } from 'src/app/Auxiliares/Utilidades';
-import { Tipo } from '../TSJ/Tipo';
+import { Tipo, getTipoString, getTipoInteger, STRING, CHAR, getTipoBool, getTipoChar } from '../TSJ/Tipo';
 import { CallFun } from './CallFun';
 import { CallFun2 } from './CallFun2';
 import { DefStruct } from '../InstruccionJ/DefStruct';
 import { AccesoArray } from './AccesoArray';
+
+const TOUPPERCASE = 'TOUPPERCASE';
+const TOLOWERCASE = 'TOLOWERCASE';
+const STRING_LENGTH = 'LENGTH';
+const TOCHARARRAY = 'TOCHARARRAY';
+const CHARAT = 'CHARAT';
+
+const SIZE_STRUCT = 'SIZE';
+const GETREFERENCE = 'GETREFERENCE';
+const INSTANCEOF = 'INSTANCEOF';
+
+const ARRAY_LENGTH = 'LENGTH';
+const LINEALIZE = 'LINEALIZE';
 
 export class Acceso extends ExpresionJ {
 
@@ -54,7 +67,7 @@ export class Acceso extends ExpresionJ {
                 } else if (acceso instanceof AccesoArray) {
                     let array: AccesoArray = <AccesoArray>acceso;
                     res = this.getTipoAccesoArray(tipo_atenrior, array.getId(), ts);
-                }else if(acceso instanceof CallFun){
+                } else if (acceso instanceof CallFun) {
                     let callfun: CallFun = <CallFun>acceso;
                     res = this.getTipoCallFun(tipo_atenrior, callfun, ts);
                 }
@@ -69,11 +82,71 @@ export class Acceso extends ExpresionJ {
         }
     }
 
-    private getTipoCallFun(tipo_anterior: Tipo, llamada: CallFun, ts: TablaSimbJ):Object{
+    private getTipoCallFun(tipo_anterior: Tipo, llamada: CallFun, ts: TablaSimbJ): Object {
 
         //CUANOD LA LISTA DE ACCESOS EMPIEZA CON UNA LLAMADA
-        if(tipo_anterior == null){
+        if (tipo_anterior == null) {
             return llamada.getTipo(ts);
+        }
+        //CUANDO LA LLAMADA VIENE EN MEDIO
+        else {
+            //LLAMDA A AL MÉTODO TO UPPERCASE DE LA CLASE STRINT
+            //#region FUNCIONES DE STRING
+            if (tipo_anterior.isString()) {
+                if (llamada.getId().toUpperCase() == TOUPPERCASE && llamada.getParam().length == 0) {
+                    return getTipoString();
+                } else if (llamada.getId().toUpperCase() == TOLOWERCASE && llamada.getParam().length == 0) {
+                    return getTipoString();
+                } else if (llamada.getId().toUpperCase() == STRING_LENGTH && llamada.getParam().length == 0) {
+                    return getTipoInteger();
+                } else if (llamada.getId().toUpperCase() == TOCHARARRAY && llamada.getParam().length == 0) {
+                    return new Tipo(CHAR, 1);
+                } else if (llamada.getId().toUpperCase() == CHARAT && llamada.getParam().length == 1) {
+                    let o: Object = llamada.getParam()[0].getTipo(ts);
+                    if (o instanceof ErrorLup) {
+                        return o;
+                    }
+                    let tipo: Tipo = <Tipo>o;
+                    if (!tipo.isInteger()) {
+                        return ts.GenerarError('CharAt: Se esperaba un entero', this.getFila(), this.getCol());
+                    }
+                    return getTipoChar();
+                }
+                else {
+                    return ts.GenerarError('Tipo: La función ' + llamada.getId() + ' no existe en string', this.getFila(), this.getCol());
+                }
+            }
+            //#endregion
+            //#region FUNCIONES STRUCTS
+            else if (tipo_anterior.esStruct()) {
+                if (llamada.getId().toUpperCase() == SIZE_STRUCT && llamada.getParam().length == 0) {
+                    return getTipoInteger();
+                } else if (llamada.getId().toUpperCase() == GETREFERENCE && llamada.getParam().length == 0) {
+                    return getTipoInteger();
+                } else if (llamada.getId().toUpperCase() == INSTANCEOF && llamada.getParam().length == 1) {
+                    if (!(llamada.getParam()[0] instanceof Acceso)) {
+                        return ts.GenerarError('Instanceof: Se esperaba un identificador', this.getFila(), this.getCol());
+                    }
+                    let acc: Acceso = <Acceso>llamada.getParam()[0];
+                    if (!(acc.lista_exp[0] instanceof Identificador)) {
+                        return ts.GenerarError('Instanceof: Se esperaba un identificador', this.getFila(), this.getCol());
+                    }
+                    return getTipoBool();
+                }
+                else {
+                    return ts.GenerarError('Tipo: La función ' + llamada.getId() + ' no existe en struct', this.getFila(), this.getCol());
+                }
+            }
+            //#endregion
+            //#region FUNCIONES ARRAYS
+            else if (tipo_anterior.soyArreglo()) {
+                if (llamada.getId().toUpperCase() == LINEALIZE && llamada.getParam().length == 0) {
+                    return tipo_anterior;
+                } else {
+                    return ts.GenerarError('Tipo: La función ' + llamada.getId() + ' no existe en array', this.getFila(), this.getCol());
+                }
+            }
+            //#endregion
         }
     }
 
@@ -142,8 +215,13 @@ export class Acceso extends ExpresionJ {
                 if (tipo_atributo == null) {
                     return ts.GenerarError('La estructura ' + tipo_atenrior.getNombreTipo() + ' no tiene ' + id, this.getFila(), this.getCol());
                 }
-
                 return tipo_atributo;
+            } else if (tipo_atenrior.soyArreglo()) {
+
+                //ATRIBUTO LENGTH DE UN ARRAY
+                if (id.toUpperCase() == ARRAY_LENGTH) {
+                    return getTipoInteger();
+                }
             }
             //#endregion
         }
@@ -180,15 +258,26 @@ export class Acceso extends ExpresionJ {
                 if (variable == null) {
                     return;
                 }
-
+                //CUANDO LA VARIABLE ES LOCAL
                 if (!variable.getEsGlobal()) {
                     let temp: string = genTemp();
                     let tem_val: string = genTemp();
                     concatCodigo(temp + ' = P + ' + variable.getPosicion() + ';');
                     concatCodigo(tem_val + ' = Stack[' + temp + '];')
                     ts.guardarTemporal(tem_val);
-                } else {
+                }
+                //CUANDO LA VARIABLE ES LOCAL 
+                else {
+                    let etqv: string = getEtiqueta();
+                    let etqf: string = getEtiqueta();
+                    let t1: string = genTemp();
                     let tem_val: string = genTemp();
+                    concatCodigo(t1 + ' = Heap[' + (variable.getPosicion() + 1) + '];');
+                    concatCodigo('if(' + t1 + ' == -1) goto ' + etqv + ';');
+                    concatCodigo('goto ' + etqf + ';');
+                    concatCodigo(etqv + ':');
+                    concatCodigo('E = 3;');
+                    concatCodigo(etqf + ':');
                     concatCodigo(tem_val + ' = Heap[' + variable.getPosicion() + '];');
                     ts.guardarTemporal(tem_val);
                 }
@@ -223,9 +312,9 @@ export class Acceso extends ExpresionJ {
                 } else if (acceso instanceof AccesoArray) {
                     let array: AccesoArray = <AccesoArray>acceso;
                     res = this.TraducirAccesoArrayGet(tipo_atenrior, array.getId(), array.getExpIndex(), ts);
-                }else if(acceso instanceof CallFun){
+                } else if (acceso instanceof CallFun) {
                     let call: CallFun = <CallFun>acceso;
-                    res = this.TraducirAccesoCallFun(tipo_atenrior, call,ts);
+                    res = this.TraducirAccesoCallFun(tipo_atenrior, call, ts);
                 }
 
                 if (res == null) {
@@ -236,13 +325,275 @@ export class Acceso extends ExpresionJ {
         }
     }
 
-    private TraducirAccesoCallFun(tipo_anterior: Tipo, callFun: CallFun, ts: TablaSimbJ):Tipo{
+    private TraducirAccesoCallFun(tipo_anterior: Tipo, callFun: CallFun, ts: TablaSimbJ): Tipo {
         //SI LA LISTA DE ACCESOS EMPIEZA CON UNA LLAMADA
-        if(tipo_anterior == null){
+        if (tipo_anterior == null) {
             callFun.Traducir(ts);
             return <Tipo>callFun.getTipo(ts);
-        }else{
-            
+        } else {
+            if (tipo_anterior.isString()) {
+                //#region TOUPPERCASE
+                if (callFun.getId().toUpperCase() == TOUPPERCASE && callFun.getParam().length == 0) {
+                    //console.log('ENTER');
+                    let tstring: string = getTempAct();
+                    let t1: string = genTemp();
+                    let tr: string = genTemp();
+                    let etqv: string = getEtiqueta();
+                    let etqf: string = getEtiqueta();
+
+                    concatCodigo('if(' + tstring + ' == -1) goto ' + etqv + ';');
+                    concatCodigo('goto ' + etqf + ';');
+                    concatCodigo(etqv + ':');
+                    concatCodigo('E = 4;');
+                    concatCodigo(etqf + ':');
+
+                    concatCodigo('P = P + ' + ts.getTamanioFunTotal() + ';');
+                    concatCodigo(t1 + ' = P + 1;');
+                    concatCodigo('Stack[' + t1 + '] = ' + tstring + ';');
+                    concatCodigo('call jerduar_TOUPPERCASE;');
+                    concatCodigo(tr + ' = Stack[P];');
+                    concatCodigo('P = P - ' + ts.getTamanioFunTotal() + ';');
+
+                    ts.SacarTemporal(tstring);
+                    ts.guardarTemporal(tr);
+                    return getTipoString();
+                }
+                //#endregion
+                //#region TOLOWERCASE
+                else if (callFun.getId().toUpperCase() == TOLOWERCASE && callFun.getParam().length == 0) {
+                    let tstring: string = getTempAct();
+                    let t1: string = genTemp();
+                    let tr: string = genTemp();
+                    let etqv: string = getEtiqueta();
+                    let etqf: string = getEtiqueta();
+
+                    concatCodigo('if(' + tstring + ' == -1) goto ' + etqv + ';');
+                    concatCodigo('goto ' + etqf + ';');
+                    concatCodigo(etqv + ':');
+                    concatCodigo('E = 4;');
+                    concatCodigo(etqf + ':');
+
+                    concatCodigo('P = P + ' + ts.getTamanioFunTotal() + ';');
+                    concatCodigo(t1 + ' = P + 1;');
+                    concatCodigo('Stack[' + t1 + '] = ' + tstring + ';');
+                    concatCodigo('call jerduar_TOLOWERCASE;');
+                    concatCodigo(tr + ' = Stack[P];');
+                    concatCodigo('P = P - ' + ts.getTamanioFunTotal() + ';');
+
+                    ts.SacarTemporal(tstring);
+                    ts.guardarTemporal(tr);
+                    return getTipoString();
+                }
+                //#endregion
+                //#region LENGTH
+                else if (callFun.getId().toUpperCase() == STRING_LENGTH && callFun.getParam().length == 0) {
+                    let tstring: string = getTempAct();
+                    let tr: string = genTemp();
+                    let etqv: string = getEtiqueta();
+                    let etqf: string = getEtiqueta();
+
+                    concatCodigo('if(' + tstring + ' == -1) goto ' + etqv + ';');
+                    concatCodigo('goto ' + etqf + ';');
+                    concatCodigo(etqv + ':');
+                    concatCodigo('E = 4;');
+                    concatCodigo(etqf + ':');
+
+                    concatCodigo(tr + ' = Heap[' + tstring + '];');
+
+                    ts.guardarTemporal(tr);
+                    ts.SacarTemporal(tstring);
+                    return getTipoInteger();
+                }
+                //#endregion
+                //#region TOCHARARRAY
+                else if (callFun.getId().toUpperCase() == TOCHARARRAY && callFun.getParam().length == 0) {
+                    let tstring: string = getTempAct();
+                    let t1: string = genTemp();
+                    let tr: string = genTemp();
+                    let etqv: string = getEtiqueta();
+                    let etqf: string = getEtiqueta();
+
+                    concatCodigo('if(' + tstring + ' == -1) goto ' + etqv + ';');
+                    concatCodigo('goto ' + etqf + ';');
+                    concatCodigo(etqv + ':');
+                    concatCodigo('E = 4;');
+                    concatCodigo(etqf + ':');
+
+                    concatCodigo('P = P + ' + ts.getTamanioFunTotal() + ';');
+                    concatCodigo(t1 + ' = P + 1;');
+                    concatCodigo('Stack[' + t1 + '] = ' + tstring + ';');
+                    concatCodigo('call jerduar_STRINGTOCHARARRAY;');
+                    concatCodigo(tr + ' = Stack[P];');
+                    concatCodigo('P = P - ' + ts.getTamanioFunTotal() + ';');
+
+                    ts.SacarTemporal(tstring);
+                    ts.guardarTemporal(tr);
+                    return new Tipo(CHAR, 1);
+                }
+                //#endregion
+                //#region CHARAT
+                else if (callFun.getId().toUpperCase() == CHARAT && callFun.getParam().length == 1) {
+                    let o: Object = callFun.getParam()[0].getTipo(ts);
+                    if (o instanceof ErrorLup) {
+                        return null;
+                    }
+                    let tipo: Tipo = <Tipo>o;
+                    if (!tipo.isInteger()) {
+                        ts.GenerarError('CharAt: Se esperaba un entero', this.getFila(), this.getCol());
+                        return null ;
+                    }
+
+                    let tstring: string = getTempAct();
+
+                    callFun.getParam()[0].Traducir(ts);
+                    let t_index: string = getTempAct();
+
+                    let t2: string = genTemp();
+                    let t3: string = genTemp();
+                    let t4: string = genTemp();
+                    let tr: string = genTemp();
+                    let etqv: string = getEtiqueta();
+                    let etqf: string = getEtiqueta();
+                    let etqv1: string = getEtiqueta();
+                    let etqf1: string = getEtiqueta();
+
+                    concatCodigo('if(' + tstring + ' == -1) goto ' + etqv + ';');
+                    concatCodigo('goto ' + etqf + ';');
+                    concatCodigo(etqv + ':');
+                    concatCodigo('E = 4;');
+                    concatCodigo(etqf + ':');
+
+                    concatCodigo(t2 + ' = Heap[' + tstring + '];');
+
+                    concatCodigo('if(' + t_index + ' < 0) goto ' + etqv1 + ';');
+                    concatCodigo('if(' + t_index + ' >= ' + t2 + ') goto ' + etqv1 + ';')
+                    concatCodigo('goto ' + etqf1 + ';')
+                    concatCodigo(etqv1 + ':');
+                    concatCodigo('E = 2;');
+                    concatCodigo(etqf1 + ':');
+
+                    concatCodigo(t3 + ' = ' + t_index + ' + 1;');
+                    concatCodigo(t4 + ' = ' + t3 + ' + ' + tstring + ';')
+                    concatCodigo(tr + ' = Heap[' + t4 + '];');
+
+                    ts.SacarTemporal(tstring);
+                    ts.SacarTemporal(t_index);
+                    ts.guardarTemporal(tr);
+                    return getTipoChar();
+
+                }
+                //#endregion
+                else {
+                    ts.GenerarError('Trad: La función ' + callFun.getId() + ' no existe en string', this.getFila(), this.getCol());
+                    return;
+                }
+            } else if (tipo_anterior.esStruct()) {
+                //#region SIZE
+                if (callFun.getId().toUpperCase() == SIZE_STRUCT && callFun.getParam().length == 0) {
+                    let def: DefStruct = ts.BuscarStruct(tipo_anterior.getNombreTipo());
+                    let t1: string = getTempAct();
+                    let tr: string = genTemp();
+                    let etqv: string = getEtiqueta();
+                    let etqf: string = getEtiqueta();
+
+                    concatCodigo('if(' + t1 + ' == -1) goto ' + etqv + ';');
+                    concatCodigo('goto ' + etqf + ';');
+                    concatCodigo(etqv + ':');
+                    concatCodigo('E = 4;');
+                    concatCodigo(etqf + ':');
+
+                    concatCodigo(tr + ' = ' + def.getSize() + ';');
+                    ts.guardarTemporal(tr);
+                    ts.SacarTemporal(t1);
+                    return getTipoInteger();
+                }
+                //#endregion
+                //#region GETREFERENCE
+                else if (callFun.getId().toUpperCase() == GETREFERENCE && callFun.getParam().length == 0) {
+                    let tr: string = getTempAct();
+                    let etqv: string = getEtiqueta();
+                    let etqf: string = getEtiqueta();
+
+                    concatCodigo('if(' + tr + ' == -1) goto ' + etqv + ';');
+                    concatCodigo('goto ' + etqf + ';');
+                    concatCodigo(etqv + ':');
+                    concatCodigo('E = 4;');
+                    concatCodigo(etqf + ':');
+
+                    return getTipoInteger();
+                }
+                //#endregion
+                //#region INSTANCEOF
+                else if (callFun.getId().toUpperCase() == INSTANCEOF && callFun.getParam().length == 1) {
+                    if (!(callFun.getParam()[0] instanceof Acceso)) {
+                        ts.GenerarError('Trad: Se esperaba un id', this.getFila(), this.getCol())
+                        return null;
+                    }
+
+                    let acc: Acceso = <Acceso>callFun.getParam()[0];
+                    let id: Identificador = <Identificador>acc.lista_exp[0];
+
+                    let tr: string = getTempAct();
+                    let val: string = genTemp();
+                    let etqv: string = getEtiqueta();
+                    let etqf: string = getEtiqueta();
+
+                    concatCodigo('if(' + tr + ' == -1) goto ' + etqv + ';');
+                    concatCodigo('goto ' + etqf + ';');
+                    concatCodigo(etqv + ':');
+                    concatCodigo('E = 4;');
+                    concatCodigo(etqf + ':');
+
+                    if (tipo_anterior.getNombreTipo().toUpperCase() == id.getId().toUpperCase()) {
+                        concatCodigo(val + ' = 1;');
+                    } else {
+                        concatCodigo(val + ' = 0;');
+                    }
+
+                    ts.SacarTemporal(tr);
+                    ts.guardarTemporal(val);
+
+                    return getTipoBool();
+
+                }
+                //#endregion
+                else {
+                    ts.GenerarError('Trad: La función ' + callFun.getId() + ' no existe en struct', this.getFila(), this.getCol());
+                    return;
+                }
+            } else if (tipo_anterior.soyArreglo()) {
+                //#region LINEALIZE
+                //ES IGUAL QUE EL TO CHAR ARRAY DE LOS STRING
+                if (callFun.getId().toUpperCase() == LINEALIZE && callFun.getParam().length == 0) {
+                    let tstring: string = getTempAct();
+                    let t1: string = genTemp();
+                    let tr: string = genTemp();
+                    let etqv: string = getEtiqueta();
+                    let etqf: string = getEtiqueta();
+
+                    concatCodigo('if(' + tstring + ' == -1) goto ' + etqv + ';');
+                    concatCodigo('goto ' + etqf + ';');
+                    concatCodigo(etqv + ':');
+                    concatCodigo('E = 4;');
+                    concatCodigo(etqf + ':');
+
+                    concatCodigo('P = P + ' + ts.getTamanioFunTotal() + ';');
+                    concatCodigo(t1 + ' = P + 1;');
+                    concatCodigo('Stack[' + t1 + '] = ' + tstring + ';');
+                    concatCodigo('call jerduar_STRINGTOCHARARRAY;');
+                    concatCodigo(tr + ' = Stack[P];');
+                    concatCodigo('P = P - ' + ts.getTamanioFunTotal() + ';');
+
+                    ts.SacarTemporal(tstring);
+                    ts.guardarTemporal(tr);
+                    return tipo_anterior;
+                }
+                //#endregion 
+                else {
+                    ts.GenerarError('Trad: La función ' + callFun.getId() + ' no existe en array', this.getFila(), this.getCol());
+                    return null;
+                }
+            }
         }
     }
 
@@ -391,7 +742,16 @@ export class Acceso extends ExpresionJ {
                 concatCodigo(tem_val + ' = Stack[' + temp + '];')
                 ts.guardarTemporal(tem_val);
             } else {
+                let t1: string = genTemp();
+                let etqv: string = getEtiqueta();
+                let etqf: string = getEtiqueta();
                 let tem_val: string = genTemp();
+                concatCodigo(t1 + ' = Heap[' + (variable.getPosicion() + 1) + '];');
+                concatCodigo('if(' + t1 + ' == -1) goto ' + etqv + ';');
+                concatCodigo('goto ' + etqf + ';');
+                concatCodigo(etqv + ':');
+                concatCodigo('E = 3;');
+                concatCodigo(etqf + ':');
                 concatCodigo(tem_val + ' = Heap[' + variable.getPosicion() + '];');
                 ts.guardarTemporal(tem_val);
             }
@@ -414,6 +774,28 @@ export class Acceso extends ExpresionJ {
                 ts.guardarTemporal(tr);
 
                 return atrib;
+            }
+            //#endregion
+            //#region ARRAY.LENGTH
+            else if (tipo_anterior.soyArreglo() && id.toUpperCase() == ARRAY_LENGTH) {
+
+                let tarray: string = getTempAct();
+                let etqv: string = getEtiqueta();
+                let etqf: string = getEtiqueta();
+                let tr: string = getTempAct();
+
+                concatCodigo('if(' + tarray + ' == -1) goto ' + etqv + ';');
+                concatCodigo('goto ' + etqf + ';');
+                concatCodigo(etqv + ':');
+                concatCodigo('E = 4;');
+                concatCodigo(etqf + ':');
+
+                concatCodigo(tr + ' = Heap[' + tarray + '];');
+
+                ts.SacarTemporal(tarray);
+                ts.guardarTemporal(tr);
+
+                return getTipoInteger();
             }
             //#endregion
         }
@@ -441,7 +823,7 @@ export class Acceso extends ExpresionJ {
                     ts.GenerarError('Asig: Los tipos no coinciden', this.getFila(), this.getCol());
                     return;
                 }
-
+                //SI NO ES GLOBAL
                 if (!variable.getEsGlobal()) {
                     let temp: string = genTemp();
                     concatCodigo(temp + ' = P + ' + variable.getPosicion() + ';');
@@ -450,7 +832,19 @@ export class Acceso extends ExpresionJ {
                     let t1: string = getTempAct();
 
                     concatCodigo('Stack[' + temp + '] = ' + t1 + ';');
-                } else {
+                }//SI ES GLOBAL 
+                else {
+                    let t0: string = genTemp();
+                    let etqv: string = getEtiqueta();
+                    let etqf: string = getEtiqueta();
+
+                    concatCodigo(t0 + ' = Heap[' + (variable.getPosicion() + 1) + '];');
+                    concatCodigo('if(' + t0 + ' == -1) goto ' + etqv + ';');
+                    concatCodigo('goto ' + etqf + ';');
+                    concatCodigo(etqv + ':');
+                    concatCodigo('E = 3;');
+                    concatCodigo(etqf + ':');
+
                     this.exp.Traducir(ts);
                     let t1: string = getTempAct();
 
@@ -469,9 +863,9 @@ export class Acceso extends ExpresionJ {
                 if (acceso instanceof Identificador) {
                     let Ident: Identificador = <Identificador>acceso;
                     res = this.TraducirIdentificadorGet(tipo_atenrior, Ident.getId(), ts);
-                }else if(acceso instanceof AccesoArray){
+                } else if (acceso instanceof AccesoArray) {
                     let array: AccesoArray = <AccesoArray>acceso;
-                    res = this.TraducirAccesoArrayGet(tipo_atenrior,array.getId(),array.getExpIndex(),ts);
+                    res = this.TraducirAccesoArrayGet(tipo_atenrior, array.getId(), array.getExpIndex(), ts);
                 }
 
                 tipo_atenrior = <Tipo>res;
@@ -481,9 +875,9 @@ export class Acceso extends ExpresionJ {
             if (ultimo_acceso instanceof Identificador) {
                 let temp: string = getTempAct();
                 this.TraducirAsigAtributo(tipo_atenrior, temp, ultimo_acceso, ts);
-            }else if(ultimo_acceso instanceof AccesoArray){
+            } else if (ultimo_acceso instanceof AccesoArray) {
                 let array: AccesoArray = <AccesoArray>ultimo_acceso;
-                this.TraducirAsigArray(tipo_atenrior,array.getId(),array.getExpIndex(),ts);
+                this.TraducirAsigArray(tipo_atenrior, array.getId(), array.getExpIndex(), ts);
             }
 
         }
@@ -639,15 +1033,15 @@ export class Acceso extends ExpresionJ {
                 let t4: string = genTemp();
 
                 let oe: Object = this.exp.getTipo(ts);;
-                if(oe instanceof ErrorLup){
+                if (oe instanceof ErrorLup) {
                     return null;
                 }
 
                 let tipo_asig: Tipo = <Tipo>oe;
                 let tipo_contendio: Tipo = new Tipo(atrib.getNombreTipo(), 0);
 
-                if(!tipo_contendio.esIgualA(tipo_asig) && !tipo_contendio.AplicaCasteo(tipo_asig)){
-                    ts.GenerarError('Los tipos no coinciden',this.getFila(),this.getCol());
+                if (!tipo_contendio.esIgualA(tipo_asig) && !tipo_contendio.AplicaCasteo(tipo_asig)) {
+                    ts.GenerarError('Los tipos no coinciden', this.getFila(), this.getCol());
                     return null;
                 }
 

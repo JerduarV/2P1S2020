@@ -14,6 +14,7 @@ export class DeclaracionJ extends InstruccionJ {
     private readonly constante: boolean;
     private readonly global: boolean;
     private readonly exp: ExpresionJ;
+    public dec_interna: boolean;
 
     constructor(tipo: Tipo, lista: string[], constante: boolean, global: boolean, e: ExpresionJ, fila: number, col: number) {
         super(null, fila, col);
@@ -22,6 +23,7 @@ export class DeclaracionJ extends InstruccionJ {
         this.constante = constante;
         this.global = global;
         this.exp = e;
+        this.dec_interna = true;
     }
 
     public BuscarVariablesGlobales(lista_dec: DeclaracionJ[]): void {
@@ -32,6 +34,30 @@ export class DeclaracionJ extends InstruccionJ {
 
     public Traducir(ts: TablaSimbJ): void {
         if (this.esGlobal()) {
+            let variable: SimbVar = ts.BuscarGlobal(this.lista_ids[0]);
+            if (variable == null) {
+                ts.GenerarError('No se encontro variable: ' + this.lista_ids[0], this.getFila(), this.getCol());
+                return;
+            }
+
+            let o: Object = this.exp.getTipo(ts);
+            if(o instanceof ErrorLup){
+                ts.GenerarError('Error en la expresión',this.getFila(),this.getCol());
+                return;
+            }
+
+            let tipo: Tipo = <Tipo>o;
+            if(!variable.getTipo().esIgualA(tipo) && !variable.getTipo().AplicaCasteo(tipo)){
+                ts.GenerarError('Error en los tipos',this.getFila(),this.getCol());
+                return;
+            }
+
+            this.exp.Traducir(ts);
+            let tr: string = getTempAct();
+
+            concatCodigo('Heap[' + variable.getPosicion() + '] = ' + tr + ';');
+            concatCodigo('Heap[' + (variable.getPosicion() + 1) + '] = 1;');
+
             return;
         }
 

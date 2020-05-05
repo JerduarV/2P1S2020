@@ -171,17 +171,21 @@ export class CompiladorJ {
                 if (s != null) {
                     VariableGlobales.push(s);
                     expresiones_ini.push(dec.getExp());
+                    contador += 2;
+
+                    concatCodigo('Heap[' + s.getPosicion() + '] = ' + s.getTipo().getValDefecto() + ';');
+                    let bandera: number = dec.dec_interna ? -1 : 1;
+                    concatCodigo('Heap[' + (s.getPosicion() + 1) + '] = ' + bandera + ';');
                 }
-                contador++;
             }
 
         }
 
         //RESERVANDO LUGAR EN EL HEAP Y SETEANDO VALOR POR DEFECTO
-        for (let y = 0; y < VariableGlobales.length; y++) {
+        /*for (let y = 0; y < VariableGlobales.length; y++) {
             let variable: SimbVar = VariableGlobales[y];
             concatCodigo('Heap[' + variable.getPosicion() + '] = ' + variable.getTipo().getValDefecto() + ';');
-        }
+        }*/
 
         concatCodigo('H = ' + contador + ';')
 
@@ -208,9 +212,9 @@ export class CompiladorJ {
             let tipo = <Tipo>o;
             dec.getExp().Traducir(ts);
             let t1 = getTempAct();
-            console.log('holita');
+            //console.log('holita');
             for (let y = 0; y < dec.getListaIDs().length; y++) {
-                console.log('hola');
+                //console.log('hola');
                 let variable: SimbVar = ts.BuscarVariable(dec.lista_ids[y]);
                 if (variable == null) {
                     ts.GenerarError('La varible ' + dec.lista_ids[y] + ' no existe', dec.getFila(), dec.getCol());
