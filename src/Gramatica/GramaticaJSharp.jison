@@ -463,7 +463,7 @@ LITERAL:
 ;
 
 INSTANCIA_STRC:
-        RSTRC ID                        { $$ = new StrcStruct($2,@1.first_line,@1.first_column); }
+        RSTRC ID PARIZQ PARDER          { $$ = new StrcStruct($2,@1.first_line,@1.first_column); }
     |   RSTRC ID CORIZQ EXP CORDER      { $$ = new StrcArray(new Tipo($2,1),$4,@1.first_line,@1.first_column); }
     |   RSTRC TYPE CORIZQ EXP CORDER    { $$ = new StrcArray(new Tipo($2,1),$4,@1.first_line,@1.first_column); }
 ;
