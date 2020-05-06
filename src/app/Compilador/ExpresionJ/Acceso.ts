@@ -9,6 +9,7 @@ import { CallFun } from './CallFun';
 import { CallFun2 } from './CallFun2';
 import { DefStruct } from '../InstruccionJ/DefStruct';
 import { AccesoArray } from './AccesoArray';
+import { CallFunArray } from './CallFunArray';
 
 const TOUPPERCASE = 'TOUPPERCASE';
 const TOLOWERCASE = 'TOLOWERCASE';
@@ -52,6 +53,10 @@ export class Acceso extends ExpresionJ {
             } else if (this.lista_exp[0] instanceof AccesoArray) {
                 let acceso: AccesoArray = <AccesoArray>this.lista_exp[0];
                 return this.getTipoAccesoArray(null, acceso.getId(), ts);
+            }else if(this.lista_exp[0] instanceof CallFunArray){
+                return (<CallFunArray>this.lista_exp[0].getTipo(ts));
+            }else{
+                return ts.GenerarError('Acceso: no se reconoce el acceso',this.getFila(),this.getCol());
             }
         }
         //#endregion
@@ -70,6 +75,9 @@ export class Acceso extends ExpresionJ {
                 } else if (acceso instanceof CallFun) {
                     let callfun: CallFun = <CallFun>acceso;
                     res = this.getTipoCallFun(tipo_atenrior, callfun, ts);
+                }else if(acceso instanceof CallFunArray){
+                    let call: CallFunArray = <CallFunArray>acceso;
+                    res = this.TipoCallFunArray(tipo_atenrior,call,ts);
                 }
 
                 if (res instanceof ErrorLup) {
@@ -79,6 +87,14 @@ export class Acceso extends ExpresionJ {
                 tipo_atenrior = <Tipo>res;
             }
             return tipo_atenrior;
+        }
+    }
+
+    private TipoCallFunArray(tipo_anterior: Tipo, call: CallFunArray, ts: TablaSimbJ):Object{
+        if(tipo_anterior == null){
+            return call.getTipo(ts);
+        }else{
+
         }
     }
 
@@ -300,6 +316,9 @@ export class Acceso extends ExpresionJ {
                 this.TraducirAccesoArrayGet(null, acceso.getId(), acceso.getExpIndex(), ts);
             }
             //#endregion
+            else if(this.lista_exp[0] instanceof CallFunArray){
+                (<CallFunArray>this.lista_exp[0]).Traducir(ts);
+            }
         } else {
             let tipo_atenrior: Tipo = null;
             for (let i = 0; i < this.lista_exp.length; i++) {

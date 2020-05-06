@@ -19,15 +19,13 @@ export class MainPageComponent implements OnInit {
   @ViewChild('editor') private editor_avanzado: EditorAvanzadoComponent;
 
   private consola: Consola = new Consola();
-  private nivel: string;
-  private sub: any;
-  private lup: string = "";
+  public editorOptions: any = {theme: 'vs-dark', language: 'java'};
 
 
   constructor(public dialog: MatDialog) { }
 
   ngOnInit() {
-
+    this.consola.salida = '#* TODO CODE HERE *#'
   }
 
   /**
@@ -46,6 +44,7 @@ export class MainPageComponent implements OnInit {
    */
   public Compilar(): void {
     let compilador: CompiladorJ = new CompiladorJ();
+    this.consola.lista_errores = [];
     compilador.Compilar(this.editor_avanzado.getNombre(), this.editor_avanzado.getTexto(),this.consola);
   }
 

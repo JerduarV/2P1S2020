@@ -4,7 +4,7 @@
             <mat-icon>get_app</mat-icon>
         </a>
     </div>
-    <input #fileUpload type="file" (click)="fileUpload.value = null"(change)="importFile($event)" style="display:none" accept=".txt">
+    <input #fileUpload type="file" (click)="fileUpload.value = null"(change)="importFile($event)" multiple="multiple" style="display:none" accept=".txt">
     <div class="col-4 col-lg-1 col-md-3 col-sm-4 w-75">
         <button mat-mini-fab class="boton" (click)="fileUpload.click()">
             <mat-icon>publish</mat-icon>
@@ -27,8 +27,8 @@
     </div>
 </div>
 <div class="row">
-  <div class="col-sm-7">
-  <mat-tab-group animationDuration="0ms" #tabGroup (selectedTabChange)="tabChanged($event)">
+  <div class="col">
+  <mat-tab-group animationDuration="0ms" #tabGroup (selectedTabChange)="tabChanged($event)" style="width: 570px;">
     <mat-tab *ngFor="let tab of ArregloTabs" label={{tab.getNombre()}}>
         <ng-template class="my-code-editor" matTabContent>
             <ngx-monaco-editor #editor [options]='tab.editorOptions' [(ngModel)]='tab.code' class="my-code-editor"
@@ -37,15 +37,5 @@
           </ng-template>
     </mat-tab>
   </mat-tab-group>
-  </div>
-  <div class="col-sm-5">
-    <mat-tab-group animationDuration="0ms" #tabGroup (selectedTabChange)="tabChanged($event)">
-      <mat-tab label='CODIGO 3D'>
-          <ng-template class="my-code-editor" matTabContent>
-            <ngx-monaco-editor style="height: 350px;" class="my-code-editor" [options]='codigo3d.editorOptions' [(ngModel)]='codigo3d.code'>
-            </ngx-monaco-editor> 
-            </ng-template>
-      </mat-tab>
-    </mat-tab-group>
   </div>
 </div>

@@ -165,6 +165,7 @@
     var TipoLit = require('../app/Compilador/ExpresionJ/LiteralJ').TipoLit;
     var Null = require('../app/Compilador/ExpresionJ/Null').Null;
     var CallFun = require('../app/Compilador/ExpresionJ/CallFun').CallFun;
+    var CallFunArray = require('../app/Compilador/ExpresionJ/CallFunArray').CallFunArray;
     var ArrayInit = require('../app/Compilador/ExpresionJ/ArrayInit').ArrayInit;
     var CallFun2 = require('../app/Compilador/ExpresionJ/CallFun2').CallFun2;
     var ParamT2 = require('../app/Compilador/ExpresionJ/CallFun2').ParamT2;
@@ -317,7 +318,7 @@ CONTINUE:
 ;
 
 RETURN:
-        RRETURN EXP PTCOMA      { $$ = new Return($2,@1.first_line,@1.first_column); }
+        RRETURN VAR_INIT PTCOMA { $$ = new Return($2,@1.first_line,@1.first_column); }
     |   RRETURN PTCOMA          { $$ = new Return(null,@1.first_line,@1.first_column); }
 ;
 
@@ -483,9 +484,10 @@ L_ACCESO:
 ;
 
 ACCESO:
-        ID              { $$ = new Identificador($1,@1.first_line,@1.first_column); }              
-    |   ACCESO_ARREGLO  { $$ = $1; }
-    |   CALL_METHOD     { $$ = $1; }
+        ID                              { $$ = new Identificador($1,@1.first_line,@1.first_column); }              
+    |   ACCESO_ARREGLO                  { $$ = $1; }
+    |   CALL_METHOD                     { $$ = $1; }
+    |   CALL_METHOD CORIZQ EXP CORDER   { $$ = new CallFunArray($1,$3,@1.first_line,@1.first_column); }
 ;
 
 ACCESO_ARREGLO:
@@ -493,9 +495,9 @@ ACCESO_ARREGLO:
 ;
 
 CALL_METHOD:
-        ID PARIZQ LISTA_EXP PARDER  { $$ = new CallFun($1,$3,@1.first_line,@1.first_column); }
-    |   ID PARIZQ PARDER            { $$ = new CallFun($1,[],@1.first_line,@1.first_column); }
-    |   ID PARIZQ L_PARAM2 PARDER   { $$ = new CallFun2($1,$3,@1.first_line,@1.first_column); }
+        ID PARIZQ LISTA_EXP PARDER      { $$ = new CallFun($1,$3,@1.first_line,@1.first_column); }
+    |   ID PARIZQ PARDER                { $$ = new CallFun($1,[],@1.first_line,@1.first_column); }
+    |   ID PARIZQ L_PARAM2 PARDER       { $$ = new CallFun2($1,$3,@1.first_line,@1.first_column); }
 ;
 
 L_PARAM2:

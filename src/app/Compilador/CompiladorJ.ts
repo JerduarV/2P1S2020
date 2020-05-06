@@ -55,7 +55,7 @@ export class CompiladorJ {
             //ETAPA DE TRADUCCIÓN
 
             let etiqueta_salida: string = getEtiqueta();
-            concatCodigo('#* IR AL FIN DEL PROGRAMA *#\ncall main;\ngoto ' + etiqueta_salida + ';');
+            concatCodigo('#* IR AL FIN DEL PROGRAMA *#\ncall principal;\ngoto ' + etiqueta_salida + ';');
 
             //TRADUCCIÓN DE FUNCIONES
             this.TraducirFunciones(global, d);

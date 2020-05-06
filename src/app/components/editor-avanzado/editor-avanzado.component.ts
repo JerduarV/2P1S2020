@@ -12,17 +12,17 @@ export class EditorAvanzadoComponent implements OnInit {
 
   @ViewChildren("editor") editor: any;
 
-  private ArregloTabs : Editor3Component[];
-  private selectedTab : Editor3Component = null;
+  private ArregloTabs: Editor3Component[];
+  private selectedTab: Editor3Component = null;
   private indexSelectedTab: number;
   public codigo3d: Editor3Component = new Editor3Component();
   fileUrl;
 
-  constructor(private sanitizer: DomSanitizer) { 
+  constructor(private sanitizer: DomSanitizer) {
     this.ArregloTabs = [];
   }
 
-  private addTab():void{
+  private addTab(): void {
     let tab: Editor3Component = new Editor3Component();
     tab.setNombre('nuevo.j');
     tab.setCod('//TODO CODE HERE');
@@ -37,22 +37,27 @@ export class EditorAvanzadoComponent implements OnInit {
   importFile(event) {
 
     if (event.target.files.length == 0) {
-       console.log("No file selected!");
-       return
+      console.log("No file selected!");
+      return
     }
-      let file: File = event.target.files[0];
+
+    for (let i = 0; i < event.target.files.length; i++) {
+      let file: File = event.target.files[i];
 
       // after here 'file' can be accessed and used for further process
-      let fileReader : FileReader = new FileReader();
+      let fileReader: FileReader = new FileReader();
       fileReader.onload = (e) => {
         this.AddTab(file.name, fileReader.result as string);
         //console.log(fileReader.result as string);
       }
       fileReader.readAsText(file);
+    }
+
+
   }
 
-  exportFile(){
-    if(this.selectedTab == null){
+  exportFile() {
+    if (this.selectedTab == null) {
       return;
     }
     let data = this.getTexto();
@@ -62,61 +67,61 @@ export class EditorAvanzadoComponent implements OnInit {
   }
 
   ngOnInit() {
-    
+
   }
 
-  public AddTab(nombreTab: string, contenido: string) : Editor3Component{
-    let tab : Editor3Component = new Editor3Component();
+  public AddTab(nombreTab: string, contenido: string): Editor3Component {
+    let tab: Editor3Component = new Editor3Component();
     this.ArregloTabs.push(tab);
     tab.setNombre(nombreTab);
     tab.setCod(contenido);
     return tab;
   }
 
-  public RemoveTab():void{
-    if(this.indexSelectedTab){
+  public RemoveTab(): void {
+    if (this.indexSelectedTab) {
       this.ArregloTabs.splice(this.indexSelectedTab);
     }
   }
 
-  public getTab():void{
-    if(this.selectedTab){
+  public getTab(): void {
+    if (this.selectedTab) {
       console.log(this.selectedTab.getCod() + ' ' + this.selectedTab.getNombre());
     }
   }
 
   public onInitEditor($event: any) {
     // See the editor component
-     console.log($event);
+    console.log($event);
   }
 
   /**
    * Retorna la tab seleccionada actualmente
    * @param tabChagedEvent 
    */
-  private tabChanged(tabChagedEvent: MatTabChangeEvent):void{
+  private tabChanged(tabChagedEvent: MatTabChangeEvent): void {
     this.selectedTab = this.ArregloTabs[tabChagedEvent.index];
     this.indexSelectedTab = tabChagedEvent.index;
   }
 
-  public getSelectedText():string{
+  public getSelectedText(): string {
     console.log(this.selectedTab.getSelectedText());
     return '';
   }
 
-  public getTexto():string{
-    if(this.selectedTab != null){
+  public getTexto(): string {
+    if (this.selectedTab != null) {
       return this.selectedTab.getCod();
-    }else{
+    } else {
       return '//NO HABÍA CODIGO';
     }
   }
 
-  public getNombre():string{
+  public getNombre(): string {
     return this.selectedTab.getNombre();
   }
 
-  public get3D():string{
+  public get3D(): string {
     return this.codigo3d.code;
   }
 
