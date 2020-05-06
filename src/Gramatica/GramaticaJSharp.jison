@@ -56,6 +56,7 @@
 /* EXPRESIONES REGULARES */
 [0-9]+("."[0-9]+)\b                             return  'LIT_DOUBLE'
 [0-9]+\b                                        return  'LIT_INTEGER'
+([a-zñA-ZÑ0-9]|"-"|".")+("."[j])              return  'ID_FILE'
 [a-zA-Z_ñ]([a-zA-Z0-9_Ñ]*)                      return  'ID'
 ('"')([^\\"]|\\.)*('"')		                    return  'LIT_STRING'
 ("'")([^\\']|"\\n"|"\\t"|"\\r"|"\\"|"\\0")("'") return  'LIT_CHAR'
@@ -154,6 +155,7 @@
     var DecFun = require('../app/Compilador/InstruccionJ/DecFun').DecFun;
     var Switch = require('../app/Compilador/InstruccionJ/Switch').Switch;
     var Caso = require('../app/Compilador/InstruccionJ/Switch').Caso;
+    var Import = require('../app/Compilador/InstruccionJ/Import').Import;
 
     var LiteralJ = require('../app/Compilador/ExpresionJ/LiteralJ').LiteralJ;
     var Identificador = require('../app/Compilador/ExpresionJ/Identificador').Identificador;
@@ -207,7 +209,17 @@ JS_BODY_DEC:
         METHOD_DEC              { $$ = $1; }
     |   STRC_DEC                { $$ = $1; }
     |   VAR_DEC PTCOMA          { $$ = $1; $$.dec_interna = false; }
-    |   VAR_DEC                 { $$ = $1; $$.dec_interna = false; }       
+    |   VAR_DEC                 { $$ = $1; $$.dec_interna = false; }
+    |   IMPORT                  { $$ = $1; }       
+;
+
+IMPORT:
+        RIMPORT LISTA_FILES     { $$ = new Import($2,@1.first_line,@1.first_column); }
+;
+
+LISTA_FILES:
+        LISTA_FILES COMA ID_FILE    { $$ = $1; $$.push($3); }
+    |   ID_FILE                     { $$ = [$1]; }
 ;
 
 STRC_DEC:

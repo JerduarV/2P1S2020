@@ -545,7 +545,6 @@ function GenerarToUpperCase(temp_null: string): void {
     let etq_1: string = getEtiqueta();
     let etq_actu: string = getEtiqueta();
     let etq_sal: string = getEtiqueta();
-    let etq_enie: string = getEtiqueta();
     let etqv: string = getEtiqueta();
     let etqf: string = getEtiqueta();
 
@@ -595,14 +594,18 @@ function GenerarToUpperCase(temp_null: string): void {
     concatCodigo('if(' + t5 + ' == 120) goto ' + etq_1 + ';#*x*#');
     concatCodigo('if(' + t5 + ' == 121) goto ' + etq_1 + ';#*y*#');
     concatCodigo('if(' + t5 + ' == 122) goto ' + etq_1 + ';#*z*#');
-    concatCodigo('if(' + t5 + ' == 241) goto ' + etq_enie + ';#*ñ*#');
+    concatCodigo('if(' + t5 + ' == 241) goto ' + etq_1 + ';#*ñ*#');
+    concatCodigo('if(' + t5 + ' == 233) goto ' + etq_1 + ';#*é*#');
+    concatCodigo('if(' + t5 + ' == 225) goto ' + etq_1 + ';#*á*#');
+    concatCodigo('if(' + t5 + ' == 237) goto ' + etq_1 + ';#*í*#');
+    concatCodigo('if(' + t5 + ' == 243) goto ' + etq_1 + ';#*ó*#');
+    concatCodigo('if(' + t5 + ' == 250) goto ' + etq_1 + ';#*ú*#');
 
     concatCodigo('Heap[' + t8 + '] = ' + t5 + ';\ngoto ' + etq_actu + ';');
 
-    concatCodigo(etq_1 + ':\n' + t9 + ' = ' + t5 + ' - 32;\nHeap[' + t8 + '] = ' + t9 + ';\ngoto ' + etq_actu + ';');
+    concatCodigo(etq_1 + ':\n' + t9 + ' = ' + t5 + ' - 32;\nHeap[' + t8 + '] = ' + t9 + ';');
 
-    concatCodigo(etq_enie + ':\nHeap[' + t8 + '] = 209;\n' + etq_actu + ':');
-
+    concatCodigo(etq_actu + ':')
     concatCodigo(t2 + ' = ' + t2 + ' + 1;\n' + t3 + ' = ' + t3 + ' + 1;\ngoto ' + etq_ini + ';');
     concatCodigo(etq_sal + ':\nStack[P] = ' + t6 + ';');
     concatCodigo('\nend\n#*FIN STRING UPPERCASE*#\n');
@@ -678,14 +681,19 @@ function GenerarToLowerCase(temp_null: string): void {
     concatCodigo('if(' + t5 + ' == 88) goto ' + etq_1 + ';#*X*#');
     concatCodigo('if(' + t5 + ' == 89) goto ' + etq_1 + ';#*Y*#');
     concatCodigo('if(' + t5 + ' == 90) goto ' + etq_1 + ';#*Z*#');
-    concatCodigo('if(' + t5 + ' == 209) goto ' + etq_enie + ';#*Ñ*#');
+    concatCodigo('if(' + t5 + ' == 209) goto ' + etq_1 + ';#*Ñ*#');
+
+    concatCodigo('if(' + t5 + ' == 193) goto ' + etq_1 + ';#*Á*#');
+    concatCodigo('if(' + t5 + ' == 201) goto ' + etq_1 + ';#*É*#');
+    concatCodigo('if(' + t5 + ' == 205) goto ' + etq_1 + ';#*Í*#');
+    concatCodigo('if(' + t5 + ' == 211) goto ' + etq_1 + ';#*Ó*#');
+    concatCodigo('if(' + t5 + ' == 218) goto ' + etq_1 + ';#*Ú*#');
 
     concatCodigo('Heap[' + t8 + '] = ' + t5 + ';\ngoto ' + etq_actu + ';');
 
-    concatCodigo(etq_1 + ':\n' + t9 + ' = ' + t5 + ' + 32;\nHeap[' + t8 + '] = ' + t9 + ';\ngoto ' + etq_actu + ';');
+    concatCodigo(etq_1 + ':\n' + t9 + ' = ' + t5 + ' + 32;\nHeap[' + t8 + '] = ' + t9 + ';');
 
-    concatCodigo(etq_enie + ':\nHeap[' + t8 + '] = 241;\n' + etq_actu + ':');
-
+    concatCodigo(etq_actu + ':');
     concatCodigo(t2 + ' = ' + t2 + ' + 1;\n' + t3 + ' = ' + t3 + ' + 1;\ngoto ' + etq_ini + ';');
     concatCodigo(etq_sal + ':\nStack[P] = ' + t6 + ';');
     concatCodigo('\nend\n#*FIN STRING LOWERCASE*#\n');
