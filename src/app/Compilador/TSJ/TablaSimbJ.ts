@@ -8,6 +8,7 @@ import { DecFun } from '../InstruccionJ/DecFun';
 import { Display } from './Display';
 import { DefStruct } from '../InstruccionJ/DefStruct';
 import { ParamT2 } from '../ExpresionJ/CallFun2';
+import { DisplayTry } from './DisplayTry';
 
 export function NewTablaLocal(padre: TablaSimbJ): TablaSimbJ {
     let t: TablaSimbJ = new TablaSimbJ(padre.getArchivo(), padre.getConsola());
@@ -15,6 +16,7 @@ export function NewTablaLocal(padre: TablaSimbJ): TablaSimbJ {
     t.tam_fun_actual = padre.tam_fun_actual;
     t.etq_fun_salida = padre.etq_fun_salida;
     t.display = padre.display;
+    t.displayTry = padre.displayTry;
     t.funcion_actual = padre.funcion_actual;
     t.tabla_temporales = padre.tabla_temporales;
     t.tabla_structs = padre.tabla_structs;
@@ -35,6 +37,7 @@ export class TablaSimbJ {
     public etq_fun_salida: string;
     public padre: TablaSimbJ;
     public display: Display;
+    public displayTry: DisplayTry;
     public funcion_actual: DecFun;
     public temp_true: string;
     public temp_false: string;
@@ -56,9 +59,11 @@ export class TablaSimbJ {
         this.etq_fun_salida = '';
         this.padre = null;
         this.display = new Display();
+        this.displayTry = new DisplayTry();
         this.funcion_actual = null;
         this.tabla_temporales = new Map();
         this.tabla_structs = new Map();
+        
     }
 
     public BuscarVariable(id: string): SimbVar {
@@ -199,7 +204,7 @@ export class TablaSimbJ {
      */
     public getExisteTipo(tipo: Tipo): boolean {
         //console.log(tipo);
-        return tipo.esNativo() || this.tabla_structs.has(tipo.getNombreTipo().toUpperCase());
+        return tipo.esNativo() || this.tabla_structs.has(tipo.getNombreTipo().toUpperCase()) || tipo.esException();
     }
 
     public esValidaBreak(): boolean {

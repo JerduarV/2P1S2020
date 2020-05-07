@@ -37,7 +37,10 @@ export class While extends InstruccionJ{
         this.cond.Traducir(ts);
         let temp: string = getTempAct();
         ts.SacarTemporal(temp);
+        
+        //INSERCIÓN DE ETIQUETAS
         ts.display.insertar(etq_ini, etq_sal);
+
         concatCodigo('if(' + temp + ' == 1) goto ' + etqv + ';');
         concatCodigo('goto ' + etqf + ';');
         concatCodigo(etqv + ':')
@@ -46,6 +49,7 @@ export class While extends InstruccionJ{
         concatCodigo(etqf + ':');
         concatCodigo(etq_sal + ':');
 
+        //SACOS LAS ETIQUETAS
         ts.display.sacarEtiquetas();
     }
 

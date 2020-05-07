@@ -76,8 +76,8 @@ export class SimbFuncion extends SimboloJ {
             return false;
         }
 
-        for(let i = 0; i < lista_param.length; i++){
-            if(!def.hasParametroIgual(lista_param[i].nombre,lista_tipo[i])){
+        for (let i = 0; i < lista_param.length; i++) {
+            if (!def.hasParametroIgual(lista_param[i].nombre, lista_tipo[i])) {
                 return false;
             }
         }
@@ -90,8 +90,8 @@ export class SimbFuncion extends SimboloJ {
             return false;
         }
 
-        for(let i = 0; i < lista_param.length; i++){
-            if(!def.hasParametroCasteo(lista_param[i].nombre,lista_tipo[i])){
+        for (let i = 0; i < lista_param.length; i++) {
+            if (!def.hasParametroCasteo(lista_param[i].nombre, lista_tipo[i])) {
                 return false;
             }
         }
@@ -128,15 +128,26 @@ export class SimbFuncion extends SimboloJ {
     private YaExiste(f: DecFun): boolean {
         //RECORRO DEFINICIÓN POR DEFINICIÓN
         for (let i: number = 0; i < this.ListaDefiniciones.length; i++) {
+
             //SI EL NÚMERO DE PARAMETROS FORMALES COINCIDE COMPARO PARAMÉTRO POR PARÁMETRO
-            if (f.getParamatrosFormales().length != this.ListaDefiniciones[i].getParamatrosFormales().length) {
+            if (f.getParamatrosFormales().length == this.ListaDefiniciones[i].getParamatrosFormales().length) {
+
                 let d: DecFun = this.ListaDefiniciones[i];
-                for (let y: number; y < f.getParamatrosFormales.length; y++) {
+                let bandera: boolean = true;
+
+                for (let y: number = 0; y < f.getParamatrosFormales.length; y++) {
+
                     if (!f.getParamatrosFormales()[y].getTipo().esIgualA(d.getParamatrosFormales()[y].getTipo())) {
+                        bandera = false;
                         break;
                     }
+
                 }
-                return true;
+
+                if (bandera) {
+                    return true;
+                }
+
             }
         }
         return false;

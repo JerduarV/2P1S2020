@@ -3,7 +3,7 @@ import { ExpresionJ } from '../ExpresionJ';
 import { TablaSimbJ } from '../../TSJ/TablaSimbJ';
 import { ErrorLup } from 'src/app/Auxiliares/Error';
 import { Tipo, getTipoString, getTipoDouble } from '../../TSJ/Tipo';
-import { genTemp, concatCodigo, getTempAct, getEtiqueta } from 'src/app/Auxiliares/Utilidades';
+import { genTemp, concatCodigo, getTempAct, getEtiqueta, concatException } from 'src/app/Auxiliares/Utilidades';
 import { concat } from 'rxjs';
 
 export class OpeArit extends OperacionJ {
@@ -58,7 +58,7 @@ export class OpeArit extends OperacionJ {
             return this.AnalizarModulo(ts, opIzq, opDer);
         }
 
-        return null;
+        return ts.GenerarError('Error en operación aritmética',this.getFila(),this.getCol());
     }
 
     /**
@@ -156,7 +156,7 @@ export class OpeArit extends OperacionJ {
         if ((opIzq.isNumerico() || opIzq.isChar()) || (opDer.isNumerico() || opDer.isChar())) {
             return getTipoDouble();
         }
-        ts.GenerarError('No se puede multiplicar ' + opIzq.getString() + ' con ' + opDer.getString(), this.getFila(), this.getCol());
+        return ts.GenerarError('No se puede multiplicar ' + opIzq.getString() + ' con ' + opDer.getString(), this.getFila(), this.getCol());
     }
 
     /**
@@ -169,7 +169,7 @@ export class OpeArit extends OperacionJ {
         if (opIzq.isInteger() && opDer.isInteger()) {
             return opIzq;
         }
-        ts.GenerarError('No se puede hacer el modulo de ' + opIzq.getString() + ' con ' + opDer.getString(), this.getFila(), this.getCol());
+        return ts.GenerarError('No se puede hacer el modulo de ' + opIzq.getString() + ' con ' + opDer.getString(), this.getFila(), this.getCol());
     }
 
     /**
@@ -182,7 +182,7 @@ export class OpeArit extends OperacionJ {
         if (opIzq.isInteger() && opDer.isInteger()) {
             return opIzq;
         }
-        ts.GenerarError('No se puede elevar ' + opIzq.getString() + ' con ' + opDer.getString(), this.getFila(), this.getCol());
+        return ts.GenerarError('No se puede elevar ' + opIzq.getString() + ' con ' + opDer.getString(), this.getFila(), this.getCol());
     }
 
     public Traducir(ts: TablaSimbJ): void {
@@ -455,7 +455,9 @@ export class OpeArit extends OperacionJ {
         let t2: string = getTempAct();
 
         concatCodigo('if (' + t2 + ' == 0) goto ' + etqv + ';\ngoto ' + etqf + ';');
-        concatCodigo(etqv + ':\nE = 1;\n' + etqf + ':');
+        concatCodigo(etqv + ':');
+        concatException(1,ts);
+        concatCodigo(etqf + ':');
 
         let temp: string = genTemp();
         concatCodigo(temp + ' = ' + t1 + ' / ' + t2 + ';');
@@ -509,6 +511,14 @@ export class OpeArit extends OperacionJ {
         let t2: string = getTempAct();
 
         let temp: string = genTemp();
+        let etqv: string = getEtiqueta();
+        let etqf: string = getEtiqueta();
+
+        concatCodigo('if (' + t2 + ' == 0) goto ' + etqv + ';\ngoto ' + etqf + ';');
+        concatCodigo(etqv + ':');
+        concatException(1,ts);
+        concatCodigo(etqf + ':');
+
 
         concatCodigo(temp + ' = ' + t1 + ' % ' + t2 + ';');
         ts.SacarTemporal(t1);

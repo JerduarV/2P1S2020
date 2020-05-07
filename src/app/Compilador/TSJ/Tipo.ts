@@ -2,8 +2,8 @@ export function getTipoString(): Tipo {
     return new Tipo(STRING, 0);
 }
 
-export function getTipoChar():Tipo{
-    return new Tipo(CHAR,0);
+export function getTipoChar(): Tipo {
+    return new Tipo(CHAR, 0);
 }
 
 export function getTipoDouble(): Tipo {
@@ -22,6 +22,14 @@ export function getTipoNull(): Tipo {
     return new Tipo(NULL, 0);
 }
 
+export const ARITHMETICEX = 'ARITHMETICEXCEPTION';
+export const INDEXOUTOFBOUNDEX = 'INDEXOUTOFBOUNDEXCEPTION';
+export const UNCAUGTHEX = 'UNCAUGHEXCEPTION';
+export const NULLPOINTEREX = 'NULLPOINTEREXCEPTION';
+export const INVALIDCASTINGEXCEPTION = 'INVALIDCASTINGEXCEPTION';
+export const HEAPOVERFLOWERROR = 'HEAPOVERFLOWERROR';
+export const STACKOVERFLOWERROR = 'STACKOVERFLOWERROR';
+
 export const DOUBLE = 'DOUBLE';
 export const BOOL = 'BOOLEAN';
 export const STRING = 'STRING';
@@ -37,6 +45,17 @@ export class Tipo {
     constructor(t: string, dim: number) {
         this.tipo = t.toUpperCase();
         this.dim = dim;
+    }
+
+    public esException(): boolean {
+        return this.dim == 0
+            && (this.tipo == ARITHMETICEX
+                || this.tipo == INDEXOUTOFBOUNDEX
+                || this.tipo == UNCAUGTHEX
+                || this.tipo == NULLPOINTEREX
+                || this.tipo == INVALIDCASTINGEXCEPTION
+                || this.tipo == HEAPOVERFLOWERROR
+                || this.tipo == STACKOVERFLOWERROR)
     }
 
     public isVar(): boolean {
@@ -69,7 +88,6 @@ export class Tipo {
 
     public esIgualA(t: Tipo): boolean {
         return this.tipo == t.tipo && this.dim == t.dim;
-
     }
 
     public getValDefecto(): string {

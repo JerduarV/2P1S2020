@@ -156,6 +156,8 @@
     var Switch = require('../app/Compilador/InstruccionJ/Switch').Switch;
     var Caso = require('../app/Compilador/InstruccionJ/Switch').Caso;
     var Import = require('../app/Compilador/InstruccionJ/Import').Import;
+    var Throw = require('../app/Compilador/InstruccionJ/Throw').Throw;
+    var TryCatch = require('../app/Compilador/InstruccionJ/TryCatch').TryCatch;
 
     var LiteralJ = require('../app/Compilador/ExpresionJ/LiteralJ').LiteralJ;
     var Identificador = require('../app/Compilador/ExpresionJ/Identificador').Identificador;
@@ -300,11 +302,23 @@ SENT:
     |   CONTINUE                            { $$ = $1; }
     |   STRC_DEC                            { $$ = $1; }
     |   SWITCH                              { $$ = $1; }
+    |   THROW PTCOMA                        { $$ = $1; }
+    |   THROW                               { $$ = $1; }
+    |   TRYCATCH                            { $$ = $1; }
     |   L_ACCESO PTCOMA                     { $$ = new Acceso($1,@1.first_line,@1.first_column); }
     |   L_ACCESO INCREMENTO PTCOMA          { $$ = new IncDec(new Acceso($1,@1.first_line,@1.first_column),1,@1.first_line,@1.first_column); }
     |   L_ACCESO DECREMENTO PTCOMA          { $$ = new IncDec(new Acceso($1,@1.first_line,@1.first_column),-1,@1.first_line,@1.first_column); }
     |   L_ACCESO INCREMENTO                 { $$ = new IncDec(new Acceso($1,@1.first_line,@1.first_column),1,@1.first_line,@1.first_column); }
     |   L_ACCESO DECREMENTO                 { $$ = new IncDec(new Acceso($1,@1.first_line,@1.first_column),-1,@1.first_line,@1.first_column); }
+;
+
+TRYCATCH:
+        RTRY BLOCK_SENT RCATCH PARIZQ L_PARAMS PARDER BLOCK_SENT    { $$ = new TryCatch($2,$5,$7,@1.first_line,@1.first_column); }
+    |   RTRY BLOCK_SENT RCATCH PARIZQ PARDER BLOCK_SENT             { $$ = new TryCatch($2,[],$6,@1.first_line,@1.first_column); }
+;
+
+THROW:
+        RTHROW EXP  { $$ = new Throw($2,@1.first_line,@1.first_column); }
 ;
 
 SWITCH:

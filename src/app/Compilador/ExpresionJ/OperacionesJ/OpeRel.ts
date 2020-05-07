@@ -65,6 +65,11 @@ export class OpeRel extends OperacionJ {
     }
 
     public AnalizarIgualdad(ts: TablaSimbJ, opIzq: Tipo, opDer: Tipo): Object {
+        if (opIzq.isNull() && opDer.isNull()
+            || (opIzq.isString() || opIzq.esStruct()) && opDer.isNull()
+            || opIzq.isNull() && (opDer.isString() || opDer.esStruct())) {
+            return getTipoBool();
+        }
         if (!opIzq.soyArreglo() && !opDer.soyArreglo() && !opIzq.esStruct() && !opDer.esStruct() && opIzq.esIgualA(opDer)) {
             return getTipoBool();
         }

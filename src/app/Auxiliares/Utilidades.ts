@@ -6,6 +6,15 @@ let contador_tempo: number = 0;
 let temAct = 0;
 let codigo_gen: string = '';
 
+export function concatException(errorNum: number,ts: TablaSimbJ):void{
+    if(ts.displayTry.estoyEnTry()){
+        concatCodigo(ts.displayTry.getLastTemp() + ' = ' + errorNum + ';');
+        concatCodigo('goto ' + ts.displayTry.getLastEtq() + ';');
+    }else{
+        concatCodigo('E = ' + errorNum + ';');
+    }
+}
+
 export function genTemp(): string {
     temAct = contador_tempo;
     return 't' + contador_tempo++;

@@ -26,6 +26,14 @@ export class StrcStruct extends ExpresionJ {
             return;
         }
 
+        if(t.esException()){
+            let tr: string = genTemp();
+            concatCodigo('Heap[H] = 0;');
+            concatCodigo('H = H + 1;');
+            ts.guardarTemporal(tr);
+            return;
+        }
+
         //ESCRIBO SALIDA DE LA FUNCIÓN ACTUAL
         concatCodigo('P = P + ' + ts.getTamanioFunTotal() + ';');
 
