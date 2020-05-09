@@ -22,6 +22,10 @@ export class EditorAvanzadoComponent implements OnInit {
     this.ArregloTabs = [];
   }
 
+  public getTabs():Editor3Component[]{
+    return this.ArregloTabs;
+  }
+
   private addTab(): void {
     let tab: Editor3Component = new Editor3Component();
     tab.setNombre('nuevo.j');
@@ -80,7 +84,10 @@ export class EditorAvanzadoComponent implements OnInit {
 
   public RemoveTab(): void {
     if (this.indexSelectedTab) {
-      this.ArregloTabs.splice(this.indexSelectedTab);
+      this.ArregloTabs.splice(this.indexSelectedTab,1);
+    }else{
+      console.log(this.indexSelectedTab);
+      this.ArregloTabs.splice(0,1);
     }
   }
 

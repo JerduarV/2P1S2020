@@ -1,10 +1,10 @@
 import { InstruccionJ } from './InstruccionJ';
 import { ExpresionJ } from '../ExpresionJ/ExpresionJ';
 import { NodoASTJ } from '../ASTJ/NodoASTJ';
-import { Tipo } from '../TSJ/Tipo';
 import { ErrorLup } from 'src/app/Auxiliares/Error';
 import { getEtiqueta, concatCodigo, getTempAct } from 'src/app/Auxiliares/Utilidades';
 import { NewTablaLocal, TablaSimbJ } from '../TSJ/TablaSimbJ';
+import { DecFun } from './DecFun';
 
 export class For extends InstruccionJ{
 
@@ -74,6 +74,13 @@ export class For extends InstruccionJ{
         concatCodigo(etq_sal + ':');
         concatCodigo(etq_f + ':');
 
+    }
+
+    public DeterminarTamanioFuncion(funcion: DecFun): void {
+        super.DeterminarTamanioFuncion(funcion);
+        if(this.init != null){
+            this.init.DeterminarTamanioFuncion(funcion);
+        }
     }
 
 }

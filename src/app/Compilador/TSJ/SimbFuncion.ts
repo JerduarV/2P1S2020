@@ -18,7 +18,9 @@ export class SimbFuncion extends SimboloJ {
             this.ListaDefiniciones.push(f);
             return true;
         } else {
+            console.log(this.YaExiste(f));  
             if (!this.YaExiste(f)) {
+                console.log('LA AGREGUÉ')
                 this.ListaDefiniciones.push(f);
                 return true;
             } else {
@@ -135,8 +137,9 @@ export class SimbFuncion extends SimboloJ {
                 let d: DecFun = this.ListaDefiniciones[i];
                 let bandera: boolean = true;
 
-                for (let y: number = 0; y < f.getParamatrosFormales.length; y++) {
-
+                for (let y: number = 0; y < f.getParamatrosFormales().length; y++) {
+                    console.log(f.getParamatrosFormales()[y].getTipo().getString());
+                    console.log(d.getParamatrosFormales()[y].getTipo().getString());
                     if (!f.getParamatrosFormales()[y].getTipo().esIgualA(d.getParamatrosFormales()[y].getTipo())) {
                         bandera = false;
                         break;

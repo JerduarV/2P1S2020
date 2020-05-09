@@ -4,15 +4,10 @@
             <mat-icon>get_app</mat-icon>
         </a>
     </div>
-    <input #fileUpload type="file" (click)="fileUpload.value = null"(change)="importFile($event)" multiple="multiple" style="display:none" accept=".txt">
+    <input #fileUpload type="file" (click)="fileUpload.value = null"(change)="importFile($event)" multiple="multiple" style="display:none" accept=".j">
     <div class="col-4 col-lg-1 col-md-3 col-sm-4 w-75">
         <button mat-mini-fab class="boton" (click)="fileUpload.click()">
             <mat-icon>publish</mat-icon>
-          </button>
-    </div>
-    <div class="col-4 col-lg-1 col-md-3 col-sm-4 w-75">
-        <button mat-mini-fab class="boton" (click)="getSelectedText()">
-            <mat-icon>format_italic</mat-icon>
           </button>
     </div>
     <div class="col-4 col-lg-1 col-md-3 col-sm-4 w-75">

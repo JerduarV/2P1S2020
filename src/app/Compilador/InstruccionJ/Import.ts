@@ -16,4 +16,9 @@ export class Import extends InstruccionJ{
         });
     }
 
+
+    public getListaFiles():string[]{
+        return this.lista_ids;
+    }
+
 }

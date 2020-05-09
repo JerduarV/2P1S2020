@@ -5,6 +5,7 @@ import { VentanaErroresComponent } from '../ventana-errores/ventana-errores.comp
 import { Interprete3D } from 'src/app/Interprete3D/Interprete3D';
 import { CompiladorJ } from 'src/app/Compilador/CompiladorJ';
 import { EditorAvanzadoComponent } from '../editor-avanzado/editor-avanzado.component';
+import { Editor3Component } from '../editor3/editor3.component';
 
 declare var parsear: any;
 declare var InterpretarLup: any;
@@ -45,7 +46,9 @@ export class MainPageComponent implements OnInit {
   public Compilar(): void {
     let compilador: CompiladorJ = new CompiladorJ();
     this.consola.lista_errores = [];
-    compilador.Compilar(this.editor_avanzado.getNombre(), this.editor_avanzado.getTexto(),this.consola);
+    let archivos: Editor3Component[] = this.editor_avanzado.getTabs();
+    console.log(archivos);
+    compilador.Compilar(this.editor_avanzado.getNombre(), this.editor_avanzado.getTexto(),this.consola,archivos);
   }
 
   /**

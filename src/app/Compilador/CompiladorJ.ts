@@ -11,6 +11,8 @@ import { DecFun } from './InstruccionJ/DecFun';
 import { InstruccionJ } from './InstruccionJ/InstruccionJ';
 import { DefStruct } from './InstruccionJ/DefStruct';
 import { ErrorLup } from '../Auxiliares/Error';
+import { Import } from './InstruccionJ/Import';
+import { Editor3Component } from '../components/editor3/editor3.component';
 
 export class CompiladorJ {
     constructor() {
@@ -21,7 +23,7 @@ export class CompiladorJ {
      * Analiza la entrada de código J#
      * @param entradaJSharp Archivo de entrada
      */
-    public Compilar(archivo: string, entrada3d: string, cons: Consola) {
+    public Compilar(archivo: string, entrada3d: string, cons: Consola, archivos: Editor3Component[]) {
 
         inicializarTodo();
 
@@ -34,22 +36,48 @@ export class CompiladorJ {
             //console.log(AST);
             let global: TablaSimbJ = new TablaSimbJ(archivo, cons);
 
+            let lista_import: string[] = []
+            //IMPORT
+            this.BuscarImport(lista_import, AST);
+
+            let list_arboles_import = [];
+            for(let i = 0; i < lista_import.length; i++){
+                let Arbol: NodoASTJ[] = this.Import(lista_import[i], archivos);
+                if(Arbol != null){
+                    list_arboles_import.push(Arbol);
+                }
+            }
+
+            console.log(list_arboles_import);
+
             //RECOLECCIÓN DE STRUCT
             let strc: DefStruct[] = this.RecolectarStructs(AST);
+            list_arboles_import.forEach(element => {
+                let list: DefStruct[] = this.RecolectarStructs(element);
+                list.forEach(d => {
+                    strc.push(d);
+                });
+            });
             this.GuardarStructs(strc, global);
+
 
             //RECOLECTAR FUCIONES
             let d: DecFun[] = this.RecolectarFunciones(global, AST);
+            list_arboles_import.forEach(element => {
+                let list: DecFun[] = this.RecolectarFunciones(global, element);
+                list.forEach(element => {
+                    d.push(element);
+                });
+            });
             this.CalcularTamanioFunciones(d);
 
             //RECOLECCION DE GLOBALES
             this.RecolectarGlobales(global, AST);
 
+            //CREACIÓN DE CADENAS CONSTANTES
             global.temp_true = this.EscrbirPalabras('true');
             global.temp_false = this.EscrbirPalabras('false');
             global.temp_null = this.EscrbirPalabras('null');
-            //console.log(global.temp_false)
-            //console.log(global.temp_true);
 
 
             //ETAPA DE TRADUCCIÓN
@@ -77,6 +105,33 @@ export class CompiladorJ {
 
         } catch (error) {
             console.log(error);
+        }
+    }
+
+    private Import(Archivo: string, lista_files: Editor3Component[]):NodoASTJ[]{
+        for(let i = 0; i < lista_files.length; i++){
+            if(Archivo == lista_files[i].getNombre()){
+                console.log(lista_files[i].code);
+                let AST;
+                try {
+                    AST = parser.parse(lista_files[i].code);
+                    return AST;
+                } catch (error) {
+                    console.log(error);
+                    return null;
+                }
+            }
+        }
+    }
+
+    private BuscarImport(lista_files: string[], AST: NodoASTJ[]): void {
+        for (let i = 0; i < AST.length; i++) {
+            if (AST[i] instanceof Import) {
+                let impor: Import = <Import>AST[i];
+                impor.getListaFiles().forEach(id_file => {
+                    lista_files.push(id_file);
+                });
+            }
         }
     }
 
