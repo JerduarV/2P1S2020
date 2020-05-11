@@ -94,4 +94,8 @@ export class IF extends InstruccionJ {
             this.sino.DeterminarTamanioFuncion(funcion);
         }
     }
+
+    public dibujar(padre: string): void {
+        throw new Error("Method not implemented.");
+    }
 }

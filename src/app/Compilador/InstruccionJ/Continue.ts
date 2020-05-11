@@ -15,4 +15,8 @@ export class Continue extends InstruccionJ {
         concatCodigo('goto ' + ts.getEtqInicio() + ';');
     }
 
+    public dibujar(padre: string): void {
+        throw new Error("Method not implemented.");
+    }
+
 }

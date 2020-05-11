@@ -50,4 +50,8 @@ export abstract class OperacionJ extends ExpresionJ{
         return this.OpeDer;
     }
 
+    public dibujar(padre: string): void {
+        throw new Error("Method not implemented.");
+    }
+
 }

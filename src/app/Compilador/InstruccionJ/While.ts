@@ -53,4 +53,8 @@ export class While extends InstruccionJ{
         ts.display.sacarEtiquetas();
     }
 
+    public dibujar(padre: string): void {
+        throw new Error("Method not implemented.");
+    }
+
 }

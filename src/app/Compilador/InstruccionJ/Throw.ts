@@ -48,4 +48,8 @@ export class Throw extends InstruccionJ{
         }
     }
 
+    public dibujar(padre: string): void {
+        throw new Error("Method not implemented.");
+    }
+
 }

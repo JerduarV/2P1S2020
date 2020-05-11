@@ -20,4 +20,10 @@ export abstract class NodoASTJ{
         return this.col;
     }
 
+    /**
+     * Función para dibujar el AST
+     * @param padre Identificador del nodo padre
+     */
+    public abstract dibujar(padre: string):void;
+
 }

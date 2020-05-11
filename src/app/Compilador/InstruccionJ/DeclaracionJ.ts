@@ -159,4 +159,8 @@ export class DeclaracionJ extends InstruccionJ {
         return this.esVar() || this.esConstante() || this.esGlobal();
     }
 
+    public dibujar(padre: string): void {
+        throw new Error("Method not implemented.");
+    }
+
 }

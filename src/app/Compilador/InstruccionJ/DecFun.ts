@@ -134,4 +134,16 @@ export class DecFun extends InstruccionJ {
         return this.TipoRet;
     }
 
+    public getParametrosReporte(): string{
+        let cad = '';
+        this.parametroFormales.forEach(element => {
+            cad += element.nombre + ' : ' + element.getTipo().getString() + '\n';
+        });
+        return cad;
+    }
+
+    public dibujar(padre: string): void {
+        throw new Error("Method not implemented.");
+    }
+
 }

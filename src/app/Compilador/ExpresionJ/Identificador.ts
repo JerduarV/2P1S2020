@@ -18,4 +18,8 @@ export class Identificador extends ExpresionJ{
     public getId():string{
         return this.id;
     }
+
+    public dibujar(padre: string): void {
+        throw new Error("Method not implemented.");
+    }
 }

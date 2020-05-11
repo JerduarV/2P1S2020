@@ -13,4 +13,8 @@ export class Break extends InstruccionJ{
         }
         concatCodigo('goto ' + ts.getEtqSalida() + ';');
     }
+
+    public dibujar(padre: string): void {
+        throw new Error("Method not implemented.");
+    }
 }

@@ -79,4 +79,8 @@ export class TryCatch extends InstruccionJ {
         console.log('NO TENGO TRADUCCIÓN');
     }
 
+    public dibujar(padre: string): void {
+        throw new Error("Method not implemented.");
+    }
+
 }

@@ -93,4 +93,8 @@ export class CallFunArray extends ExpresionJ {
         return this.exp_index;
     }
 
+    public dibujar(padre: string): void {
+        throw new Error("Method not implemented.");
+    }
+
 }

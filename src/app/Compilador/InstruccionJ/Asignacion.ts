@@ -19,4 +19,8 @@ export class Asignacion extends InstruccionJ{
         this.L_Acceso.Traducir(ts);
     }
 
+    public dibujar(padre: string): void {
+        throw new Error("Method not implemented.");
+    }
+
 }

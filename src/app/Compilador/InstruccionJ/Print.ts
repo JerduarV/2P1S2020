@@ -72,4 +72,8 @@ export class Print extends InstruccionJ {
         ts.SacarTemporal(temp);
     }
 
+    public dibujar(padre: string): void {
+        throw new Error("Method not implemented.");
+    }
+
 }

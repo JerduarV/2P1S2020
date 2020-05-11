@@ -3,6 +3,7 @@ import { TablaSimbJ } from '../TSJ/TablaSimbJ';
 import { DeclaracionJ } from './DeclaracionJ';
 import { DecFun } from './DecFun';
 import { DefStruct } from './DefStruct';
+import { getIdNodo, conectarNodo } from 'src/app/Auxiliares/Utilidades';
 
 export abstract class InstruccionJ extends NodoASTJ{
 
@@ -62,6 +63,23 @@ export abstract class InstruccionJ extends NodoASTJ{
                 continue;
             }
             n.Traducir(ts);
+        }
+    }
+
+    /**
+     * Función que dibuja el cuerpo de la instrucción si la tuviera
+     * @param padre Identficador del padre
+     */
+    public DibujarCuerpo(padre):void {
+        if (this.cuerpo != null) {
+            let l: string = getIdNodo("LSENT");
+            conectarNodo(padre, l);
+            this.cuerpo.forEach(nodo => {
+                if(nodo != null){
+                    nodo.dibujar(l);
+                }
+            });
+            
         }
     }
 

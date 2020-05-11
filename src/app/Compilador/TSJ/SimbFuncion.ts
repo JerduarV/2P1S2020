@@ -3,6 +3,8 @@ import { DecFun } from '../InstruccionJ/DecFun';
 import { Tipo } from './Tipo';
 import { ParamT2 } from '../ExpresionJ/CallFun2';
 
+export let lista_funciones_global = [];
+
 export class SimbFuncion extends SimboloJ {
 
 
@@ -16,12 +18,14 @@ export class SimbFuncion extends SimboloJ {
     public AgregarDef(f: DecFun): boolean {
         if (this.ListaDefiniciones.length == 0) {
             this.ListaDefiniciones.push(f);
+            lista_funciones_global.push(f);
             return true;
         } else {
             console.log(this.YaExiste(f));  
             if (!this.YaExiste(f)) {
-                console.log('LA AGREGUÉ')
+                //console.log('LA AGREGUÉ')
                 this.ListaDefiniciones.push(f);
+                lista_funciones_global.push(f);
                 return true;
             } else {
                 return false;

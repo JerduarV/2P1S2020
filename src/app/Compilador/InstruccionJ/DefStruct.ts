@@ -168,7 +168,7 @@ export class DefStruct extends InstruccionJ {
         return -1;
     }
 
-    public getAtributo(id: string):Tipo{
+    public getAtributo(id: string): Tipo {
         for (let i = 0; i < this.lista_atrib.length; i++) {
             const atrib = this.lista_atrib[i];
             if (atrib.id.toUpperCase() == id.toUpperCase()) {
@@ -178,8 +178,20 @@ export class DefStruct extends InstruccionJ {
         return null;
     }
 
-    public getSize():number{
+    public getSize(): number {
         return this.lista_atrib.length;
+    }
+
+    public getAtributosReporte(): string {
+        let cad: string = '';
+        this.lista_atrib.forEach(atrib => {
+            cad += '| ' + atrib.id + ' : ' + atrib.tipo.getString() + ' \n';
+        });
+        return cad;
+    }
+
+    public dibujar(padre: string): void {
+        throw new Error("Method not implemented.");
     }
 
 }

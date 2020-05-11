@@ -99,4 +99,8 @@ export class Dolar extends ExpresionJ {
         }
     }
 
+    public dibujar(padre: string): void {
+        throw new Error("Method not implemented.");
+    }
+
 }

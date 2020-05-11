@@ -1,5 +1,4 @@
 <div class="container h-100 mt-4">
-
     <!-- run, clear & beautify buttons -->
     <div class="row mb-4 justify-content-center mx-4">
         <div class="col-4 col-lg-2 col-md-3 col-sm-4 w-75">
@@ -13,8 +12,8 @@
             </button>
         </div>
         <div class="col-4 col-lg-2 col-md-3 col-sm-4 w-75">
-            <button type="button" class="btn btn-dark btn-sm btn-block px-4 mx-2" (click)="LimpiarConsola()">
-                Limpiar
+            <button type="button" class="btn btn-dark btn-sm btn-block px-4 mx-2" (click)="DibujarAST()">
+                Dibujar AST
             </button>
         </div>
         <div class="col-4 col-lg-2 col-md-3 col-sm-4 w-75">
@@ -33,8 +32,8 @@
             <mat-tab-group animationDuration="0ms" #tabGroup (selectedTabChange)="tabChanged($event)">
                 <mat-tab label='CODIGO 3D'>
                     <ng-template class="my-code-editor" matTabContent>
-                        <ngx-monaco-editor style="height: 415px;" class="my-code-editor"
-                            [options]='editorOptions' [(ngModel)]='consola.salida'>
+                        <ngx-monaco-editor style="height: 415px;" class="my-code-editor" [options]='editorOptions'
+                            [(ngModel)]='consola.salida'>
                         </ngx-monaco-editor>
                     </ng-template>
                 </mat-tab>
@@ -51,19 +50,142 @@
                     <ng-template matTabContent>
                         <div class="col">
                             <div class="label-box border"><span class="mx-4 font-weight-light">Consola</span></div>
-                            <textarea style="height: 300px;" class="form-control output"
-                                rows="6" disabled="true" aria-label="output-textarea"></textarea>
+                            <textarea style="height: 300px;" class="form-control output" rows="6" disabled="true"
+                                aria-label="output-textarea"></textarea>
                         </div>
                     </ng-template>
                 </mat-tab>
-                <mat-tab label="TABLA DE SÍMBOLOS">
+                <mat-tab label="TS: FUNCIONES">
                     <ng-template matTabContent>
                         <div class="col">
-                            <div class="label-box border"><span class="mx-4 font-weight-light">TABLA DE SÍMBOLOS</span>
-                            </div>
-                            <textarea style="height: 300px;" [(ngModel)]="lup" class="form-control output" rows="6"
-                                disabled="true" aria-label="output-textarea"></textarea>
+                            <mat-form-field>
+                                <mat-label>Filtro</mat-label>
+                                <input matInput (keyup)="applyFilter($event)" placeholder="Ex. ium">
+                            </mat-form-field>
+                            <!-- Funciones -->
+                            <table mat-table [dataSource]="funciones" class="mat-elevation-z8">
+
+                                <!--- Note that these columns can be defined in any order.
+                                  The actual rendered columns are set as a property on the row definition" -->
+
+                                <!-- Position Column -->
+                                <ng-container matColumnDef="NOMBRE">
+                                    <th mat-header-cell *matHeaderCellDef> NOMBRE </th>
+                                    <td mat-cell *matCellDef="let element"> {{element.getNombre()}} </td>
+                                </ng-container>
+
+                                <!-- Name Column -->
+                                <ng-container matColumnDef="TIPO RETORNO">
+                                    <th mat-header-cell *matHeaderCellDef> TIPO RETORNO </th>
+                                    <td mat-cell *matCellDef="let element"> {{element.getTipoRet().getString()}} </td>
+                                </ng-container>
+
+                                <!-- Weight Column -->
+                                <ng-container matColumnDef="TAMAÑO">
+                                    <th mat-header-cell *matHeaderCellDef> TAMAÑO </th>
+                                    <td mat-cell *matCellDef="let element"> {{element.tamanio}} </td>
+                                </ng-container>
+
+                                <!-- Symbol Column -->
+                                <ng-container matColumnDef="PARAMETROS">
+                                    <th mat-header-cell *matHeaderCellDef> PARAMETROS </th>
+                                    <td mat-cell *matCellDef="let element"> {{element.getParametrosReporte()}} </td>
+                                </ng-container>
+
+                                <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+                                <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+                            </table>
                         </div>
+                    </ng-template>
+                </mat-tab>
+                <mat-tab label="TS: VARIABLES">
+                    <ng-template matTabContent>
+                        <div class="col">
+                            <mat-form-field>
+                                <mat-label>Filtro</mat-label>
+                                <input matInput (keyup)="applyFilter2($event)" placeholder="Ex. ium">
+                            </mat-form-field>
+                            <!-- Funciones -->
+                            <table mat-table [dataSource]="variables" class="mat-elevation-z8">
+
+                                <!--- Note that these columns can be defined in any order.
+                                  The actual rendered columns are set as a property on the row definition" -->
+
+                                <!-- Position Column -->
+                                <ng-container matColumnDef="NOMBRE">
+                                    <th mat-header-cell *matHeaderCellDef> NOMBRE </th>
+                                    <td mat-cell *matCellDef="let element"> {{element.getNombre()}} </td>
+                                </ng-container>
+
+                                <!-- Name Column -->
+                                <ng-container matColumnDef="TIPO">
+                                    <th mat-header-cell *matHeaderCellDef> TIPO </th>
+                                    <td mat-cell *matCellDef="let element"> {{element.getTipo().getString()}} </td>
+                                </ng-container>
+
+                                <!-- Weight Column -->
+                                <ng-container matColumnDef="POSICIÓN">
+                                    <th mat-header-cell *matHeaderCellDef> POSICIÓN </th>
+                                    <td mat-cell *matCellDef="let element"> {{element.getPosicion()}} </td>
+                                </ng-container>
+
+                                <!-- Symbol Column -->
+                                <ng-container matColumnDef="GLOBAL/LOCAL">
+                                    <th mat-header-cell *matHeaderCellDef> GLOBAL/LOCAL </th>
+                                    <td mat-cell *matCellDef="let element"> {{element.getEsGlobal()}} </td>
+                                </ng-container>
+
+                                <ng-container matColumnDef="CONSTANTE">
+                                    <th mat-header-cell *matHeaderCellDef> CONSTANTE </th>
+                                    <td mat-cell *matCellDef="let element"> {{element.getEsConstante()}} </td>
+                                </ng-container>
+
+                                <tr mat-header-row *matHeaderRowDef="dC"></tr>
+                                <tr mat-row *matRowDef="let row; columns: dC;"></tr>
+                            </table>
+                        </div>
+                    </ng-template>
+                </mat-tab>
+                <mat-tab label="TS: STRUCTS">
+                    <ng-template matTabContent>
+                        <div class="col">
+                            <mat-form-field>
+                                <mat-label>Filtro</mat-label>
+                                <input matInput (keyup)="applyFilter3($event)" placeholder="Ex. ium">
+                            </mat-form-field>
+                            <!-- Funciones -->
+                            <table mat-table [dataSource]="structs" class="mat-elevation-z8">
+
+                                <!--- Note that these columns can be defined in any order.
+                                  The actual rendered columns are set as a property on the row definition" -->
+
+                                <!-- Position Column -->
+                                <ng-container matColumnDef="NOMBRE">
+                                    <th mat-header-cell *matHeaderCellDef> NOMBRE </th>
+                                    <td mat-cell *matCellDef="let element"> {{element.getId()}} </td>
+                                </ng-container>
+
+                                <!-- Name Column -->
+                                <ng-container matColumnDef="TAMAÑO">
+                                    <th mat-header-cell *matHeaderCellDef> TAMAÑO </th>
+                                    <td mat-cell *matCellDef="let element"> {{element.getSize()}} </td>
+                                </ng-container>
+
+                                <!-- Weight Column -->
+                                <ng-container matColumnDef="ATRIBUTOS">
+                                    <th mat-header-cell *matHeaderCellDef> POSICIÓN </th>
+                                    <td mat-cell *matCellDef="let element"> {{element.getAtributosReporte()}} </td>
+                                </ng-container>
+
+                                <tr mat-header-row *matHeaderRowDef="dC2"></tr>
+                                <tr mat-row *matRowDef="let row; columns: dC2;"></tr>
+                            </table>
+                        </div>
+                    </ng-template>
+                </mat-tab>
+                <mat-tab label='AST'>
+                    <ng-template matTabContent>
+                        <div2 #graph style="text-align: center;" type="application/javascript/"></div2>
                     </ng-template>
                 </mat-tab>
             </mat-tab-group>

@@ -124,5 +124,9 @@ export class CallFun extends ExpresionJ {
         return this.paramAct;
     }
 
+    public dibujar(padre: string): void {
+        throw new Error("Method not implemented.");
+    }
+
 
 }

@@ -10,6 +10,9 @@ import { DefStruct } from '../InstruccionJ/DefStruct';
 import { ParamT2 } from '../ExpresionJ/CallFun2';
 import { DisplayTry } from './DisplayTry';
 
+export let lista_var_global: SimbVar[] = [];
+export let lista_strc_global: DefStruct[] = [];
+
 export function NewTablaLocal(padre: TablaSimbJ): TablaSimbJ {
     let t: TablaSimbJ = new TablaSimbJ(padre.getArchivo(), padre.getConsola());
     t.padre = padre;
@@ -63,7 +66,7 @@ export class TablaSimbJ {
         this.funcion_actual = null;
         this.tabla_temporales = new Map();
         this.tabla_structs = new Map();
-        
+
     }
 
     public BuscarVariable(id: string): SimbVar {
@@ -78,7 +81,7 @@ export class TablaSimbJ {
         }
     }
 
-    public BuscarGlobal(id: string):SimbVar{
+    public BuscarGlobal(id: string): SimbVar {
         let tabla_globa: TablaSimbJ = this.GetGlobal();
         return tabla_globa.BuscarVariable(id);
     }
@@ -99,6 +102,7 @@ export class TablaSimbJ {
         if (!this.tabla.has(key)) {
             let s: SimbVar = new SimbVar(nombre, tipo, esGlobal, esConstante, pos);
             this.tabla.set(key, s);
+            lista_var_global.push(s);
             return s;
         }
         this.consola.InsertError('Ya existe la variable' + nombre, 'Semantico', fila, col);
@@ -155,6 +159,7 @@ export class TablaSimbJ {
         if (this.tabla_structs.has(key)) {
             this.GenerarError('Ya existe el struct: ' + strc.getId(), strc.getFila(), strc.getCol());
         }
+        lista_strc_global.push(strc);
         this.tabla_structs.set(key, strc);
     }
 
@@ -162,7 +167,7 @@ export class TablaSimbJ {
      * Función que busca y retorna la definción de una estructura
      * @param strc Nombre de la estructura que se quiere recuperar
      */
-    public BuscarStruct(strc: string):DefStruct{
+    public BuscarStruct(strc: string): DefStruct {
         let key: string = strc.toUpperCase();
         if (this.tabla_structs.has(key)) {
             return this.tabla_structs.get(key);
@@ -240,11 +245,11 @@ export class TablaSimbJ {
             return null;
         }
         let funcion: SimbFuncion = <SimbFuncion>global.tabla.get(key);
-        return funcion.BuscarDefinicionPorNombre(tiposParam,lista_tipo);
+        return funcion.BuscarDefinicionPorNombre(tiposParam, lista_tipo);
     }
 
-    public GetGlobal():TablaSimbJ{
-        if(this.padre == null){
+    public GetGlobal(): TablaSimbJ {
+        if (this.padre == null) {
             return this;
         }
         return this.padre.GetGlobal();

@@ -135,4 +135,8 @@ export class CallFun2 extends CallFun {
         return 0;
     }
 
+    public dibujar(padre: string): void {
+        throw new Error("Method not implemented.");
+    }
+
 }

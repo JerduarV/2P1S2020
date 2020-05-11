@@ -25,4 +25,8 @@ export class AccesoArray extends ExpresionJ{
     public getExpIndex():ExpresionJ{
         return this.indice;
     }
+
+    public dibujar(padre: string): void {
+        throw new Error("Method not implemented.");
+    }
 }

@@ -1,16 +1,18 @@
-import { TablaSimbJ } from '../Compilador/TSJ/TablaSimbJ';
-import { concat } from 'rxjs';
+import { TablaSimbJ, lista_var_global, lista_strc_global } from '../Compilador/TSJ/TablaSimbJ';
+import { lista_funciones_global } from '../Compilador/TSJ/SimbFuncion';
 
 let contador_etq: number = 0;
 let contador_tempo: number = 0;
 let temAct = 0;
 let codigo_gen: string = '';
+let dot: string = '';
+let dot_id: number = 0;
 
-export function concatException(errorNum: number,ts: TablaSimbJ):void{
-    if(ts.displayTry.estoyEnTry()){
+export function concatException(errorNum: number, ts: TablaSimbJ): void {
+    if (ts.displayTry.estoyEnTry()) {
         concatCodigo(ts.displayTry.getLastTemp() + ' = ' + errorNum + ';');
         concatCodigo('goto ' + ts.displayTry.getLastEtq() + ';');
-    }else{
+    } else {
         concatCodigo('E = ' + errorNum + ';');
     }
 }
@@ -32,11 +34,34 @@ export function concatCodigo(cod: string): void {
     codigo_gen += cod + '\n';
 }
 
+export function concat_dot(codigo_dot: string): void {
+    dot += codigo_dot;
+}
+
+export function conectarNodo(padre: string, hijo: string): void {
+    concat_dot("\t\"" + padre + "\" -> \"" + hijo + "\";\n");
+}
+
+export function DeclararNodo(id: string, label: string): void {
+    concat_dot("\t\"" + id + "\" [label = \"" + label + "\"];\n");
+}
+
+export function getIdNodo(label: string): string {
+    let n: string = "nodo" + dot_id++;
+    DeclararNodo(n, label);
+    return n;
+}
+
 export function inicializarTodo(): void {
     contador_etq = 0;
     contador_tempo = 0;
     temAct = 0;
     codigo_gen = '';
+    dot = '';
+    dot_id = 0;
+    lista_funciones_global.splice(0, lista_funciones_global.length);
+    lista_var_global.splice(0, lista_var_global.length);
+    lista_strc_global.splice(0, lista_strc_global.length);
 }
 
 export function GenerarEncabezado(): void {
@@ -44,7 +69,7 @@ export function GenerarEncabezado(): void {
     for (let i = 0; i < contador_tempo; i++) {
         dec += "var t" + i + ";";
     }
-    dec += "var P,H;\nvar Heap[];\nvar Stack[];";
+    dec += "\nvar P,H;\nvar Heap[];\nvar Stack[];";
     codigo_gen = dec + '\n\n' + codigo_gen;
 }
 
@@ -708,7 +733,7 @@ function GenerarToLowerCase(temp_null: string): void {
     concatCodigo('\nend\n#*FIN STRING LOWERCASE*#\n');
 }
 
-function GenerarStringToCharArray(){
+function GenerarStringToCharArray() {
     //#region TEMPORALES
     let t1: string = genTemp().toString();
     let t2: string = genTemp().toString();

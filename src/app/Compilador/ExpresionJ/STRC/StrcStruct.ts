@@ -76,4 +76,8 @@ export class StrcStruct extends ExpresionJ {
         ts.guardarTemporal(trest);
     }
 
+    public dibujar(padre: string): void {
+        throw new Error("Method not implemented.");
+    }
+
 }

@@ -41,14 +41,14 @@ export class CompiladorJ {
             this.BuscarImport(lista_import, AST);
 
             let list_arboles_import = [];
-            for(let i = 0; i < lista_import.length; i++){
+            for (let i = 0; i < lista_import.length; i++) {
                 let Arbol: NodoASTJ[] = this.Import(lista_import[i], archivos);
-                if(Arbol != null){
+                if (Arbol != null) {
                     list_arboles_import.push(Arbol);
                 }
             }
 
-            console.log(list_arboles_import);
+            //console.log(list_arboles_import);
 
             //RECOLECCIÓN DE STRUCT
             let strc: DefStruct[] = this.RecolectarStructs(AST);
@@ -108,10 +108,10 @@ export class CompiladorJ {
         }
     }
 
-    private Import(Archivo: string, lista_files: Editor3Component[]):NodoASTJ[]{
-        for(let i = 0; i < lista_files.length; i++){
-            if(Archivo == lista_files[i].getNombre()){
-                console.log(lista_files[i].code);
+    private Import(Archivo: string, lista_files: Editor3Component[]): NodoASTJ[] {
+        for (let i = 0; i < lista_files.length; i++) {
+            if (Archivo == lista_files[i].getNombre()) {
+                //console.log(lista_files[i].code);
                 let AST;
                 try {
                     AST = parser.parse(lista_files[i].code);
@@ -254,7 +254,7 @@ export class CompiladorJ {
         }*/
         for (let i = 0; i < lista_dec_global.length; i++) {
             let dec: DeclaracionJ = lista_dec_global[i];
-            console.log(dec);
+            //console.log(dec);
             if (dec.getExp() == null) {
                 continue;
             }

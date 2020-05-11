@@ -1257,4 +1257,8 @@ export class Acceso extends ExpresionJ {
 
     //#endregion
 
+    public dibujar(padre: string): void {
+        throw new Error("Method not implemented.");
+    }
+
 }

@@ -21,4 +21,8 @@ export class Import extends InstruccionJ{
         return this.lista_ids;
     }
 
+    public dibujar(padre: string): void {
+        throw new Error("Method not implemented.");
+    }
+
 }

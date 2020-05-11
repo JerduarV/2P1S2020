@@ -132,4 +132,8 @@ export class ArrayInit extends ExpresionJ {
         return null;
     }
 
+    public dibujar(padre: string): void {
+        throw new Error("Method not implemented.");
+    }
+
 }

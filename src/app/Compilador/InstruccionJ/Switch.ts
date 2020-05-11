@@ -1,11 +1,13 @@
 import { InstruccionJ } from './InstruccionJ';
 import { ExpresionJ } from '../ExpresionJ/ExpresionJ';
-import { NodoASTJ } from '../ASTJ/NodoASTJ';
 import { TablaSimbJ, NewTablaLocal } from '../TSJ/TablaSimbJ';
 import { ErrorLup } from 'src/app/Auxiliares/Error';
 import { Tipo } from '../TSJ/Tipo';
 import { getTempAct, getEtiqueta, concatCodigo, genTemp } from 'src/app/Auxiliares/Utilidades';
 import { DecFun } from './DecFun';
+import { Caso } from './Caso';
+import { DeclaracionJ } from './DeclaracionJ';
+import { DefStruct } from './DefStruct';
 
 export class Switch extends InstruccionJ {
 
@@ -43,23 +45,24 @@ export class Switch extends InstruccionJ {
 
         //RESUELVO LAS EXPRESIONES DE CADA CASO
         for (let i = 0; i < this.lista_casos.length; i++) {
-            if (this.lista_casos[i].exp == null) {
+            if (this.lista_casos[i].getExp() == null) {
                 t_casos.push(null);
                 etq_casos.push(getEtiqueta());
             } else {
 
-                let ocaso: Object = this.lista_casos[i].exp.getTipo(ts);
-                if(ocaso instanceof ErrorLup){
-                    ts.GenerarError('Hubo un error en la expresión del caso', this.lista_casos[i].exp.getFila(), this.lista_casos[i].exp.getCol());
+                let ocaso: Object = this.lista_casos[i].getExp().getTipo(ts);
+                if (ocaso instanceof ErrorLup) {
+                    ts.GenerarError('Hubo un error en la expresión del caso', this.lista_casos[i].getExp().getFila(), this.lista_casos[i].getExp().getCol());
                     return;
                 }
                 let tipo_caso: Tipo = <Tipo>ocaso;
 
-                if(tipo_cond.isString() && !tipo_caso.isString()){
-                    ts.GenerarError('Debe ser string', this.lista_casos[i].exp.getFila(), this.lista_casos[i].exp.getCol());
+                if (tipo_cond.isString() && !tipo_caso.isString()) {
+                    ts.GenerarError('Debe ser string', this.lista_casos[i].getExp().getFila(), this.lista_casos[i].getExp().getCol());
                     return;
                 }
-                this.lista_casos[i].exp.Traducir(ts);
+
+                this.lista_casos[i].getExp().Traducir(ts);
                 t_casos.push(getTempAct());
                 etq_casos.push(getEtiqueta());
             }
@@ -72,6 +75,11 @@ export class Switch extends InstruccionJ {
 
         //IMPRIMO LA ETIQUETA DEL CASO Y SUS INSTRUCCIONES
         for (let i = 0; i < this.lista_casos.length; i++) {
+            
+            //SI ES EL DEFECTO NO SE VA A EJECUTAR EN LINEA
+            if(this.lista_casos[i].getExp() == null){
+                concatCodigo('goto ' + etq_sal + ';')
+            }
             concatCodigo(etq_casos[i] + ':');
             this.lista_casos[i].Traducir(local);
         }
@@ -83,7 +91,7 @@ export class Switch extends InstruccionJ {
 
         //IMPRIMO LAS CONDICIONES
         for (let i = 0; i < this.lista_casos.length; i++) {
-            if (this.lista_casos[i].exp == null) {
+            if (this.lista_casos[i].getExp() == null) {
                 concatCodigo('goto ' + etq_casos[i] + ';');
             } else {
                 this.ConstruirCond(t_cond, t_casos[i], tipo_cond, etq_casos[i], ts.getTamanioFunTotal());
@@ -96,7 +104,7 @@ export class Switch extends InstruccionJ {
         ts.SacarTemporal(t_cond);
         for (let i = 0; i < t_casos.length; i++) {
             const caso = t_casos[i];
-            if(caso == null){
+            if (caso == null) {
                 continue;
             }
             ts.SacarTemporal(caso);
@@ -126,27 +134,24 @@ export class Switch extends InstruccionJ {
 
     public DeterminarTamanioFuncion(funcion: DecFun): void {
         this.lista_casos.forEach(caso => {
-            for (let i = 0; i < caso.cuerpo.length; i++) {
-                if (caso.cuerpo[i] instanceof InstruccionJ) {
-                    (<InstruccionJ>caso.cuerpo[i]).DeterminarTamanioFuncion(funcion);
-                }
-            }
+            caso.DeterminarTamanioFuncion(funcion);
         });
+    }
+
+    public BuscarVariablesGlobales(lista_dec: DeclaracionJ[]): void {
+        this.lista_casos.forEach(caso => {
+            caso.BuscarVariablesGlobales(lista_dec);
+        });
+    }
+
+    public RecolectarStruct(lista: DefStruct[]): void {
+        this.lista_casos.forEach(caso => {
+            caso.RecolectarStruct(lista);
+        });
+    }
+
+    public dibujar(padre: string): void {
+        throw new Error("Method not implemented.");
     }
 }
 
-export class Caso {
-    public exp: ExpresionJ;
-    public cuerpo: NodoASTJ[];
-
-    constructor(exp: ExpresionJ, cuerpo: NodoASTJ[]) {
-        this.cuerpo = cuerpo;
-        this.exp = exp;
-    }
-
-    public Traducir(ts: TablaSimbJ): void {
-        this.cuerpo.forEach(nodo => {
-            nodo.Traducir(ts);
-        });
-    }
-}

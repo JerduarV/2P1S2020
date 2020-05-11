@@ -74,4 +74,8 @@ export class StrcArray extends ExpresionJ {
         ts.guardarTemporal(tr);
     }
 
+    public dibujar(padre: string): void {
+        throw new Error("Method not implemented.");
+    }
+
 }

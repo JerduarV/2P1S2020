@@ -24,6 +24,7 @@
     "ace-builds": "^1.4.11",
     "bootstrap": "^4.4.1",
     "core-js": "^2.6.11",
+    "d3-graphviz": "^2.6.1",
     "ngx-monaco-editor": "^8.1.1",
     "rxjs": "~6.3.3",
     "tslib": "^1.11.1",

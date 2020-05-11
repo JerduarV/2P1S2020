@@ -1,14 +1,15 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { Consola } from 'src/app/Auxiliares/Consola';
-import { MatDialog } from '@angular/material';
+import { MatDialog, MatTableDataSource } from '@angular/material';
 import { VentanaErroresComponent } from '../ventana-errores/ventana-errores.component';
 import { Interprete3D } from 'src/app/Interprete3D/Interprete3D';
 import { CompiladorJ } from 'src/app/Compilador/CompiladorJ';
 import { EditorAvanzadoComponent } from '../editor-avanzado/editor-avanzado.component';
 import { Editor3Component } from '../editor3/editor3.component';
+import { lista_funciones_global } from 'src/app/Compilador/TSJ/SimbFuncion';
+import { lista_var_global, lista_strc_global } from 'src/app/Compilador/TSJ/TablaSimbJ';
+import { graphviz }  from 'd3-graphviz';
 
-declare var parsear: any;
-declare var InterpretarLup: any;
 
 @Component({
   selector: 'app-main-page',
@@ -20,8 +21,21 @@ export class MainPageComponent implements OnInit {
   @ViewChild('editor') private editor_avanzado: EditorAvanzadoComponent;
 
   private consola: Consola = new Consola();
-  public editorOptions: any = {theme: 'vs-dark', language: 'java'};
+  public editorOptions: any = { theme: 'vs-dark', language: 'java' };
 
+  //FUNCIONES
+  funciones = new MatTableDataSource(lista_funciones_global);
+  displayedColumns: string[] = ['NOMBRE', 'TIPO RETORNO', 'TAMAÑO', 'PARAMETROS'];
+
+  //VARIABLES
+  variables = new MatTableDataSource(lista_var_global);
+  dC: string[] = ['NOMBRE', 'TIPO', 'POSICIÓN', 'GLOBAL/LOCAL', 'CONSTANTE']
+
+  //VARIABLES
+  structs = new MatTableDataSource(lista_strc_global);
+  dC2: string[] = ['NOMBRE', 'TAMAÑO', 'ATRIBUTOS'];
+
+  workspace: any
 
   constructor(public dialog: MatDialog) { }
 
@@ -40,6 +54,15 @@ export class MainPageComponent implements OnInit {
     interprete.Analizar(this.editor_avanzado.get3D())
   }
 
+  public DibujarAST(): void {
+    try{
+      graphviz('div2').renderDot('digraph {a -> b -> c }');
+    }catch(error){
+      console.log('Error :(');
+    }
+    
+  }
+
   /**
    * Método que compila el código que se debe compilar
    */
@@ -47,8 +70,9 @@ export class MainPageComponent implements OnInit {
     let compilador: CompiladorJ = new CompiladorJ();
     this.consola.lista_errores = [];
     let archivos: Editor3Component[] = this.editor_avanzado.getTabs();
-    console.log(archivos);
-    compilador.Compilar(this.editor_avanzado.getNombre(), this.editor_avanzado.getTexto(),this.consola,archivos);
+    //console.log(archivos);
+    compilador.Compilar(this.editor_avanzado.getNombre(), this.editor_avanzado.getTexto(), this.consola, archivos);
+    //console.log(this.funciones);
   }
 
   /**
@@ -69,6 +93,22 @@ export class MainPageComponent implements OnInit {
     dialogRef.afterClosed().subscribe(result => {
       //console.log('The dialog was closed');
     });
+  }
+
+  applyFilter(event: Event) {
+    const filterValue = (event.target as HTMLInputElement).value;
+    this.funciones.filter = filterValue.trim().toLowerCase();
+  }
+
+  applyFilter2(event: Event) {
+    const filterValue = (event.target as HTMLInputElement).value;
+    this.variables.filter = filterValue.trim().toLowerCase();
+  }
+
+
+  applyFilter3(event: Event) {
+    const filterValue = (event.target as HTMLInputElement).value;
+    this.structs.filter = filterValue.trim().toLowerCase();
   }
 
 }
