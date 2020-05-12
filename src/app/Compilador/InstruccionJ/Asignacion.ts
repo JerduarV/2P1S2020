@@ -1,6 +1,7 @@
 import { InstruccionJ } from './InstruccionJ';
 import { Acceso } from '../ExpresionJ/Acceso';
 import { ExpresionJ } from '../ExpresionJ/ExpresionJ';
+import { getIdNodo, conectarNodo } from 'src/app/Auxiliares/Utilidades';
 
 export class Asignacion extends InstruccionJ{
 
@@ -20,7 +21,11 @@ export class Asignacion extends InstruccionJ{
     }
 
     public dibujar(padre: string): void {
-        throw new Error("Method not implemented.");
+        let n: string = getIdNodo('ASIG');
+        conectarNodo(padre, n);
+
+        this.L_Acceso.dibujar(n);
+        this.exp.dibujar(n);
     }
 
 }

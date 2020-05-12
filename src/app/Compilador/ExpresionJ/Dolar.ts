@@ -2,7 +2,7 @@ import { ExpresionJ } from './ExpresionJ';
 import { Acceso } from './Acceso';
 import { ErrorLup } from 'src/app/Auxiliares/Error';
 import { Tipo } from '../TSJ/Tipo';
-import { getTempAct, getEtiqueta, concatCodigo, genTemp } from 'src/app/Auxiliares/Utilidades';
+import { getTempAct, getEtiqueta, concatCodigo, genTemp, getIdNodo, conectarNodo } from 'src/app/Auxiliares/Utilidades';
 import { DefStruct } from '../InstruccionJ/DefStruct';
 
 export class Dolar extends ExpresionJ {
@@ -74,7 +74,7 @@ export class Dolar extends ExpresionJ {
 
             concatCodigo(t1 + ' = 0;');
             concatCodigo(tr + ' = H;');
-            
+
             concatCodigo(etqini + ':')
             concatCodigo('if(' + t1 + ' >= ' + strc.getSize() + ') goto ' + etqsal + ';');
             concatCodigo(t2 + ' = ' + t_exp + ' + ' + t1 + ';');
@@ -91,7 +91,7 @@ export class Dolar extends ExpresionJ {
 
             ts.SacarTemporal(t_exp);
             ts.guardarTemporal(tr);
-        }else{
+        } else {
             let tr: string = genTemp();
             concatCodigo(tr + ' = ' + t_exp + ';')
             ts.SacarTemporal(t_exp);
@@ -100,7 +100,10 @@ export class Dolar extends ExpresionJ {
     }
 
     public dibujar(padre: string): void {
-        throw new Error("Method not implemented.");
+        let n: string = getIdNodo('PASO_VAL');
+        conectarNodo(padre, n);
+        conectarNodo(n, getIdNodo('$'));
+        this.exp.dibujar(n);
     }
 
 }

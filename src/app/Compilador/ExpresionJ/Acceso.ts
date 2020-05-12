@@ -3,7 +3,7 @@ import { Identificador } from './Identificador';
 import { SimbVar } from '../TSJ/SimbVar';
 import { TablaSimbJ } from '../TSJ/TablaSimbJ';
 import { ErrorLup } from 'src/app/Auxiliares/Error';
-import { genTemp, concatCodigo, getTempAct, getEtiqueta } from 'src/app/Auxiliares/Utilidades';
+import { genTemp, concatCodigo, getTempAct, getEtiqueta, getIdNodo, conectarNodo } from 'src/app/Auxiliares/Utilidades';
 import { Tipo, getTipoString, getTipoInteger, STRING, CHAR, getTipoBool, getTipoChar } from '../TSJ/Tipo';
 import { CallFun } from './CallFun';
 import { CallFun2 } from './CallFun2';
@@ -498,7 +498,7 @@ export class Acceso extends ExpresionJ {
                     ts.SacarTemporal(tindex);
                     ts.SacarTemporal(tarray);
 
-                    
+
                     return new Tipo(tipo_anterior.getNombreTipo(), 0);
                 } else {
                     return null;
@@ -1258,7 +1258,11 @@ export class Acceso extends ExpresionJ {
     //#endregion
 
     public dibujar(padre: string): void {
-        throw new Error("Method not implemented.");
+        let n: string = getIdNodo('ACCESO');
+        conectarNodo(padre, n);
+        this.lista_exp.forEach(exp => {
+            exp.dibujar(n);
+        });
     }
 
 }

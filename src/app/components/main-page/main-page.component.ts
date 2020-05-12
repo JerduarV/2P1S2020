@@ -9,6 +9,7 @@ import { Editor3Component } from '../editor3/editor3.component';
 import { lista_funciones_global } from 'src/app/Compilador/TSJ/SimbFuncion';
 import { lista_var_global, lista_strc_global } from 'src/app/Compilador/TSJ/TablaSimbJ';
 import { graphviz }  from 'd3-graphviz';
+import { dot } from 'src/app/Auxiliares/Utilidades';
 
 
 @Component({
@@ -56,9 +57,11 @@ export class MainPageComponent implements OnInit {
 
   public DibujarAST(): void {
     try{
-      graphviz('div2').renderDot('digraph {a -> b -> c }');
+      graphviz('div2').renderDot(dot);
+      console.log(dot);
     }catch(error){
-      console.log('Error :(');
+      console.log(error);
+      console.log(dot);
     }
     
   }

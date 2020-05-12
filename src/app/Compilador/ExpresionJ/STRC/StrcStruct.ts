@@ -1,6 +1,6 @@
 import { ExpresionJ } from '../ExpresionJ';
 import { Tipo } from '../../TSJ/Tipo';
-import { concatCodigo, genTemp } from 'src/app/Auxiliares/Utilidades';
+import { concatCodigo, genTemp, getIdNodo, conectarNodo } from 'src/app/Auxiliares/Utilidades';
 
 export class StrcStruct extends ExpresionJ {
 
@@ -77,7 +77,9 @@ export class StrcStruct extends ExpresionJ {
     }
 
     public dibujar(padre: string): void {
-        throw new Error("Method not implemented.");
+        let n: string = getIdNodo('STRC');
+        conectarNodo(padre, n);
+        conectarNodo(n, getIdNodo(this.id));
     }
 
 }

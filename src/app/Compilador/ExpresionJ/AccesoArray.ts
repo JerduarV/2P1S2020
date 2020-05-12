@@ -1,4 +1,5 @@
 import { ExpresionJ } from './ExpresionJ';
+import { getIdNodo, conectarNodo } from 'src/app/Auxiliares/Utilidades';
 
 export class AccesoArray extends ExpresionJ{
 
@@ -27,6 +28,9 @@ export class AccesoArray extends ExpresionJ{
     }
 
     public dibujar(padre: string): void {
-        throw new Error("Method not implemented.");
+        let n: string = getIdNodo('ACCESO_ARRAY');
+        conectarNodo(padre, n);
+        conectarNodo(n, getIdNodo(this.id));
+        this.indice.dibujar(n);
     }
 }

@@ -1,7 +1,7 @@
 import { ExpresionJ } from '../ExpresionJ';
 import { Tipo } from '../../TSJ/Tipo';
 import { ErrorLup } from 'src/app/Auxiliares/Error';
-import { getTempAct, genTemp, concatCodigo, getEtiqueta } from 'src/app/Auxiliares/Utilidades';
+import { getTempAct, genTemp, concatCodigo, getEtiqueta, getIdNodo, conectarNodo } from 'src/app/Auxiliares/Utilidades';
 
 export class StrcArray extends ExpresionJ {
 
@@ -75,7 +75,10 @@ export class StrcArray extends ExpresionJ {
     }
 
     public dibujar(padre: string): void {
-        throw new Error("Method not implemented.");
+        let n: string = getIdNodo('STRC_ARRAY');
+        conectarNodo(padre, n);
+        conectarNodo(n, getIdNodo(this.tipo.getString()));
+        this.exp.dibujar(n);
     }
 
 }

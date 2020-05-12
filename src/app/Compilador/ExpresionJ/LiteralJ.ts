@@ -1,7 +1,7 @@
 import { ExpresionJ } from './ExpresionJ';
 import { TablaSimbJ } from '../TSJ/TablaSimbJ';
 import { Tipo, DOUBLE, CHAR, INT, BOOL, STRING } from '../TSJ/Tipo';
-import { concatCodigo, genTemp } from 'src/app/Auxiliares/Utilidades';
+import { concatCodigo, genTemp, getIdNodo, conectarNodo } from 'src/app/Auxiliares/Utilidades';
 
 export enum TipoLit {
     LIT_CHAR,
@@ -99,16 +99,31 @@ export class LiteralJ extends ExpresionJ {
             return '\r'
 
         }
-        else if(this.val.toString() == "'\\0'"){
+        else if (this.val.toString() == "'\\0'") {
             return '\0';
-        } 
+        }
         else {
             return val.substring(1, val.length - 1);
         }
     }
 
     public dibujar(padre: string): void {
-        throw new Error("Method not implemented.");
+        let n: string = getIdNodo(this.Escapar(this.val.toString()));
+        conectarNodo(padre, n);
+    }
+
+    private Escapar(cadena: string): string {
+
+        if (this.tipo == TipoLit.LIT_STRING) {
+            cadena = cadena.toString().substring(1, cadena.toString().length - 1);
+        }
+
+        cadena = cadena.replace("\\", "\\\\");
+        cadena = cadena.replace("\"", "\\\"");
+        cadena = cadena.replace("\n", "\\\\n");
+        cadena = cadena.replace("\t", "\\\\t");
+        cadena = cadena.replace("\r", "\\\\r");
+        return cadena;
     }
 
 }

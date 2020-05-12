@@ -6,7 +6,7 @@ import { NodoASTJ } from './ASTJ/NodoASTJ';
 import { Tipo } from './TSJ/Tipo';
 import { SimbVar } from './TSJ/SimbVar';
 import { ExpresionJ } from './ExpresionJ/ExpresionJ';
-import { inicializarTodo, concatCodigo, getTempAct, ImprimitCodigo, QuemarFunciones, GenerarEncabezado, getEtiqueta, genTemp } from '../Auxiliares/Utilidades';
+import { inicializarTodo, concatCodigo, getTempAct, ImprimitCodigo, QuemarFunciones, GenerarEncabezado, getEtiqueta, genTemp, getIdNodo, dot, DOT_GEN } from '../Auxiliares/Utilidades';
 import { DecFun } from './InstruccionJ/DecFun';
 import { InstruccionJ } from './InstruccionJ/InstruccionJ';
 import { DefStruct } from './InstruccionJ/DefStruct';
@@ -32,6 +32,8 @@ export class CompiladorJ {
             let AST;
             //PARSEO
             AST = parser.parse(entrada3d);
+
+            this.DibujarAST(AST);
 
             //console.log(AST);
             let global: TablaSimbJ = new TablaSimbJ(archivo, cons);
@@ -299,5 +301,15 @@ export class CompiladorJ {
             concatCodigo('H = H + 1;');
         }
         return temp;
+    }
+
+    public DibujarAST(AST: NodoASTJ[]):void{
+        let padre: string = getIdNodo('AST');
+        AST.forEach(nodo => {
+            if(nodo != null){
+                nodo.dibujar(padre);
+            }
+        });
+        DOT_GEN();
     }
 }

@@ -4,7 +4,7 @@ import { Tipo } from '../TSJ/Tipo';
 import { TablaSimbJ } from '../TSJ/TablaSimbJ';
 import { ErrorLup } from 'src/app/Auxiliares/Error';
 import { SimbVar } from '../TSJ/SimbVar';
-import { concatCodigo, genTemp, getTempAct } from 'src/app/Auxiliares/Utilidades';
+import { concatCodigo, genTemp, getTempAct, getIdNodo, conectarNodo } from 'src/app/Auxiliares/Utilidades';
 import { DecFun } from './DecFun';
 
 export class DeclaracionJ extends InstruccionJ {
@@ -41,14 +41,14 @@ export class DeclaracionJ extends InstruccionJ {
             }
 
             let o: Object = this.exp.getTipo(ts);
-            if(o instanceof ErrorLup){
-                ts.GenerarError('Error en la expresión',this.getFila(),this.getCol());
+            if (o instanceof ErrorLup) {
+                ts.GenerarError('Error en la expresión', this.getFila(), this.getCol());
                 return;
             }
 
             let tipo: Tipo = <Tipo>o;
-            if(!variable.getTipo().esIgualA(tipo) && !variable.getTipo().AplicaCasteo(tipo)){
-                ts.GenerarError('Error en los tipos',this.getFila(),this.getCol());
+            if (!variable.getTipo().esIgualA(tipo) && !variable.getTipo().AplicaCasteo(tipo)) {
+                ts.GenerarError('Error en los tipos', this.getFila(), this.getCol());
                 return;
             }
 
@@ -160,7 +160,19 @@ export class DeclaracionJ extends InstruccionJ {
     }
 
     public dibujar(padre: string): void {
-        throw new Error("Method not implemented.");
+        let n: string = getIdNodo('DEC');
+        conectarNodo(padre, n);
+        let l_id: string = getIdNodo('LID');
+        this.lista_ids.forEach(id => {
+            let n_id: string = getIdNodo(id);
+            conectarNodo(l_id, n_id);
+        });
+
+        conectarNodo(n, l_id);
+
+        if (this.exp != null) {
+            this.exp.dibujar(n);
+        }
     }
 
 }

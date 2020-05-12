@@ -1,4 +1,5 @@
 import { InstruccionJ } from './InstruccionJ';
+import { getIdNodo, conectarNodo } from 'src/app/Auxiliares/Utilidades';
 
 export class Import extends InstruccionJ{
 
@@ -22,7 +23,12 @@ export class Import extends InstruccionJ{
     }
 
     public dibujar(padre: string): void {
-        throw new Error("Method not implemented.");
+        let n: string = getIdNodo('IMPORT');
+        conectarNodo(padre, n);
+        this.lista_ids.forEach(id => {
+            let n_id: string = getIdNodo(id);
+            conectarNodo(n, n_id);
+        });
     }
 
 }

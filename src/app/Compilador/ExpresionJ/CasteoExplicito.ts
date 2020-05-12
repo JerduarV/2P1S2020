@@ -1,34 +1,34 @@
 import { ExpresionJ } from './ExpresionJ';
 import { Tipo } from '../TSJ/Tipo';
 import { ErrorLup } from 'src/app/Auxiliares/Error';
-import { getTempAct, genTemp, concatCodigo, getEtiqueta } from 'src/app/Auxiliares/Utilidades';
+import { getTempAct, genTemp, concatCodigo, getEtiqueta, getIdNodo, conectarNodo } from 'src/app/Auxiliares/Utilidades';
 
-export class CasteoExplicito extends ExpresionJ{
+export class CasteoExplicito extends ExpresionJ {
 
     private readonly tipo: Tipo;
     private readonly exp: ExpresionJ;
 
-    constructor(tipo: Tipo, exp: ExpresionJ, fila: number, col: number){
+    constructor(tipo: Tipo, exp: ExpresionJ, fila: number, col: number) {
         super(fila, col);
         this.tipo = tipo;
         this.exp = exp;
     }
 
     public getTipo(ts: import("../TSJ/TablaSimbJ").TablaSimbJ): Object {
-        if(!(this.tipo.isChar() || this.tipo.isInteger())){
-            return ts.GenerarError('No es un tipo valido de casteo: ' + this.tipo.getString(), this.getFila(),this.getCol());
+        if (!(this.tipo.isChar() || this.tipo.isInteger())) {
+            return ts.GenerarError('No es un tipo valido de casteo: ' + this.tipo.getString(), this.getFila(), this.getCol());
         }
         let o: Object = this.exp.getTipo(ts);
-        if(o instanceof ErrorLup){
+        if (o instanceof ErrorLup) {
             return o;
         }
         let t: Tipo = <Tipo>o;
-        if(this.tipo.isInteger() && t.isDouble()
-        || this.tipo.isChar() && (t.isInteger() || t.isDouble())){
+        if (this.tipo.isInteger() && t.isDouble()
+            || this.tipo.isChar() && (t.isInteger() || t.isDouble())) {
             return this.tipo;
         }
 
-        return ts.GenerarError('Comibinación erronea ' + this.tipo.getString() + ' con ' + t.getString(),this.getFila(),this.getCol());
+        return ts.GenerarError('Comibinación erronea ' + this.tipo.getString() + ' con ' + t.getString(), this.getFila(), this.getCol());
     }
 
     public Traducir(ts: import("../TSJ/TablaSimbJ").TablaSimbJ): void {
@@ -37,7 +37,7 @@ export class CasteoExplicito extends ExpresionJ{
         this.exp.Traducir(ts);
         let tr: string = getTempAct();
 
-        if(this.tipo.isInteger() && tipo.isDouble()){
+        if (this.tipo.isInteger() && tipo.isDouble()) {
             //#region (INT)DOUBLE
             let t1: string = genTemp();
             let t2: string = genTemp();
@@ -47,7 +47,7 @@ export class CasteoExplicito extends ExpresionJ{
             ts.guardarTemporal(t2);
             return;
             //#endregion
-        }else if(this.tipo.isChar() && tipo.isInteger()){
+        } else if (this.tipo.isChar() && tipo.isInteger()) {
             //#region (CHAR)INT
             let etqv1: string = getEtiqueta();
             let etqf1: string = getEtiqueta();
@@ -64,7 +64,7 @@ export class CasteoExplicito extends ExpresionJ{
             concatCodigo('E = 5;');
             concatCodigo(etqf2 + ':');
             //#endregion
-        }else if(this.tipo.isChar() && tipo.isDouble()){
+        } else if (this.tipo.isChar() && tipo.isDouble()) {
             //#region (CHAR)DOBULE
             let t1: string = genTemp();
             let t2: string = genTemp();
@@ -91,7 +91,10 @@ export class CasteoExplicito extends ExpresionJ{
     }
 
     public dibujar(padre: string): void {
-        throw new Error("Method not implemented.");
+        let n: string = getIdNodo('CASTEO_EXPL');
+        conectarNodo(padre, n);
+        conectarNodo(n, getIdNodo(this.tipo.getString()));
+        this.exp.dibujar(n);
     }
 
 }

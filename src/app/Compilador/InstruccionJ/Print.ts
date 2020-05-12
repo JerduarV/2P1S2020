@@ -1,7 +1,7 @@
 import { InstruccionJ } from './InstruccionJ';
 import { ExpresionJ } from '../ExpresionJ/ExpresionJ';
 import { Tipo } from '../TSJ/Tipo';
-import { concatCodigo, getTempAct, genTemp, getEtiqueta } from 'src/app/Auxiliares/Utilidades';
+import { concatCodigo, getTempAct, genTemp, getEtiqueta, getIdNodo, conectarNodo } from 'src/app/Auxiliares/Utilidades';
 import { ErrorLup } from 'src/app/Auxiliares/Error';
 import { TablaSimbJ } from '../TSJ/TablaSimbJ';
 
@@ -73,7 +73,9 @@ export class Print extends InstruccionJ {
     }
 
     public dibujar(padre: string): void {
-        throw new Error("Method not implemented.");
+        let n: string = getIdNodo('PRINT');
+        conectarNodo(padre, n);
+        this.exp.dibujar(n);
     }
 
 }

@@ -3,7 +3,7 @@ import { Tipo } from '../TSJ/Tipo';
 import { ParametroFormal } from '../TSJ/ParametroFormal';
 import { NodoASTJ } from '../ASTJ/NodoASTJ';
 import { TablaSimbJ, NewTablaLocal } from '../TSJ/TablaSimbJ';
-import { concatCodigo, getEtiqueta } from 'src/app/Auxiliares/Utilidades';
+import { concatCodigo, getEtiqueta, getIdNodo, conectarNodo } from 'src/app/Auxiliares/Utilidades';
 
 export class DecFun extends InstruccionJ {
 
@@ -102,20 +102,20 @@ export class DecFun extends InstruccionJ {
         }
     }
 
-    public hasParametroIgual(nombre: string, tipo: Tipo):boolean{
-        for(let i=0; i < this.parametroFormales.length; i++){
+    public hasParametroIgual(nombre: string, tipo: Tipo): boolean {
+        for (let i = 0; i < this.parametroFormales.length; i++) {
             let param: ParametroFormal = this.parametroFormales[i];
-            if(param.nombre.toUpperCase() == nombre.toUpperCase() && param.getTipo().esIgualA(tipo)){
+            if (param.nombre.toUpperCase() == nombre.toUpperCase() && param.getTipo().esIgualA(tipo)) {
                 return true;
             }
         }
         return false;
     }
 
-    public hasParametroCasteo(nombre: string, tipo: Tipo):boolean{
-        for(let i=0; i < this.parametroFormales.length; i++){
+    public hasParametroCasteo(nombre: string, tipo: Tipo): boolean {
+        for (let i = 0; i < this.parametroFormales.length; i++) {
             let param: ParametroFormal = this.parametroFormales[i];
-            if(param.nombre.toUpperCase() == nombre.toUpperCase() && param.getTipo().AplicaCasteo(tipo)){
+            if (param.nombre.toUpperCase() == nombre.toUpperCase() && param.getTipo().AplicaCasteo(tipo)) {
                 return true;
             }
         }
@@ -134,7 +134,7 @@ export class DecFun extends InstruccionJ {
         return this.TipoRet;
     }
 
-    public getParametrosReporte(): string{
+    public getParametrosReporte(): string {
         let cad = '';
         this.parametroFormales.forEach(element => {
             cad += element.nombre + ' : ' + element.getTipo().getString() + '\n';
@@ -143,7 +143,23 @@ export class DecFun extends InstruccionJ {
     }
 
     public dibujar(padre: string): void {
-        throw new Error("Method not implemented.");
+        let n: string = getIdNodo('DEC_FUN');
+        conectarNodo(padre, n);
+
+        let tipo: string = getIdNodo(this.getTipoRet().getString());
+        conectarNodo(n, tipo);
+
+        conectarNodo(n, getIdNodo(this.nombre));
+
+        if (this.parametroFormales.length > 0) {
+            let par: string = getIdNodo('L_PARAM');
+            conectarNodo(n, par);
+            this.parametroFormales.forEach(param => {
+                conectarNodo(par, getIdNodo(param.nombre + ':' + param.getTipo().getString()));
+            });
+        }
+
+        this.DibujarCuerpo(n);
     }
 
 }

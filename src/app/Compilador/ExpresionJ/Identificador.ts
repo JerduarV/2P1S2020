@@ -1,4 +1,5 @@
 import { ExpresionJ } from './ExpresionJ';
+import { getIdNodo, conectarNodo } from 'src/app/Auxiliares/Utilidades';
 
 export class Identificador extends ExpresionJ{
     
@@ -20,6 +21,7 @@ export class Identificador extends ExpresionJ{
     }
 
     public dibujar(padre: string): void {
-        throw new Error("Method not implemented.");
+        let n: string = getIdNodo(this.id);
+        conectarNodo(padre, n);
     }
 }

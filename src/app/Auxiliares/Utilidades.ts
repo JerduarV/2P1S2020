@@ -5,7 +5,7 @@ let contador_etq: number = 0;
 let contador_tempo: number = 0;
 let temAct = 0;
 let codigo_gen: string = '';
-let dot: string = '';
+export let dot: string = '';
 let dot_id: number = 0;
 
 export function concatException(errorNum: number, ts: TablaSimbJ): void {
@@ -15,6 +15,10 @@ export function concatException(errorNum: number, ts: TablaSimbJ): void {
     } else {
         concatCodigo('E = ' + errorNum + ';');
     }
+}
+
+export function DOT_GEN():void{
+    dot = 'digraph G{\n\tnode [shape="box"]\n' + dot + '}\n';
 }
 
 export function genTemp(): string {

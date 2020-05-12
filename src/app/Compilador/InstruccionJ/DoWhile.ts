@@ -3,7 +3,7 @@ import { ExpresionJ } from '../ExpresionJ/ExpresionJ';
 import { NodoASTJ } from '../ASTJ/NodoASTJ';
 import { ErrorLup } from 'src/app/Auxiliares/Error';
 import { Tipo } from '../TSJ/Tipo';
-import { getEtiqueta, concatCodigo, getTempAct } from 'src/app/Auxiliares/Utilidades';
+import { getEtiqueta, concatCodigo, getTempAct, getIdNodo, conectarNodo } from 'src/app/Auxiliares/Utilidades';
 import { NewTablaLocal } from '../TSJ/TablaSimbJ';
 
 export class DoWhile extends InstruccionJ {
@@ -43,7 +43,12 @@ export class DoWhile extends InstruccionJ {
     }
 
     public dibujar(padre: string): void {
-        throw new Error("Method not implemented.");
+        let n: string = getIdNodo('DOWHILE');
+        conectarNodo(padre, n);
+        this.DibujarCuerpo(n);
+        let cond: string = getIdNodo('COND');
+        conectarNodo(n, cond);
+        this.cond.dibujar(cond);
     }
 
 }

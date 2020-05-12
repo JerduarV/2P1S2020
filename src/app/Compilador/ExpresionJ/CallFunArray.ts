@@ -2,7 +2,7 @@ import { ExpresionJ } from './ExpresionJ';
 import { CallFun } from './CallFun';
 import { ErrorLup } from 'src/app/Auxiliares/Error';
 import { Tipo, getTipoInteger } from '../TSJ/Tipo';
-import { getTempAct, genTemp, getEtiqueta, concatCodigo } from 'src/app/Auxiliares/Utilidades';
+import { getTempAct, genTemp, getEtiqueta, concatCodigo, getIdNodo, conectarNodo } from 'src/app/Auxiliares/Utilidades';
 
 export class CallFunArray extends ExpresionJ {
 
@@ -94,7 +94,12 @@ export class CallFunArray extends ExpresionJ {
     }
 
     public dibujar(padre: string): void {
-        throw new Error("Method not implemented.");
+        let n: string = getIdNodo('CALL_FUNARRAY');
+        conectarNodo(padre, n);
+        this.callFun.dibujar(n);
+        let index: string = getIdNodo('INDEX');
+        conectarNodo(n, index);
+        this.exp_index.dibujar(index);
     }
 
 }

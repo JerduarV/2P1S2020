@@ -2,7 +2,7 @@ import { ExpresionJ } from './ExpresionJ';
 import { Tipo } from '../TSJ/Tipo';
 import { ErrorLup } from 'src/app/Auxiliares/Error';
 import { DecFun } from '../InstruccionJ/DecFun';
-import { getTempAct, concatCodigo, genTemp } from 'src/app/Auxiliares/Utilidades';
+import { getTempAct, concatCodigo, genTemp, conectarNodo, getIdNodo } from 'src/app/Auxiliares/Utilidades';
 import { CallFun } from './CallFun';
 
 export class ParamT2 {
@@ -21,7 +21,7 @@ export class CallFun2 extends CallFun {
     private readonly lista_param: ParamT2[];
 
     constructor(id: string, lista: ParamT2[], fila: number, col: number) {
-        super(id,null,fila, col);
+        super(id, null, fila, col);
         this.lista_param = lista;
     }
 
@@ -136,7 +136,19 @@ export class CallFun2 extends CallFun {
     }
 
     public dibujar(padre: string): void {
-        throw new Error("Method not implemented.");
+        let n: string = getIdNodo('CALL_FUN2');
+        conectarNodo(padre, n);
+        conectarNodo(n, getIdNodo(this.id));
+
+        let lparam: string = getIdNodo('L_PARAM');
+        conectarNodo(n, lparam);
+
+        this.lista_param.forEach(param => {
+            let p: string = getIdNodo('PARAM');
+            conectarNodo(lparam, p);
+            conectarNodo(p, param.nombre);
+            param.exp.dibujar(p);
+        });
     }
 
 }

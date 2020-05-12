@@ -1,7 +1,7 @@
 import { ExpresionJ } from './ExpresionJ';
 import { Tipo, getTipoString, getTipoDouble, getTipoInteger, STRING, DOUBLE, INT } from '../TSJ/Tipo';
 import { ErrorLup } from 'src/app/Auxiliares/Error';
-import { getTempAct, concatCodigo, genTemp } from 'src/app/Auxiliares/Utilidades';
+import { getTempAct, concatCodigo, genTemp, getIdNodo, conectarNodo } from 'src/app/Auxiliares/Utilidades';
 
 export class ArrayInit extends ExpresionJ {
 
@@ -133,7 +133,13 @@ export class ArrayInit extends ExpresionJ {
     }
 
     public dibujar(padre: string): void {
-        throw new Error("Method not implemented.");
+        let n: string = getIdNodo('ARRAY_INIT');
+        conectarNodo(padre, n);
+        let lexp: string = getIdNodo('L_EXP');
+        conectarNodo(n, lexp);
+        this.lista_exp.forEach(exp => {
+            exp.dibujar(lexp);
+        });
     }
 
 }

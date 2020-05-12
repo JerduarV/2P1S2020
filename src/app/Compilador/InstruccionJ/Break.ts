@@ -1,5 +1,5 @@
 import { InstruccionJ } from './InstruccionJ';
-import { concatCodigo } from 'src/app/Auxiliares/Utilidades';
+import { concatCodigo, conectarNodo, getIdNodo } from 'src/app/Auxiliares/Utilidades';
 
 export class Break extends InstruccionJ{
     
@@ -15,6 +15,6 @@ export class Break extends InstruccionJ{
     }
 
     public dibujar(padre: string): void {
-        throw new Error("Method not implemented.");
+        conectarNodo(padre, getIdNodo('BREAK'));
     }
 }

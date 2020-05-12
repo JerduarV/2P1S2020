@@ -2,7 +2,7 @@ import { ExpresionJ } from './ExpresionJ';
 import { Tipo } from '../TSJ/Tipo';
 import { ErrorLup } from 'src/app/Auxiliares/Error';
 import { DecFun } from '../InstruccionJ/DecFun';
-import { getTempAct, concatCodigo, genTemp } from 'src/app/Auxiliares/Utilidades';
+import { getTempAct, concatCodigo, genTemp, getIdNodo, conectarNodo } from 'src/app/Auxiliares/Utilidades';
 import { concat } from 'rxjs';
 
 export class CallFun extends ExpresionJ {
@@ -53,7 +53,7 @@ export class CallFun extends ExpresionJ {
         //#endregion
 
         //console.log(this.paramAct);
-        
+
         //RESOLUCIÓN DE PARAMETROS ACTUALES
         let lista_temp_param: string[] = [];
         this.paramAct.forEach(param => {
@@ -108,7 +108,7 @@ export class CallFun extends ExpresionJ {
         let trest: string = genTemp();
         //REGRESANDO A LA FUNCIÓN ACTUAL
         concatCodigo('P = P - ' + ts.getTamanioFunTotal() + ';');
-        
+
         concatCodigo(trest + ' = ' + tr + ';');
         ts.guardarTemporal(trest);
         lista_temp_param.forEach(temp => {
@@ -125,7 +125,16 @@ export class CallFun extends ExpresionJ {
     }
 
     public dibujar(padre: string): void {
-        throw new Error("Method not implemented.");
+        let n: string = getIdNodo('CALL_FUN');
+        conectarNodo(padre, n);
+        conectarNodo(n, getIdNodo(this.id));
+        if (this.paramAct.length > 0) {
+            let l_param_act: string = getIdNodo('L_PARAM_ACT');
+            conectarNodo(n, l_param_act);
+            this.paramAct.forEach(param => {
+                param.dibujar(l_param_act);
+            });
+        }
     }
 
 

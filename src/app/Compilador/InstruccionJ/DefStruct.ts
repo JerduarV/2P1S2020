@@ -1,7 +1,7 @@
 import { InstruccionJ } from './InstruccionJ';
 import { Tipo } from '../TSJ/Tipo';
 import { ExpresionJ } from '../ExpresionJ/ExpresionJ';
-import { concatCodigo, genTemp, getTempAct } from 'src/app/Auxiliares/Utilidades';
+import { concatCodigo, genTemp, getTempAct, getIdNodo, conectarNodo } from 'src/app/Auxiliares/Utilidades';
 import { ErrorLup } from 'src/app/Auxiliares/Error';
 import { TablaSimbJ, NewTablaLocal } from '../TSJ/TablaSimbJ';
 
@@ -191,7 +191,21 @@ export class DefStruct extends InstruccionJ {
     }
 
     public dibujar(padre: string): void {
-        throw new Error("Method not implemented.");
+        let n: string = getIdNodo('DEF_STRC');
+        conectarNodo(padre, n);
+
+        conectarNodo(n, getIdNodo(this.id));
+
+        let atrib: string = getIdNodo('L_ATRIB');
+        conectarNodo(n, atrib);
+
+        this.lista_atrib.forEach(atributo => {
+            let a: string = getIdNodo(atributo.id + ':' + atributo.tipo.getString());
+            conectarNodo(atrib, a);
+            if (atributo.exp != null) {
+                atributo.exp.dibujar(a);
+            }
+        });
     }
 
 }

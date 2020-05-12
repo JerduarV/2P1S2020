@@ -1,11 +1,11 @@
 import { ExpresionJ } from './ExpresionJ';
 import { getTipoNull } from '../TSJ/Tipo';
-import { genTemp, concatCodigo } from 'src/app/Auxiliares/Utilidades';
+import { genTemp, concatCodigo, conectarNodo, getIdNodo } from 'src/app/Auxiliares/Utilidades';
 
-export class Null extends ExpresionJ{
+export class Null extends ExpresionJ {
 
-    constructor(fila: number, col: number){
-        super(fila,col)
+    constructor(fila: number, col: number) {
+        super(fila, col)
     }
 
     public getTipo(ts: import("../TSJ/TablaSimbJ").TablaSimbJ): Object {
@@ -18,7 +18,7 @@ export class Null extends ExpresionJ{
     }
 
     public dibujar(padre: string): void {
-        throw new Error("Method not implemented.");
+        conectarNodo(padre, getIdNodo('NULL'));
     }
 
 }
