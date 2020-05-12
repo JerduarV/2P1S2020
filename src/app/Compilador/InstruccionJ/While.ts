@@ -2,7 +2,7 @@ import { InstruccionJ } from './InstruccionJ';
 import { ExpresionJ } from '../ExpresionJ/ExpresionJ';
 import { NodoASTJ } from '../ASTJ/NodoASTJ';
 import { ErrorLup } from 'src/app/Auxiliares/Error';
-import { getTempAct, getEtiqueta, concatCodigo } from 'src/app/Auxiliares/Utilidades';
+import { getTempAct, getEtiqueta, concatCodigo, getIdNodo, conectarNodo } from 'src/app/Auxiliares/Utilidades';
 import { Tipo } from '../TSJ/Tipo';
 import { NewTablaLocal } from '../TSJ/TablaSimbJ';
 
@@ -54,7 +54,12 @@ export class While extends InstruccionJ{
     }
 
     public dibujar(padre: string): void {
-        throw new Error("Method not implemented.");
+        let n: string = getIdNodo('WHILE');
+        conectarNodo(padre, n);
+        let cond: string = getIdNodo('COND');
+        conectarNodo(n, cond);
+        this.cond.dibujar(cond);
+        this.DibujarCuerpo(n);
     }
 
 }

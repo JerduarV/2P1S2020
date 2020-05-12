@@ -2,11 +2,11 @@ import { InstruccionJ } from './InstruccionJ';
 import { ExpresionJ } from '../ExpresionJ/ExpresionJ';
 import { NodoASTJ } from '../ASTJ/NodoASTJ';
 import { ErrorLup } from 'src/app/Auxiliares/Error';
-import { getEtiqueta, concatCodigo, getTempAct } from 'src/app/Auxiliares/Utilidades';
+import { getEtiqueta, concatCodigo, getTempAct, conectarNodo, getIdNodo } from 'src/app/Auxiliares/Utilidades';
 import { NewTablaLocal, TablaSimbJ } from '../TSJ/TablaSimbJ';
 import { DecFun } from './DecFun';
 
-export class For extends InstruccionJ{
+export class For extends InstruccionJ {
 
     private readonly init: InstruccionJ;
 
@@ -14,7 +14,7 @@ export class For extends InstruccionJ{
 
     private readonly actualizacion: NodoASTJ;
 
-    constructor(init: InstruccionJ, cond: ExpresionJ, act: NodoASTJ, cuerpo: NodoASTJ[], fila: number, col: number){
+    constructor(init: InstruccionJ, cond: ExpresionJ, act: NodoASTJ, cuerpo: NodoASTJ[], fila: number, col: number) {
         super(cuerpo, fila, col)
         this.init = init;
         this.cond = cond;
@@ -23,33 +23,33 @@ export class For extends InstruccionJ{
 
 
     public Traducir(ts: import("../TSJ/TablaSimbJ").TablaSimbJ): void {
-        
+
 
         let etq_ini: string = getEtiqueta(),
-        etq_sal: string = getEtiqueta(),
-        etq_act: string = getEtiqueta(),
-        etq_v: string = getEtiqueta(),
-        etq_f: string = getEtiqueta();
+            etq_sal: string = getEtiqueta(),
+            etq_act: string = getEtiqueta(),
+            etq_v: string = getEtiqueta(),
+            etq_f: string = getEtiqueta();
 
         let local: TablaSimbJ = NewTablaLocal(ts);
-        
+
         //SE ESCRIBE EL CÓDIGO DE LA INICIALIZACIÓN SI HUBIERA
-        if(this.init != null){
+        if (this.init != null) {
             this.init.Traducir(local);
         }
 
-        if(this.cond != null){
+        if (this.cond != null) {
             let o: Object = this.cond.getTipo(local);
-            if(o instanceof ErrorLup){
-                ts.GenerarError('Se esperaba un expresión condicional',this.getFila(),this.getCol());
+            if (o instanceof ErrorLup) {
+                ts.GenerarError('Se esperaba un expresión condicional', this.getFila(), this.getCol());
                 return;
             }
         }
 
         concatCodigo(etq_ini + ':');
-        
+
         //SE ESCRIBE EL CÓDIGO DE LA CONDICIÓN SI LA HUBIERA
-        if(this.cond != null){
+        if (this.cond != null) {
             this.cond.Traducir(local);
             let temp_cond: string = getTempAct();
             ts.SacarTemporal(temp_cond);
@@ -60,13 +60,13 @@ export class For extends InstruccionJ{
 
         concatCodigo(etq_v + ':');
 
-        local.display.insertar(etq_act,etq_sal);
+        local.display.insertar(etq_act, etq_sal);
         this.TraducirCuerpo(local);
         local.display.sacarEtiquetas();
 
         concatCodigo(etq_act + ':');
 
-        if(this.actualizacion != null){
+        if (this.actualizacion != null) {
             this.actualizacion.Traducir(local);
         }
 
@@ -78,13 +78,34 @@ export class For extends InstruccionJ{
 
     public DeterminarTamanioFuncion(funcion: DecFun): void {
         super.DeterminarTamanioFuncion(funcion);
-        if(this.init != null){
+        if (this.init != null) {
             this.init.DeterminarTamanioFuncion(funcion);
         }
     }
 
     public dibujar(padre: string): void {
-        throw new Error("Method not implemented.");
+        let n: string = getIdNodo('FOR');
+        conectarNodo(padre, n);
+
+        if (this.init != null) {
+            let init: string = getIdNodo('INIT');
+            conectarNodo(n, init);
+            this.init.dibujar(init);
+        }
+
+        if (this.cond != null) {
+            let cond: string = getIdNodo('COND');
+            conectarNodo(n, cond);
+            this.cond.dibujar(cond);
+        }
+
+        if (this.actualizacion != null) {
+            let act: string = getIdNodo('ACT');
+            conectarNodo(n, act);
+            this.actualizacion.dibujar(act);
+        }
+
+        this.DibujarCuerpo(n);
     }
 
 }

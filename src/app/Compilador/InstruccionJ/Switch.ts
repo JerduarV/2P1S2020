@@ -3,7 +3,7 @@ import { ExpresionJ } from '../ExpresionJ/ExpresionJ';
 import { TablaSimbJ, NewTablaLocal } from '../TSJ/TablaSimbJ';
 import { ErrorLup } from 'src/app/Auxiliares/Error';
 import { Tipo } from '../TSJ/Tipo';
-import { getTempAct, getEtiqueta, concatCodigo, genTemp } from 'src/app/Auxiliares/Utilidades';
+import { getTempAct, getEtiqueta, concatCodigo, genTemp, getIdNodo, conectarNodo } from 'src/app/Auxiliares/Utilidades';
 import { DecFun } from './DecFun';
 import { Caso } from './Caso';
 import { DeclaracionJ } from './DeclaracionJ';
@@ -151,7 +151,16 @@ export class Switch extends InstruccionJ {
     }
 
     public dibujar(padre: string): void {
-        throw new Error("Method not implemented.");
+        let n: string = getIdNodo('SWITCH');
+        conectarNodo(padre, n);
+        let comp: string = getIdNodo('COMP');
+        conectarNodo(n, comp);
+        this.exp.dibujar(comp);
+        let l_casos: string = getIdNodo('L_CASOS');
+        conectarNodo(n, l_casos);
+        this.lista_casos.forEach(caso => {
+            caso.dibujar(l_casos);
+        });
     }
 }
 

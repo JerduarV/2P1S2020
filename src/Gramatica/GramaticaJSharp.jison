@@ -154,7 +154,7 @@
     var Print = require('../app/Compilador/InstruccionJ/Print').Print;
     var DecFun = require('../app/Compilador/InstruccionJ/DecFun').DecFun;
     var Switch = require('../app/Compilador/InstruccionJ/Switch').Switch;
-    var Caso = require('../app/Compilador/InstruccionJ/Switch').Caso;
+    var Caso = require('../app/Compilador/InstruccionJ/Caso').Caso;
     var Import = require('../app/Compilador/InstruccionJ/Import').Import;
     var Throw = require('../app/Compilador/InstruccionJ/Throw').Throw;
     var TryCatch = require('../app/Compilador/InstruccionJ/TryCatch').TryCatch;
@@ -331,8 +331,10 @@ L_CASOS:
 ;
 
 CASO:
-        RCASE EXP DOSPT L_SENT  { $$ = new Caso($2,$4); }
-    |   RDEFAULT DOSPT L_SENT   { $$ = new Caso(null,$3); }
+        RCASE EXP DOSPT L_SENT  { $$ = new Caso($2,$4,@1.first_line,@1.first_column); }
+    |   RDEFAULT DOSPT L_SENT   { $$ = new Caso(null,$3,@1.first_line,@1.first_column); }
+    |   RCASE EXP DOSPT         { $$ = new Caso($2,[],@1.first_line,@1.first_column); }
+    |   RDEFAULT DOSPT          { $$ = new Caso(null,[],@1.first_line,@1.first_column)}
 ;
 
 BREAK:

@@ -1,6 +1,6 @@
 import { InstruccionJ } from './InstruccionJ';
 import { ExpresionJ } from '../ExpresionJ/ExpresionJ';
-import { concatCodigo, getTempAct } from 'src/app/Auxiliares/Utilidades';
+import { concatCodigo, getTempAct, getIdNodo, conectarNodo } from 'src/app/Auxiliares/Utilidades';
 import { ErrorLup } from 'src/app/Auxiliares/Error';
 import { Tipo } from '../TSJ/Tipo';
 
@@ -40,7 +40,9 @@ export class Return extends InstruccionJ{
     }
 
     public dibujar(padre: string): void {
-        throw new Error("Method not implemented.");
+        let n: string = getIdNodo('RETURN');
+        conectarNodo(padre, n);
+        this.exp.dibujar(n);
     }
 
 }

@@ -1,4 +1,5 @@
 import { ErrorLup } from './Error';
+import { lista_errores } from './Utilidades';
 
 export class Consola{
     
@@ -19,7 +20,7 @@ export class Consola{
     public InsertError(desc: string, tipo: string, fila: number, col: number):ErrorLup{
         let e: ErrorLup = new ErrorLup(fila, col, desc, tipo);
         console.log(e);
-        this.lista_errores.push(e);
+        lista_errores.push(e);
         return e;
     }
 }

@@ -5,6 +5,7 @@ import { NewTablaLocal } from '../TSJ/TablaSimbJ';
 import { DeclaracionJ } from './DeclaracionJ';
 import { DecFun } from './DecFun';
 import { DefStruct } from './DefStruct';
+import { getIdNodo, conectarNodo } from 'src/app/Auxiliares/Utilidades';
 
 export class Else extends InstruccionJ {
 
@@ -34,19 +35,19 @@ export class Else extends InstruccionJ {
                     (<InstruccionJ>this.getCuerpo()[i]).BuscarVariablesGlobales(lista_dec);
                 }
             }
-        }else{
+        } else {
             this.IF.BuscarVariablesGlobales(lista_dec);
         }
     }
 
-    public RecolectarStruct(lista: DefStruct[]):void{
+    public RecolectarStruct(lista: DefStruct[]): void {
         if (this.IF == null) {
             for (let i = 0; i < this.getCuerpo().length; i++) {
                 if (this.getCuerpo()[i] instanceof InstruccionJ) {
                     (<InstruccionJ>this.getCuerpo()[i]).RecolectarStruct(lista);
                 }
             }
-        }else{
+        } else {
             this.IF.RecolectarStruct(lista);
         }
     }
@@ -58,13 +59,19 @@ export class Else extends InstruccionJ {
                     (<InstruccionJ>this.getCuerpo()[i]).DeterminarTamanioFuncion(funcion);
                 }
             }
-        }else{
+        } else {
             this.IF.DeterminarTamanioFuncion(funcion);
         }
     }
 
     public dibujar(padre: string): void {
-        throw new Error("Method not implemented.");
+        if (this.IF == null) {
+            let n: string = getIdNodo('ELSE');
+            conectarNodo(padre, n);
+            this.DibujarCuerpo(n);
+        } else {
+            this.IF.dibujar(padre);
+        }
     }
 
 }

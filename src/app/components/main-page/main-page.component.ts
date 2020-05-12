@@ -9,7 +9,7 @@ import { Editor3Component } from '../editor3/editor3.component';
 import { lista_funciones_global } from 'src/app/Compilador/TSJ/SimbFuncion';
 import { lista_var_global, lista_strc_global } from 'src/app/Compilador/TSJ/TablaSimbJ';
 import { graphviz }  from 'd3-graphviz';
-import { dot } from 'src/app/Auxiliares/Utilidades';
+import { dot, lista_errores } from 'src/app/Auxiliares/Utilidades';
 
 
 @Component({
@@ -58,7 +58,7 @@ export class MainPageComponent implements OnInit {
   public DibujarAST(): void {
     try{
       graphviz('div2').renderDot(dot);
-      console.log(dot);
+      //console.log(dot);
     }catch(error){
       console.log(error);
       console.log(dot);
@@ -90,7 +90,7 @@ export class MainPageComponent implements OnInit {
   openDialog(): void {
     const dialogRef = this.dialog.open(VentanaErroresComponent, {
       width: '750px',
-      data: { lista: this.consola.lista_errores, nombre: "jerson" }
+      data: { lista: lista_errores, nombre: "jerson" }
     });
 
     dialogRef.afterClosed().subscribe(result => {

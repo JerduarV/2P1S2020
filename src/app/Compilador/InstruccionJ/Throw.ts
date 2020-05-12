@@ -1,7 +1,7 @@
 import { InstruccionJ } from './InstruccionJ';
 import { ErrorLup } from 'src/app/Auxiliares/Error';
 import { Tipo, ARITHMETICEX, INDEXOUTOFBOUNDEX, UNCAUGTHEX, INVALIDCASTINGEXCEPTION, HEAPOVERFLOWERROR, STACKOVERFLOWERROR, NULLPOINTEREX } from '../TSJ/Tipo';
-import { concatCodigo, concatException } from 'src/app/Auxiliares/Utilidades';
+import { concatCodigo, concatException, getIdNodo, conectarNodo } from 'src/app/Auxiliares/Utilidades';
 import { ExpresionJ } from '../ExpresionJ/ExpresionJ';
 
 export class Throw extends InstruccionJ{
@@ -49,7 +49,9 @@ export class Throw extends InstruccionJ{
     }
 
     public dibujar(padre: string): void {
-        throw new Error("Method not implemented.");
+        let n: string = getIdNodo('THROW');
+        conectarNodo(padre, n);
+        this.exp_exception.dibujar(n);
     }
 
 }

@@ -1,5 +1,6 @@
 import { TablaSimbJ, lista_var_global, lista_strc_global } from '../Compilador/TSJ/TablaSimbJ';
 import { lista_funciones_global } from '../Compilador/TSJ/SimbFuncion';
+import { ErrorLup } from './Error';
 
 let contador_etq: number = 0;
 let contador_tempo: number = 0;
@@ -7,6 +8,7 @@ let temAct = 0;
 let codigo_gen: string = '';
 export let dot: string = '';
 let dot_id: number = 0;
+export let lista_errores: ErrorLup[] = [];
 
 export function concatException(errorNum: number, ts: TablaSimbJ): void {
     if (ts.displayTry.estoyEnTry()) {
@@ -66,6 +68,7 @@ export function inicializarTodo(): void {
     lista_funciones_global.splice(0, lista_funciones_global.length);
     lista_var_global.splice(0, lista_var_global.length);
     lista_strc_global.splice(0, lista_strc_global.length);
+    lista_errores = [];
 }
 
 export function GenerarEncabezado(): void {
