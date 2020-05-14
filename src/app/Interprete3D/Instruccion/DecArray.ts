@@ -8,7 +8,7 @@ export class DecArray extends Instruccion{
         this.id = id;
     }
 
-    public Escribir(): void {
-        throw new Error("Method not implemented.");
+    public Escribir(): string {
+        return 'var ' + this.id + '[];\n';
     }
 }

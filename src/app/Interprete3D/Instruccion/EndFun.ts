@@ -5,8 +5,8 @@ export class EndFun extends Instruccion {
         super(fila, col);
     }
 
-    public Escribir(): void {
-        throw new Error("Method not implemented.");
+    public Escribir(): string {
+        return '\nend\n'
     }
 
 }

@@ -1,6 +1,6 @@
 import { Expresion } from './Expresion';
 
-export class AccesoHeap extends Expresion{
+export class AccesoHeap extends Expresion {
 
     /**
      * Expresión que indica la posición a acceder
@@ -13,13 +13,13 @@ export class AccesoHeap extends Expresion{
      * @param fila Fila en la que se encuentra
      * @param col Columna en la que se encuentra
      */
-    constructor(i: Expresion, fila: number, col: number){
-        super(fila,col);
+    constructor(i: Expresion, fila: number, col: number) {
+        super(fila, col);
         this.i = i;
     }
 
     public getCadena(): string {
-        throw new Error("Method not implemented.");
+        return 'Heap[' + this.i.getCadena() + ']';
     }
 
 

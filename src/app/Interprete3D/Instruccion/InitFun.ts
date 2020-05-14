@@ -8,7 +8,7 @@ export class InitFun extends Instruccion{
         this.id = id;
     }
 
-    public Escribir(): void {
-        throw new Error("Method not implemented.");
+    public Escribir(): string {
+        return '\nproc ' + this.id + ' begin\n';
     }
 }

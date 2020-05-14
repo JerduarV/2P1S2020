@@ -22,8 +22,8 @@ export class Print extends Instruccion {
         this.tipo = t;
     }
 
-    public Escribir(): void {
-        throw new Error("Method not implemented.");
+    public Escribir(): string {
+        return 'print("' + this.tipo + '",' + this.exp.getCadena() + ');\n'
     }
 
 }

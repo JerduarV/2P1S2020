@@ -3,23 +3,133 @@ import { DecFuncion } from './Instruccion/DecFuncion';
 import { NodoAST } from './AST/NodoAST';
 import { InitFun } from './Instruccion/InitFun';
 import { EndFun } from './Instruccion/EndFun';
+import { Instruccion } from './Instruccion/Instruccion';
+import { reporte_optimi, InsertReporte } from '../Auxiliares/Utilidades';
+import { SaltoCond } from './Instruccion/SaltoCond';
+import { Operacion, TipoOpe } from './Expresion/Operacion';
+import { Literal } from './Expresion/Literal';
+import { SaltoIC } from './Instruccion/SaltoIC';
+import { Direccion } from './Instruccion/Direccion';
 
 export class Optimizador {
 
     constructor() { }
 
-    public Optimizar(codigo: string): void {
+    public Optimizar(codigo: string): string {
         try {
 
             let AST;
             //PARSEO
             AST = parser.parse(codigo);
             AST = this.Linealizar(AST);
-            
-            console.log(AST);
+            reporte_optimi.splice(0, reporte_optimi.length);
+            this.OptimizarMirill(AST);
+
+            return this.Reescribir(AST);
 
         } catch (error) {
             console.log(error);
+        }
+    }
+
+    private OptimizarMirill(AST: NodoAST[]): void {
+
+        for (let i = 0; i < AST.length; i++) {
+            const nodo = AST[i];
+            if (nodo instanceof Instruccion) {
+                nodo.OpimizarR818();
+                if (nodo instanceof SaltoCond) {
+                    this.OptimizarRegla5(nodo);
+                }
+
+                if (nodo instanceof SaltoCond) {
+                    if (i + 1 < AST.length) {
+                        if (AST[i + 1] instanceof SaltoIC) {
+                            this.OptimizarRegla4(nodo, <SaltoIC>AST[i + 1]);
+                        }
+                    }
+                }
+
+                if (nodo instanceof SaltoIC) {
+                    this.OptimizarRegla2(i, AST, nodo);
+                }
+
+            }
+
+        }
+    }
+
+    private OptimizarRegla2(index: number, AST: NodoAST[], saltoic: SaltoIC): void {
+        let i: number = this.BuscarEtiqueta(index + 1, AST, saltoic.label);
+        if (i == -1) {
+            return;
+        }
+
+        if (this.ExistenEtiquetas(index + 1, i, AST)) {
+            return;
+        }
+
+        for (let y = index; y < i && y < AST.length; y++) {
+            const element = AST[y];
+            if(element instanceof Instruccion){
+                element.DebeEscribirse = false;
+                InsertReporte('Línea eliminada: ' + element.Escribir(), 2, element.getFila().toString());
+            }
+        }
+
+    }
+
+    private BuscarEtiqueta(index: number, AST: NodoAST[], label: string): number {
+        for (let y = index; y < AST.length; y++) {
+            const nodo = AST[y];
+            if (nodo instanceof Direccion) {
+                if (nodo.getID() == label) {
+                    return y;
+                }
+            }
+        }
+        return -1;
+    }
+
+    private ExistenEtiquetas(inicio: number, final: number, AST: NodoAST[]): boolean {
+        for (let i = inicio; i < final && i < AST.length; i++) {
+            const element = AST[i];
+            if (element instanceof Direccion) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    private OptimizarRegla4(saltoc: SaltoCond, saltoic: SaltoIC): void {
+        let cond: Operacion = <Operacion>saltoc.cond;
+        if (cond.tipo == TipoOpe.IGUALQUE) {
+            if (cond.ExpDer instanceof Literal && cond.ExpIzq instanceof Literal && cond.ExpDer.getCadena() == cond.ExpIzq.getCadena()) {
+                saltoc.DebeEscribirse = false;
+                saltoic.label = saltoc.lb;
+                InsertReporte('Línea eliminada: ' + saltoc.Escribir(), 4, saltoc.getFila().toString());
+            }
+        } else if (cond.tipo == TipoOpe.DIFERENTE) {
+            if (cond.ExpDer instanceof Literal && cond.ExpIzq instanceof Literal && cond.ExpDer.getCadena() != cond.ExpIzq.getCadena()) {
+                saltoc.DebeEscribirse = false;
+                saltoic.label = saltoc.lb;
+                InsertReporte('Línea eliminada: ' + saltoc.Escribir(), 4, saltoc.getFila().toString());
+            }
+        }
+    }
+
+    private OptimizarRegla5(salto: SaltoCond): void {
+        let cond: Operacion = <Operacion>salto.cond;
+        if (cond.tipo == TipoOpe.IGUALQUE) {
+            if (cond.ExpDer instanceof Literal && cond.ExpIzq instanceof Literal && cond.ExpDer.getCadena() != cond.ExpIzq.getCadena()) {
+                salto.DebeEscribirse = false;
+                InsertReporte('Línea eliminada: ' + salto.Escribir(), 5, salto.getFila().toString());
+            }
+        } else if (cond.tipo == TipoOpe.DIFERENTE) {
+            if (cond.ExpDer instanceof Literal && cond.ExpIzq instanceof Literal && cond.ExpDer.getCadena() == cond.ExpIzq.getCadena()) {
+                salto.DebeEscribirse = false;
+                InsertReporte('Línea eliminada: ' + salto.Escribir(), 5, salto.getFila().toString());
+            }
         }
     }
 
@@ -44,6 +154,18 @@ export class Optimizador {
             }
         }
         return AST_nuevo;
+    }
+
+    private Reescribir(AST: NodoAST[]): string {
+        let cad: string = '';
+        AST.forEach(nodo => {
+            if (nodo instanceof Instruccion) {
+                if (nodo.debeEscribirse()) {
+                    cad += nodo.Escribir();
+                }
+            }
+        });
+        return cad;
     }
 
 }

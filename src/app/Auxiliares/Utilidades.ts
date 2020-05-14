@@ -10,6 +10,12 @@ export let dot: string = '';
 let dot_id: number = 0;
 export let lista_errores: ErrorLup[] = [];
 
+export let reporte_optimi: [string[]] = [[]];
+
+export function InsertReporte(des: string, regla: number, fila: string):void{
+    reporte_optimi.push([des, 'Regla ' + regla, fila]);
+}
+
 export function InsertarError(tipo: string, desc: string, fila: number, col: number): void {
     let e: ErrorLup = new ErrorLup(fila, col, desc, tipo);
     console.log(e);

@@ -6,12 +6,12 @@ export class SaltoCond extends Instruccion{
     /**
      * Condicón del salto
      */
-    private readonly cond: Expresion;
+    public readonly cond: Expresion;
 
     /**
      * Etiqueta a la que salta
      */
-    private readonly lb: string;
+    public readonly lb: string;
 
     /**
      * Constructor del Salto Condicional
@@ -26,8 +26,8 @@ export class SaltoCond extends Instruccion{
         this.lb = lb;
     }
 
-    public Escribir(): void {
-        throw new Error("Method not implemented.");
+    public Escribir(): string {
+        return 'if(' + this.cond.getCadena() + ') goto ' + this.lb + ';\n';
     }
 
 }

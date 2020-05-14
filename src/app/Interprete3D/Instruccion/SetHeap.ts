@@ -25,8 +25,8 @@ export class SetHeap extends Instruccion{
         this.val = v;
     }
 
-    public Escribir(): void {
-        throw new Error("Method not implemented.");
+    public Escribir(): string {
+        return 'Heap[' + this.i.getCadena() + '] = ' + this.val.getCadena() + ';\n';
     }
 
 }

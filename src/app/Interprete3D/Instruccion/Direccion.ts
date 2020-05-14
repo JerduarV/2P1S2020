@@ -25,8 +25,8 @@ export class Direccion extends Instruccion{
         return this.id;
     }
 
-    public Escribir(): void {
-        throw new Error("Method not implemented.");
+    public Escribir(): string {
+        return this.id + ':\n';
     }
 
 }

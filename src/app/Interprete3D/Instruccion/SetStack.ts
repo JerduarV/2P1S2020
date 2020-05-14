@@ -25,8 +25,8 @@ export class SetStack extends Instruccion{
         this.val = v;
     }
 
-    public Escribir(): void {
-        throw new Error("Method not implemented.");
+    public Escribir(): string {
+        return 'Stack[' + this.i.getCadena() + '] = ' + this.val.getCadena() + ';\n'
     }
 
 }

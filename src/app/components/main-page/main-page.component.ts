@@ -9,7 +9,7 @@ import { Editor3Component } from '../editor3/editor3.component';
 import { lista_funciones_global } from 'src/app/Compilador/TSJ/SimbFuncion';
 import { lista_var_global, lista_strc_global } from 'src/app/Compilador/TSJ/TablaSimbJ';
 import { graphviz } from 'd3-graphviz';
-import { dot, lista_errores } from 'src/app/Auxiliares/Utilidades';
+import { dot, lista_errores, reporte_optimi } from 'src/app/Auxiliares/Utilidades';
 import { Optimizador } from 'src/app/Interprete3D/Optimizador';
 
 
@@ -29,6 +29,10 @@ export class MainPageComponent implements OnInit {
   funciones = new MatTableDataSource(lista_funciones_global);
   displayedColumns: string[] = ['NOMBRE', 'TIPO RETORNO', 'TAMAÑO', 'PARAMETROS'];
 
+  //REPORTE DE OPTIMIZACIÓN
+  reporte_opt = reporte_optimi;
+  displayedColumn3: string[] = ['DESCRIPCIÓN', 'REGLA', 'LÍNEA'];
+
   //VARIABLES
   variables = new MatTableDataSource(lista_var_global);
   dC: string[] = ['NOMBRE', 'TIPO', 'POSICIÓN', 'GLOBAL/LOCAL', 'CONSTANTE']
@@ -36,8 +40,6 @@ export class MainPageComponent implements OnInit {
   //VARIABLES
   structs = new MatTableDataSource(lista_strc_global);
   dC2: string[] = ['NOMBRE', 'TAMAÑO', 'ATRIBUTOS'];
-
-  workspace: any
 
   constructor(public dialog: MatDialog) { }
 
@@ -58,13 +60,13 @@ export class MainPageComponent implements OnInit {
 
   public Optimizar(): void {
     let optimi: Optimizador = new Optimizador();
-    optimi.Optimizar(this.consola.salida);
+    this.consola.salida = optimi.Optimizar(this.consola.salida);
+    console.log(reporte_optimi);
   }
 
   public DibujarAST(): void {
     try {
       graphviz('div2').renderDot(dot);
-      //console.log(dot);
     } catch (error) {
       console.log(error);
       console.log(dot);
@@ -79,10 +81,7 @@ export class MainPageComponent implements OnInit {
     let compilador: CompiladorJ = new CompiladorJ();
     this.consola.lista_errores = [];
     let archivos: Editor3Component[] = this.editor_avanzado.getTabs();
-    //console.log(archivos);
-    //console.log(this.editor_avanzado.getTexto());
     compilador.Compilar(this.editor_avanzado.getNombre(), this.editor_avanzado.getTexto(), this.consola, archivos);
-    //console.log(this.funciones);
   }
 
   /**

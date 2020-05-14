@@ -5,7 +5,7 @@ export class SaltoIC extends Instruccion{
     /**
      * Etiqueta a la que se satará
      */
-    private readonly label: string;
+    public label: string;
 
     /**
      * Constructor de la Instrucción: Salto Incondicional
@@ -18,8 +18,8 @@ export class SaltoIC extends Instruccion{
         this.label = lb;
     }
 
-    public Escribir(): void {
-        throw new Error("Method not implemented.");
+    public Escribir(): string {
+        return 'goto ' + this.label + ';\n'
     }
 
 }

@@ -17,10 +17,10 @@ export enum TipoOpe {
 
 export class Operacion extends Expresion {
 
-    private tipo: TipoOpe;
+    public tipo: TipoOpe;
 
-    private ExpIzq: Expresion;
-    private ExpDer: Expresion;
+    public ExpIzq: Expresion;
+    public ExpDer: Expresion;
 
     /**
      * Constructor de la clase Operacion
@@ -38,7 +38,39 @@ export class Operacion extends Expresion {
     }
 
     public getCadena(): string {
-        throw new Error("Method not implemented.");
+        if (this.tipo == TipoOpe.NEGATIVO) {
+            return this.getSimbolo() + this.ExpIzq.getCadena()
+        } else {
+            return this.ExpIzq.getCadena() + ' ' + this.getSimbolo() + ' ' + this.ExpDer.getCadena();
+        }
+    }
+
+    public getSimbolo(): string {
+        switch (this.tipo) {
+            case TipoOpe.SUMA:
+                return '+';
+            case TipoOpe.RESTA:
+            case TipoOpe.NEGATIVO:
+                return '-';
+            case TipoOpe.MULT:
+                return '*';
+            case TipoOpe.DIV:
+                return '/';
+            case TipoOpe.MOD:
+                return '%';
+            case TipoOpe.MENOR:
+                return '<';
+            case TipoOpe.MAYOR:
+                return '>';
+            case TipoOpe.MENORIGUAL:
+                return '<=';
+            case TipoOpe.MAYORIGUAL:
+                return '>=';
+            case TipoOpe.IGUALQUE:
+                return '==';
+            case TipoOpe.DIFERENTE:
+                return '<>';
+        }
     }
 
 }
