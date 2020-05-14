@@ -37,4 +37,8 @@ export class Operacion extends Expresion {
         this.tipo = t;
     }
 
+    public getCadena(): string {
+        throw new Error("Method not implemented.");
+    }
+
 }

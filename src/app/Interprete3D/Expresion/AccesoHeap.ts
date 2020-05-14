@@ -18,5 +18,9 @@ export class AccesoHeap extends Expresion{
         this.i = i;
     }
 
+    public getCadena(): string {
+        throw new Error("Method not implemented.");
+    }
+
 
 }

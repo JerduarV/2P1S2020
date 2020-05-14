@@ -18,5 +18,8 @@ export class Literal extends Expresion{
         this.valor = val;
     }
 
+    public getCadena(): string {
+        throw new Error("Method not implemented.");
+    }
 
 }

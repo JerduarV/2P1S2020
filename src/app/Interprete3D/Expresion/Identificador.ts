@@ -14,4 +14,8 @@ export class Identificador extends Expresion{
         super(fila,col);
         this.id = id;
     }
+
+    public getCadena(): string {
+        throw new Error("Method not implemented.");
+    }
 }
