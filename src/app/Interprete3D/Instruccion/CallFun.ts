@@ -20,12 +20,5 @@ export class CallFun extends Instruccion {
         this.id = id;
     }
 
-    public Ejecutar(ts: import("../TS/TablaSimbolos").TablaSimbolos): Object {
-        let s: SimboloFun = ts.getFuncion(this.id);
-        if (s != null) {
-            return new Llamada(s.getInicio(), s.getInicio() + s.getTam() + 1);
-        }
-        return null;
-    }
 
 }

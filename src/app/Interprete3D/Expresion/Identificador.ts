@@ -14,9 +14,4 @@ export class Identificador extends Expresion{
         super(fila,col);
         this.id = id;
     }
-
-    Resolver(ts: import("../TS/TablaSimbolos").TablaSimbolos): Object {
-        return ts.getValorVar(this.id);
-    }
-
 }

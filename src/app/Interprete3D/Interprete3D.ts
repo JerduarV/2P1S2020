@@ -48,37 +48,7 @@ export class Interprete3D {
      * @param ts Tabla de símbolos
      */
     private Recorrer(ts: TablaSimbolos, AST: [], pilaLlamadas: Llamada[]): void {
-        while (pilaLlamadas.length > 0) {
-            let llamdaAct: Llamada = pilaLlamadas[pilaLlamadas.length-1];
-            for (let i = llamdaAct.inicio; i < llamdaAct.fin; i++) {
-                let n: Instruccion = AST[i];
-
-                //SI ES LA DECLARACIÓN DE UN FUNCIÓN LA SALTO SUMANDO AL INDICE EL TAMANIO DE LA MISMA
-                if (n instanceof DecFuncion) {
-                    let f: DecFuncion = <DecFuncion>n;
-                    i += f.getCuerpo().length;
-                    continue;
-                }
-
-                //REVISO SI HUBO UN RETORNO NO NULO QUE SOLO OCURRE CON LOS SALTO
-                let a = n.Ejecutar(ts);
-
-                //SI ES UN LLAMADA DEBO METERLA EN LA PILA
-                if(a instanceof Llamada){
-                    let call: Llamada = <Llamada>a;
-                    llamdaAct.inicio = i + 1;
-                    i = call.inicio;
-                    llamdaAct = call;
-                    pilaLlamadas.push(call);
-                    continue;
-                }
-
-                if (a != null) {
-                    i = <number>a;
-                }
-            }
-            pilaLlamadas.pop();
-        }
+        
     }
 
     /**

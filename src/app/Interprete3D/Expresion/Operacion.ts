@@ -37,38 +37,4 @@ export class Operacion extends Expresion {
         this.tipo = t;
     }
 
-    Resolver(ts: TablaSimbolos): Object {
-
-        let opIzq: number = <number>this.ExpIzq.Resolver(ts);
-
-        if(this.tipo == TipoOpe.NEGATIVO){
-            return -1 * opIzq;
-        }
-
-        let opDer: number = <number>this.ExpDer.Resolver(ts);
-
-        switch (this.tipo) {
-            case TipoOpe.SUMA:
-                return opIzq + opDer;
-            case TipoOpe.RESTA:
-                return opIzq - opDer;
-            case TipoOpe.MULT:
-                return opIzq * opDer;
-            case TipoOpe.DIV:
-                return opIzq / opDer;
-            case TipoOpe.MENOR:
-                return opIzq < opDer;
-            case TipoOpe.MAYOR:
-                return opIzq > opDer;
-            case TipoOpe.MENORIGUAL:
-                return opIzq <= opDer;
-            case TipoOpe.MAYORIGUAL:
-                return opIzq >= opDer;
-            case TipoOpe.IGUALQUE:
-                return opIzq == opDer;
-            case TipoOpe.DIFERENTE:
-                return opIzq != opDer;
-        }
-    }
-
 }

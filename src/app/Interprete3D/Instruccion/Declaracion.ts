@@ -3,8 +3,7 @@ import { Expresion } from '../Expresion/Expresion';
 
 export class Declaracion extends Instruccion{
 
-    private identificador: string;
-    private valor: Expresion;
+    private identificadores: string[];
 
     /**
      * Constructor de una declaración de variable
@@ -13,16 +12,10 @@ export class Declaracion extends Instruccion{
      * @param fila Fila en la que se encuentra
      * @param col Columan en la que se encuentra
      */
-    constructor(id: string, valor: Expresion, fila: number, col: number){
+    constructor(ids: string[], fila: number, col: number){
         super(fila,col);
-        this.identificador = id;
-        this.valor = valor;
+        this.identificadores = ids;
     }
 
-    public Ejecutar(ts: import("../TS/TablaSimbolos").TablaSimbolos): Object {
-        let val: Object = this.valor != null ? this.valor.Resolver(ts) : null;
-        ts.InsertarVar(this.identificador,Number(val));
-        return null;
-    }
 
 }

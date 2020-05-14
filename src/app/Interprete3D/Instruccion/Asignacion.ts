@@ -26,10 +26,5 @@ export class Asignacion extends Instruccion{
         this.exp = e;
     }
 
-    public Ejecutar(ts: import("../TS/TablaSimbolos").TablaSimbolos): Object {
-        let val: Object = this.exp.Resolver(ts);
-        ts.setValorVar(this.id, Number(val));
-        return null;
-    }
 
 }

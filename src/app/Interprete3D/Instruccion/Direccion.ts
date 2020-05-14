@@ -18,10 +18,6 @@ export class Direccion extends Instruccion{
         this.id = id;
     }
 
-    public Ejecutar(ts: import("../TS/TablaSimbolos").TablaSimbolos): Object {
-        return null;
-    }
-
     /**
      * Retorna el id de la direccion
      */

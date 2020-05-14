@@ -25,10 +25,6 @@ export class DecFuncion extends Instruccion{
         this.id = id;
     }
 
-    public Ejecutar(ts: import("../TS/TablaSimbolos").TablaSimbolos): Object {
-        return null;
-    }
-
     public getCuerpo():[]{
         return this.cuerpo;
     }

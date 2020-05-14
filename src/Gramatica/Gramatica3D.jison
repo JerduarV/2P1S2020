@@ -94,6 +94,7 @@
    var SetHeap = require('../app/Interprete3D/Instruccion/SetHeap').SetHeap;
    var SetStack = require('../app/Interprete3D/Instruccion/SetStack').SetStack;
    var SaltoIC = require('../app/Interprete3D/Instruccion/SaltoIC').SaltoIC;
+   var DecArray = require('../app/Interprete3D/Instruccion/DecArray').DecArray;
    var SaltoCond = require('../app/Interprete3D/Instruccion/SaltoCond').SaltoCond;
    var DecFuncion = require('../app/Interprete3D/Instruccion/DecFuncion').DecFuncion;
    var CallFun = require('../app/Interprete3D/Instruccion/CallFun').CallFun;
@@ -121,7 +122,12 @@ SENT:
     |   PRINT PTCOMA            { $$ = $1; }       
     |   DIRECCION               { $$ = $1; }          
     |   CALLFUN PTCOMA          { $$ = $1; }
+    |   DECARRAY PTCOMA         { $$ = $1; }
     //|   error PTCOMA            {/**/}
+;
+
+DECARRAY:
+        RVAR ID CORIZQ CORDER   { $$ = DecArray($2,@1.first_line,@1.first_column); }
 ;
 
 CALLFUN:
@@ -137,8 +143,12 @@ PRINT:
 ;
 
 DECLARA_VAR:
-        RVAR ID                 { $$ = new Declaracion($2,null,@1.first_line,@1.first_column); }
-    |   RVAR ID IGUAL E         { $$ = new Declaracion($2,$4,@1.first_line,@1.first_column); }
+        RVAR L_ID                 { $$ = new Declaracion($2,@1.first_line,@1.first_column); }
+;
+
+L_ID:
+        L_ID COMA ID    { $$ = $1; $$.push($3); }         
+    |   ID              {$$ = [$1]}
 ;
 
 ASIG:

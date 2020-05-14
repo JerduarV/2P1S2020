@@ -22,23 +22,4 @@ export class Print extends Instruccion {
         this.tipo = t;
     }
 
-    public Ejecutar(ts: import("../TS/TablaSimbolos").TablaSimbolos): Object {
-
-        let val: Number = <number>this.exp.Resolver(ts);
-
-        switch (this.tipo) {
-            case '%c':
-                console.log(String.fromCharCode(val.valueOf()));
-                break;
-            case '%i':
-                console.log(Math.floor(val.valueOf()).toString());
-                break;
-            case '%d':
-                console.log(val);
-                break;
-        }
-
-        return null;
-    }
-
 }

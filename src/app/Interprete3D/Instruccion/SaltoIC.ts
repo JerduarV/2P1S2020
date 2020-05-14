@@ -18,9 +18,4 @@ export class SaltoIC extends Instruccion{
         this.label = lb;
     }
 
-    public Ejecutar(ts: import("../TS/TablaSimbolos").TablaSimbolos): Object {
-        let i:number = ts.getLabel(this.label);
-        return i;
-    }
-
 }

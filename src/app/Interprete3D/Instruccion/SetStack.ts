@@ -25,11 +25,4 @@ export class SetStack extends Instruccion{
         this.val = v;
     }
 
-    public Ejecutar(ts: import("../TS/TablaSimbolos").TablaSimbolos): Object {
-        let H: number = <number>this.i.Resolver(ts);
-        let v: number = <number>this.val.Resolver(ts);
-        ts.setStack(H,v);
-        return null;
-    }
-
 }

@@ -26,9 +26,4 @@ export class SaltoCond extends Instruccion{
         this.lb = lb;
     }
 
-    public Ejecutar(ts: import("../TS/TablaSimbolos").TablaSimbolos): Object {
-        let c: boolean = <boolean>this.cond.Resolver(ts);
-        return c ? ts.getLabel(this.lb) : null;
-    }
-
 }

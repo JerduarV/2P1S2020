@@ -17,8 +17,4 @@ export class AccesoStack extends Expresion{
         this.i = i;
     }
 
-    Resolver(ts: import("../TS/TablaSimbolos").TablaSimbolos): Object {
-        let P: number = <number>this.i.Resolver(ts);
-        return ts.getStack(P);
-    }
 }

@@ -78,10 +78,13 @@ export function inicializarTodo(): void {
 }
 
 export function GenerarEncabezado(): void {
-    let dec: string = '';
+    let dec: string = 'var ';
+    let sep: string = ''
     for (let i = 0; i < contador_tempo; i++) {
-        dec += "var t" + i + ";";
+        dec += sep + "t" + i;
+        sep = ','
     }
+    dec += ';\n';
     dec += "\nvar P,H;\nvar Heap[];\nvar Stack[];";
     codigo_gen = dec + '\n\n' + codigo_gen;
 }

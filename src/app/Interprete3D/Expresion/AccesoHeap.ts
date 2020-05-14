@@ -18,9 +18,5 @@ export class AccesoHeap extends Expresion{
         this.i = i;
     }
 
-    Resolver(ts: import("../TS/TablaSimbolos").TablaSimbolos): Object {
-        let H: number = <number>this.i.Resolver(ts);
-        return ts.getHeap(H);
-    }
 
 }
