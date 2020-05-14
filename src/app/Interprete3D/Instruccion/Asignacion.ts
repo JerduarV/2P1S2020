@@ -26,5 +26,9 @@ export class Asignacion extends Instruccion{
         this.exp = e;
     }
 
+    public Escribir(): void {
+        throw new Error("Method not implemented.");
+    }
+
 
 }

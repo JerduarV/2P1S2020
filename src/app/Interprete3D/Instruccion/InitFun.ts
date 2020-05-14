@@ -7,4 +7,8 @@ export class InitFun extends Instruccion{
         super(fila,col);
         this.id = id;
     }
+
+    public Escribir(): void {
+        throw new Error("Method not implemented.");
+    }
 }

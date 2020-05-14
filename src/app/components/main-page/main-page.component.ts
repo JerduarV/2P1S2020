@@ -8,8 +8,9 @@ import { EditorAvanzadoComponent } from '../editor-avanzado/editor-avanzado.comp
 import { Editor3Component } from '../editor3/editor3.component';
 import { lista_funciones_global } from 'src/app/Compilador/TSJ/SimbFuncion';
 import { lista_var_global, lista_strc_global } from 'src/app/Compilador/TSJ/TablaSimbJ';
-import { graphviz }  from 'd3-graphviz';
+import { graphviz } from 'd3-graphviz';
 import { dot, lista_errores } from 'src/app/Auxiliares/Utilidades';
+import { Optimizador } from 'src/app/Interprete3D/Optimizador';
 
 
 @Component({
@@ -55,15 +56,20 @@ export class MainPageComponent implements OnInit {
     interprete.Analizar(this.editor_avanzado.get3D())
   }
 
+  public Optimizar(): void {
+    let optimi: Optimizador = new Optimizador();
+    optimi.Optimizar(this.consola.salida);
+  }
+
   public DibujarAST(): void {
-    try{
+    try {
       graphviz('div2').renderDot(dot);
       //console.log(dot);
-    }catch(error){
+    } catch (error) {
       console.log(error);
       console.log(dot);
     }
-    
+
   }
 
   /**
@@ -74,6 +80,7 @@ export class MainPageComponent implements OnInit {
     this.consola.lista_errores = [];
     let archivos: Editor3Component[] = this.editor_avanzado.getTabs();
     //console.log(archivos);
+    //console.log(this.editor_avanzado.getTexto());
     compilador.Compilar(this.editor_avanzado.getNombre(), this.editor_avanzado.getTexto(), this.consola, archivos);
     //console.log(this.funciones);
   }

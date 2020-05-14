@@ -17,5 +17,9 @@ export class Declaracion extends Instruccion{
         this.identificadores = ids;
     }
 
+    public Escribir(): void {
+        throw new Error("Method not implemented.");
+    }
+
 
 }

@@ -20,5 +20,7 @@ export class CallFun extends Instruccion {
         this.id = id;
     }
 
-
+    public Escribir(): void {
+        throw new Error("Method not implemented.");
+    }
 }

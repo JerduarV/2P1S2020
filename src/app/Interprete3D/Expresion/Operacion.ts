@@ -1,11 +1,11 @@
 import { Expresion } from './Expresion';
-import { TablaSimbolos } from '../TS/TablaSimbolos';
 
 export enum TipoOpe {
     SUMA,
     RESTA,
     MULT,
     DIV,
+    MOD,
     NEGATIVO,
     MAYOR,
     MENOR,

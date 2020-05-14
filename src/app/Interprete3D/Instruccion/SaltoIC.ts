@@ -18,4 +18,8 @@ export class SaltoIC extends Instruccion{
         this.label = lb;
     }
 
+    public Escribir(): void {
+        throw new Error("Method not implemented.");
+    }
+
 }

@@ -33,4 +33,8 @@ export class DecFuncion extends Instruccion{
         return this.id;
     }
 
+    public Escribir(): void {
+        throw new Error("Method not implemented.");
+    }
+
 }

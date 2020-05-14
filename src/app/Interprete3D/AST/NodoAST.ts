@@ -9,4 +9,12 @@ export abstract class NodoAST{
         this.fila = fila;
         this.col = columna;
     }
+
+    public getFila():number{
+        return this.fila;
+    }
+
+    public getCol():number{
+        return this.col;
+    }
 }

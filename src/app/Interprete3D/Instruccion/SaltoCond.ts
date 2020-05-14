@@ -26,4 +26,8 @@ export class SaltoCond extends Instruccion{
         this.lb = lb;
     }
 
+    public Escribir(): void {
+        throw new Error("Method not implemented.");
+    }
+
 }

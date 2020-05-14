@@ -25,4 +25,8 @@ export class SetHeap extends Instruccion{
         this.val = v;
     }
 
+    public Escribir(): void {
+        throw new Error("Method not implemented.");
+    }
+
 }

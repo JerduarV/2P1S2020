@@ -45,14 +45,15 @@
 "/"                     return  'DIV'
 "-"                     return  'MENOS'
 "+"                     return  'MAS'
+"%"                     return  'MOD'
 
 /* OPERADORES RELACIONALES */
 '>='                    return  'MAYORIGUAL'
 "<="                    return  'MENORIGUAL'
 "=="                    return  'IGUALQUE'
+"<>"                    return  'DIFERENTE'
 "<"                     return  'MENOR'
 ">"                     return  'MAYOR'
-"!="                    return  'DIFERENTE'
 "="                     return  'IGUAL'
 
 /* AGRUPADORES */
@@ -127,7 +128,8 @@ SENT:
 ;
 
 DECARRAY:
-        RVAR ID CORIZQ CORDER   { $$ = DecArray($2,@1.first_line,@1.first_column); }
+        RVAR RHEAP CORIZQ CORDER   { $$ = new DecArray($2,@1.first_line,@1.first_column); }
+    |   RVAR RSTACK CORIZQ CORDER  { $$ = new DecArray($2,@1.first_line,@1.first_column); }
 ;
 
 CALLFUN:
@@ -198,6 +200,7 @@ OPA:
     |   MENOS           { $$ = TipoOpe.RESTA; }
     |   POR             { $$ = TipoOpe.MULT; }
     |   DIV             { $$ = TipoOpe.DIV; }
+    |   MOD             { $$ = TipoOpe.MOD; }
 ;
 
 OPR:
