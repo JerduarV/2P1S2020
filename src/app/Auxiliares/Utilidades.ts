@@ -10,16 +10,22 @@ export let dot: string = '';
 let dot_id: number = 0;
 export let lista_errores: ErrorLup[] = [];
 
+export function InsertarError(tipo: string, desc: string, fila: number, col: number): void {
+    let e: ErrorLup = new ErrorLup(fila, col, desc, tipo);
+    console.log(e);
+    lista_errores.push(e);
+}
+
 export function concatException(errorNum: number, ts: TablaSimbJ): void {
     if (ts.displayTry.estoyEnTry()) {
-        concatCodigo(ts.displayTry.getLastTemp() + ' = ' + errorNum + ';');
+        concatCodigo('#' + ts.displayTry.getLastTemp() + ' = ' + errorNum + ';');
         concatCodigo('goto ' + ts.displayTry.getLastEtq() + ';');
     } else {
-        concatCodigo('E = ' + errorNum + ';');
+        concatCodigo('#E = ' + errorNum + ';');
     }
 }
 
-export function DOT_GEN():void{
+export function DOT_GEN(): void {
     dot = 'digraph G{\n\tnode [shape="box"]\n' + dot + '}\n';
 }
 

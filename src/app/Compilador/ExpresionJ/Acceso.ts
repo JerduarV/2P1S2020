@@ -3,7 +3,7 @@ import { Identificador } from './Identificador';
 import { SimbVar } from '../TSJ/SimbVar';
 import { TablaSimbJ } from '../TSJ/TablaSimbJ';
 import { ErrorLup } from 'src/app/Auxiliares/Error';
-import { genTemp, concatCodigo, getTempAct, getEtiqueta, getIdNodo, conectarNodo } from 'src/app/Auxiliares/Utilidades';
+import { genTemp, concatCodigo, getTempAct, getEtiqueta, getIdNodo, conectarNodo, concatException } from 'src/app/Auxiliares/Utilidades';
 import { Tipo, getTipoString, getTipoInteger, STRING, CHAR, getTipoBool, getTipoChar } from '../TSJ/Tipo';
 import { CallFun } from './CallFun';
 import { CallFun2 } from './CallFun2';
@@ -228,7 +228,7 @@ export class Acceso extends ExpresionJ {
                 if (!tipo_atributo.soyArreglo()) {
                     return ts.GenerarError('El atributo no es un arreglo ', this.getFila(), this.getCol());
                 }
-                console.log('es estructura');
+                //console.log('es estructura');
                 return new Tipo(tipo_atributo.getNombreTipo(), 0);
             }
         }
@@ -324,7 +324,8 @@ export class Acceso extends ExpresionJ {
                     concatCodigo('if(' + t1 + ' == -1) goto ' + etqv + ';');
                     concatCodigo('goto ' + etqf + ';');
                     concatCodigo(etqv + ':');
-                    concatCodigo('E = 3;');
+                    concatException(3, ts);
+                    //concatCodigo('E = 3;');
                     concatCodigo(etqf + ':');
                     concatCodigo(tem_val + ' = Heap[' + variable.getPosicion() + '];');
                     ts.guardarTemporal(tem_val);
@@ -412,7 +413,8 @@ export class Acceso extends ExpresionJ {
                     concatCodigo('if(' + tarray + ' == -1) goto ' + etqv + ';')
                     concatCodigo('goto ' + etqf + ';');
                     concatCodigo(etqv + ':');
-                    concatCodigo('E = 4;');
+                    concatException(4, ts);
+                    //concatCodigo('E = 4;');
                     concatCodigo(etqf + ':');
 
                     concatCodigo(t1 + ' = Heap[' + tarray + '];');
@@ -424,7 +426,8 @@ export class Acceso extends ExpresionJ {
                     concatCodigo('if(' + tindex + ' >= ' + t1 + ') goto ' + etqv1 + ';');
                     concatCodigo('goto ' + etqf1 + ';')
                     concatCodigo(etqv1 + ':');
-                    concatCodigo('E = 2;');
+                    concatException(2, ts);
+                    //concatCodigo('E = 2;');
                     concatCodigo(etqf1 + ':');
 
                     concatCodigo(t2 + ' = ' + tarray + ' + ' + tindex + ';');
@@ -433,7 +436,7 @@ export class Acceso extends ExpresionJ {
                     let tr: string = genTemp();//resultado
 
                     concatCodigo(tr + ' = Heap[' + t2 + '];');
-                    console.log(tr);
+                    //console.log(tr);
 
                     ts.guardarTemporal(tr);
                     ts.SacarTemporal(tindex);
@@ -471,7 +474,8 @@ export class Acceso extends ExpresionJ {
                     concatCodigo('if(' + tarray + ' == -1) goto ' + etqv + ';')
                     concatCodigo('goto ' + etqf + ';');
                     concatCodigo(etqv + ':');
-                    concatCodigo('E = 4;');
+                    concatException(4, ts);
+                    //concatCodigo('E = 4;');
                     concatCodigo(etqf + ':');
 
                     concatCodigo(t1 + ' = Heap[' + tarray + '];');
@@ -483,7 +487,8 @@ export class Acceso extends ExpresionJ {
                     concatCodigo('if(' + tindex + ' >= ' + t1 + ') goto ' + etqv1 + ';');
                     concatCodigo('goto ' + etqf1 + ';')
                     concatCodigo(etqv1 + ':');
-                    concatCodigo('E = 2;');
+                    concatException(2, ts);
+                    //concatCodigo('E = 2;');
                     concatCodigo(etqf1 + ':');
 
                     concatCodigo(t2 + ' = ' + tarray + ' + ' + tindex + ';');
@@ -526,7 +531,8 @@ export class Acceso extends ExpresionJ {
                     concatCodigo('if(' + tstring + ' == -1) goto ' + etqv + ';');
                     concatCodigo('goto ' + etqf + ';');
                     concatCodigo(etqv + ':');
-                    concatCodigo('E = 4;');
+                    concatException(4, ts);
+                    //concatCodigo('E = 4;');
                     concatCodigo(etqf + ':');
 
                     concatCodigo('P = P + ' + ts.getTamanioFunTotal() + ';');
@@ -552,7 +558,8 @@ export class Acceso extends ExpresionJ {
                     concatCodigo('if(' + tstring + ' == -1) goto ' + etqv + ';');
                     concatCodigo('goto ' + etqf + ';');
                     concatCodigo(etqv + ':');
-                    concatCodigo('E = 4;');
+                    concatException(4, ts);
+                    //concatCodigo('E = 4;');
                     concatCodigo(etqf + ':');
 
                     concatCodigo('P = P + ' + ts.getTamanioFunTotal() + ';');
@@ -577,7 +584,8 @@ export class Acceso extends ExpresionJ {
                     concatCodigo('if(' + tstring + ' == -1) goto ' + etqv + ';');
                     concatCodigo('goto ' + etqf + ';');
                     concatCodigo(etqv + ':');
-                    concatCodigo('E = 4;');
+                    concatException(4, ts);
+                    //concatCodigo('E = 4;');
                     concatCodigo(etqf + ':');
 
                     concatCodigo(tr + ' = Heap[' + tstring + '];');
@@ -598,7 +606,8 @@ export class Acceso extends ExpresionJ {
                     concatCodigo('if(' + tstring + ' == -1) goto ' + etqv + ';');
                     concatCodigo('goto ' + etqf + ';');
                     concatCodigo(etqv + ':');
-                    concatCodigo('E = 4;');
+                    concatException(4, ts);
+                    //concatCodigo('E = 4;');
                     concatCodigo(etqf + ':');
 
                     concatCodigo('P = P + ' + ts.getTamanioFunTotal() + ';');
@@ -642,7 +651,8 @@ export class Acceso extends ExpresionJ {
                     concatCodigo('if(' + tstring + ' == -1) goto ' + etqv + ';');
                     concatCodigo('goto ' + etqf + ';');
                     concatCodigo(etqv + ':');
-                    concatCodigo('E = 4;');
+                    concatException(4, ts);
+                    //concatCodigo('E = 4;');
                     concatCodigo(etqf + ':');
 
                     concatCodigo(t2 + ' = Heap[' + tstring + '];');
@@ -651,7 +661,8 @@ export class Acceso extends ExpresionJ {
                     concatCodigo('if(' + t_index + ' >= ' + t2 + ') goto ' + etqv1 + ';')
                     concatCodigo('goto ' + etqf1 + ';')
                     concatCodigo(etqv1 + ':');
-                    concatCodigo('E = 2;');
+                    concatException(2, ts);
+                    //concatCodigo('E = 2;');
                     concatCodigo(etqf1 + ':');
 
                     concatCodigo(t3 + ' = ' + t_index + ' + 1;');
@@ -681,7 +692,8 @@ export class Acceso extends ExpresionJ {
                     concatCodigo('if(' + t1 + ' == -1) goto ' + etqv + ';');
                     concatCodigo('goto ' + etqf + ';');
                     concatCodigo(etqv + ':');
-                    concatCodigo('E = 4;');
+                    concatException(4, ts);
+                    //concatCodigo('E = 4;');
                     concatCodigo(etqf + ':');
 
                     concatCodigo(tr + ' = ' + def.getSize() + ';');
@@ -699,7 +711,8 @@ export class Acceso extends ExpresionJ {
                     concatCodigo('if(' + tr + ' == -1) goto ' + etqv + ';');
                     concatCodigo('goto ' + etqf + ';');
                     concatCodigo(etqv + ':');
-                    concatCodigo('E = 4;');
+                    concatException(4, ts);
+                    //concatCodigo('E = 4;');
                     concatCodigo(etqf + ':');
 
                     return getTipoInteger();
@@ -723,7 +736,7 @@ export class Acceso extends ExpresionJ {
                     concatCodigo('if(' + tr + ' == -1) goto ' + etqv + ';');
                     concatCodigo('goto ' + etqf + ';');
                     concatCodigo(etqv + ':');
-                    concatCodigo('E = 4;');
+                    concatException(4, ts);
                     concatCodigo(etqf + ':');
 
                     if (tipo_anterior.getNombreTipo().toUpperCase() == id.getId().toUpperCase()) {
@@ -756,7 +769,8 @@ export class Acceso extends ExpresionJ {
                     concatCodigo('if(' + tstring + ' == -1) goto ' + etqv + ';');
                     concatCodigo('goto ' + etqf + ';');
                     concatCodigo(etqv + ':');
-                    concatCodigo('E = 4;');
+                    concatException(4, ts);
+                    //concatCodigo('E = 4;');
                     concatCodigo(etqf + ':');
 
                     concatCodigo('P = P + ' + ts.getTamanioFunTotal() + ';');
@@ -825,13 +839,15 @@ export class Acceso extends ExpresionJ {
             concatCodigo('if(' + i + ' < 0) goto ' + etqv + ';')
             concatCodigo('goto ' + etqf + ';')
             concatCodigo(etqv + ':');
-            concatCodigo('E = 2;');
+            concatException(2, ts);
+            //concatCodigo('E = 2;');
             concatCodigo(etqf + ':');
             concatCodigo(t4 + ' = Heap[' + tem_val + '];');
             concatCodigo('if(' + i + ' >= ' + t4 + ') goto ' + etqv2 + ';');
             concatCodigo('goto ' + etqf2 + ';');
             concatCodigo(etqv2 + ':');
-            concatCodigo('E = 2;');
+            concatException(2, ts);
+            //concatCodigo('E = 2;');
             concatCodigo(etqf2 + ':');
 
             concatCodigo(t1 + ' = ' + i + ' + 1;');
@@ -885,13 +901,15 @@ export class Acceso extends ExpresionJ {
                 concatCodigo('if(' + i + ' < 0) goto ' + etqv + ';')
                 concatCodigo('goto ' + etqf + ';')
                 concatCodigo(etqv + ':');
-                concatCodigo('E = 2;');
+                concatException(2, ts);
+                //concatCodigo('E = 2;');
                 concatCodigo(etqf + ':');
                 concatCodigo(t4 + ' = Heap[' + tr + '];');
                 concatCodigo('if(' + i + ' >= ' + t4 + ') goto ' + etqv2 + ';');
                 concatCodigo('goto ' + etqf2 + ';');
                 concatCodigo(etqv2 + ':');
-                concatCodigo('E = 2;');
+                concatException(2, ts);
+                //concatCodigo('E = 2;');
                 concatCodigo(etqf2 + ':');
 
                 concatCodigo(t1 + ' = ' + i + ' + 1;');
@@ -932,7 +950,8 @@ export class Acceso extends ExpresionJ {
                 concatCodigo('if(' + t1 + ' == -1) goto ' + etqv + ';');
                 concatCodigo('goto ' + etqf + ';');
                 concatCodigo(etqv + ':');
-                concatCodigo('E = 3;');
+                concatException(3, ts);
+                //concatCodigo('E = 3;');
                 concatCodigo(etqf + ':');
                 concatCodigo(tem_val + ' = Heap[' + variable.getPosicion() + '];');
                 ts.guardarTemporal(tem_val);
@@ -946,9 +965,19 @@ export class Acceso extends ExpresionJ {
                 let def: DefStruct = ts.BuscarStruct(tipo_anterior.getNombreTipo())
                 let pos: number = def.getPosAtributo(id);
                 let atrib: Tipo = def.getAtributo(id);
+                let etqv: string = getEtiqueta()
+                let etqf: string = getEtiqueta();
+
                 let temp = getTempAct();
                 let t1 = genTemp();
                 let tr = genTemp();
+
+                //VALIDACIÓN DE NULLPOINTER
+                concatCodigo('if(' + temp + ' == -1) goto ' + etqv + ';');
+                concatCodigo('goto ' + etqf + ';');
+                concatCodigo(etqv + ':');
+                concatException(4, ts);
+                concatCodigo(etqf + ':');
 
                 concatCodigo(t1 + ' = ' + temp + ' + ' + pos + ';');
                 concatCodigo(tr + ' = Heap[' + t1 + '];');
@@ -969,7 +998,8 @@ export class Acceso extends ExpresionJ {
                 concatCodigo('if(' + tarray + ' == -1) goto ' + etqv + ';');
                 concatCodigo('goto ' + etqf + ';');
                 concatCodigo(etqv + ':');
-                concatCodigo('E = 4;');
+                concatException(4, ts);
+                //concatCodigo('E = 4;');
                 concatCodigo(etqf + ':');
 
                 concatCodigo(tr + ' = Heap[' + tarray + '];');
@@ -996,6 +1026,11 @@ export class Acceso extends ExpresionJ {
                     return;
                 }
 
+                if (variable.getEsConstante()) {
+                    ts.GenerarError('La variable ' + variable.getNombre() + ' es una constante', this.getFila(), this.getCol());
+                    return;
+                }
+
                 let o: Object = this.exp.getTipo(ts);
                 if (o instanceof ErrorLup) {
                     ts.GenerarError('La expresión es un error', this.getFila(), this.getCol());
@@ -1005,6 +1040,7 @@ export class Acceso extends ExpresionJ {
                     ts.GenerarError('Asig: Los tipos no coinciden', this.getFila(), this.getCol());
                     return;
                 }
+
                 //SI NO ES GLOBAL
                 if (!variable.getEsGlobal()) {
                     let temp: string = genTemp();
@@ -1024,7 +1060,8 @@ export class Acceso extends ExpresionJ {
                     concatCodigo('if(' + t0 + ' == -1) goto ' + etqv + ';');
                     concatCodigo('goto ' + etqf + ';');
                     concatCodigo(etqv + ':');
-                    concatCodigo('E = 3;');
+                    concatException(3, ts);
+                    //concatCodigo('E = 3;');
                     concatCodigo(etqf + ':');
 
                     this.exp.Traducir(ts);
@@ -1086,11 +1123,20 @@ export class Acceso extends ExpresionJ {
                     return;
                 }
 
+                let etqv: string = getEtiqueta();
+                let etqf: string = getEtiqueta();
 
                 this.exp.Traducir(ts);
                 let tr: string = getTempAct();
 
                 let t1: string = genTemp();
+
+                //VALIDACIÓN DE NULLPOINTER
+                concatCodigo('if(' + apuntador + ' == -1) goto ' + etqv + ';');
+                concatCodigo('goto ' + etqf + ';');
+                concatCodigo(etqv + ':');
+                concatException(4, ts);
+                concatCodigo(etqf + ':');
 
                 concatCodigo(t1 + ' = ' + apuntador + ' + ' + pos + ';');
                 concatCodigo('Heap[' + t1 + '] = ' + tr + ';');
@@ -1159,13 +1205,15 @@ export class Acceso extends ExpresionJ {
             concatCodigo('if(' + i + ' < 0) goto ' + etqv + ';')
             concatCodigo('goto ' + etqf + ';')
             concatCodigo(etqv + ':');
-            concatCodigo('E = 2;');
+            concatException(2, ts);
+            //concatCodigo('E = 2;');
             concatCodigo(etqf + ':');
             concatCodigo(t4 + ' = Heap[' + tem_val + '];');
             concatCodigo('if(' + i + ' >= ' + t4 + ') goto ' + etqv2 + ';');
             concatCodigo('goto ' + etqf2 + ';');
             concatCodigo(etqv2 + ':');
-            concatCodigo('E = 2;');
+            concatException(2, ts);
+            //concatCodigo('E = 2;');
             concatCodigo(etqf2 + ':');
 
             concatCodigo(t1 + ' = ' + i + ' + 1;');
@@ -1179,7 +1227,7 @@ export class Acceso extends ExpresionJ {
             ts.SacarTemporal(i);
             ts.SacarTemporal(tem_val);
             ts.SacarTemporal(texp);
-            console.log('Se pudo asignar al arreglo');
+            //console.log('Se pudo asignar al arreglo');
         } else {
             if (tipo_anterior.esStruct()) {
                 let def: DefStruct = ts.BuscarStruct(tipo_anterior.getNombreTipo())
@@ -1233,13 +1281,15 @@ export class Acceso extends ExpresionJ {
                 concatCodigo('if(' + i + ' < 0) goto ' + etqv + ';')
                 concatCodigo('goto ' + etqf + ';')
                 concatCodigo(etqv + ':');
-                concatCodigo('E = 2;');
+                concatException(2, ts);
+                //concatCodigo('E = 2;');
                 concatCodigo(etqf + ':');
                 concatCodigo(t4 + ' = Heap[' + tr + '];');
                 concatCodigo('if(' + i + ' >= ' + t4 + ') goto ' + etqv2 + ';');
                 concatCodigo('goto ' + etqf2 + ';');
                 concatCodigo(etqv2 + ':');
-                concatCodigo('E = 2;');
+                concatException(2, ts);
+                //concatCodigo('E = 2;');
                 concatCodigo(etqf2 + ':');
 
                 concatCodigo(t1 + ' = ' + i + ' + 1;');
@@ -1250,7 +1300,7 @@ export class Acceso extends ExpresionJ {
                 ts.SacarTemporal(i);
                 ts.SacarTemporal(tr);
 
-                console.log('Se pudo setear al arreglo');
+                //console.log('Se pudo setear al arreglo');
             }
         }
     }

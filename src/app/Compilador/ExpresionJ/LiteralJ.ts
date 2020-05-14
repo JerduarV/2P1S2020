@@ -46,15 +46,15 @@ export class LiteralJ extends ExpresionJ {
         switch (this.tipo) {
             case TipoLit.LIT_CHAR:
                 let c: string = this.ProcesarChar(this.val.toString());
-                concatCodigo(temp + '=' + c.charCodeAt(0) + ';');
+                concatCodigo(temp + ' = ' + c.charCodeAt(0) + ';');
                 ts.guardarTemporal(temp);
                 break;
             case TipoLit.LIT_INT:
-                concatCodigo(temp + '=' + this.val + ';');
+                concatCodigo(temp + ' = ' + this.val + ';');
                 ts.guardarTemporal(temp);
                 break;
             case TipoLit.LIT_DOUBLE:
-                concatCodigo(temp + '=' + this.val + ';');
+                concatCodigo(temp + ' = ' + this.val + ';');
                 ts.guardarTemporal(temp);
                 break;
             case TipoLit.LIT_FALSE:

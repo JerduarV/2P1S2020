@@ -162,6 +162,11 @@ export class DeclaracionJ extends InstruccionJ {
     public dibujar(padre: string): void {
         let n: string = getIdNodo('DEC');
         conectarNodo(padre, n);
+
+        if(this.tipo != null){
+            conectarNodo(n, getIdNodo(this.tipo.getString()));
+        }
+
         let l_id: string = getIdNodo('LID');
         this.lista_ids.forEach(id => {
             let n_id: string = getIdNodo(id);

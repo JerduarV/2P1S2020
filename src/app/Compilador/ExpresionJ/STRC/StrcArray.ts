@@ -1,7 +1,7 @@
 import { ExpresionJ } from '../ExpresionJ';
 import { Tipo } from '../../TSJ/Tipo';
 import { ErrorLup } from 'src/app/Auxiliares/Error';
-import { getTempAct, genTemp, concatCodigo, getEtiqueta, getIdNodo, conectarNodo } from 'src/app/Auxiliares/Utilidades';
+import { getTempAct, genTemp, concatCodigo, getEtiqueta, getIdNodo, conectarNodo, concatException } from 'src/app/Auxiliares/Utilidades';
 
 export class StrcArray extends ExpresionJ {
 
@@ -23,6 +23,7 @@ export class StrcArray extends ExpresionJ {
         if (o instanceof ErrorLup) {
             return o;
         }
+        
         let tipo: Tipo = <Tipo>o;
         if (!(tipo.isInteger() || tipo.isChar())) {
             return ts.GenerarError('La expresión debe ser númerica', this.getFila(), this.getCol());
@@ -50,8 +51,9 @@ export class StrcArray extends ExpresionJ {
 
         concatCodigo('if(' + t0 + ' < 0) goto ' + etq1 + ';');
         concatCodigo('goto ' + etqf + ';');
-        concatCodigo(etq1 + ':')
-        concatCodigo('E = 2;');
+        concatCodigo(etq1 + ':');
+        concatException(2, ts);
+        //concatCodigo('E = 2;');
         concatCodigo(etqf + ':');
 
         

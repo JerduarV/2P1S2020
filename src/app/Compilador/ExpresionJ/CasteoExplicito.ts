@@ -1,7 +1,7 @@
 import { ExpresionJ } from './ExpresionJ';
 import { Tipo } from '../TSJ/Tipo';
 import { ErrorLup } from 'src/app/Auxiliares/Error';
-import { getTempAct, genTemp, concatCodigo, getEtiqueta, getIdNodo, conectarNodo } from 'src/app/Auxiliares/Utilidades';
+import { getTempAct, genTemp, concatCodigo, getEtiqueta, getIdNodo, conectarNodo, concatException } from 'src/app/Auxiliares/Utilidades';
 
 export class CasteoExplicito extends ExpresionJ {
 
@@ -56,12 +56,14 @@ export class CasteoExplicito extends ExpresionJ {
             concatCodigo('if(' + tr + ' < 0) goto ' + etqv1 + ';');
             concatCodigo('goto ' + etqf1 + ';');
             concatCodigo(etqv1 + ':');
-            concatCodigo('E = 5;');
+            concatException(5, ts);
+            //concatCodigo('E = 5;');
             concatCodigo(etqf1 + ':');
             concatCodigo('if(' + tr + ' > 255) goto ' + etqv2 + ';');
             concatCodigo('goto ' + etqf2 + ';');
             concatCodigo(etqv2 + ':');
-            concatCodigo('E = 5;');
+            concatException(5, ts);
+            //concatCodigo('E = 5;');
             concatCodigo(etqf2 + ':');
             //#endregion
         } else if (this.tipo.isChar() && tipo.isDouble()) {
@@ -77,12 +79,14 @@ export class CasteoExplicito extends ExpresionJ {
             concatCodigo('if(' + t2 + ' < 0) goto ' + etqv1 + ';');
             concatCodigo('goto ' + etqf1 + ';');
             concatCodigo(etqv1 + ':');
-            concatCodigo('E = 5;');
+            concatException(5, ts);
+            //concatCodigo('E = 5;');
             concatCodigo(etqf1 + ':');
             concatCodigo('if(' + t2 + ' > 255) goto ' + etqv2 + ';');
             concatCodigo('goto ' + etqf2 + ';');
             concatCodigo(etqv2 + ':');
-            concatCodigo('E = 5;');
+            concatException(5, ts);
+            //concatCodigo('E = 5;');
             concatCodigo(etqf2 + ':');
             ts.SacarTemporal(tr);
             ts.guardarTemporal(t2);

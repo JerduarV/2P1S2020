@@ -59,6 +59,9 @@ export abstract class InstruccionJ extends NodoASTJ{
         for(let i = 0; i < this.cuerpo.length; i++){
             let n: NodoASTJ = this.cuerpo[i];
             //IGNORO LOS ESTRUCTS
+            if(n == null){
+                continue;
+            }
             if(n.constructor.name == 'DefStruct'){
                 continue;
             }

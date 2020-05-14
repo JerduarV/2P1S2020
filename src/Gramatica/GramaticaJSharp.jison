@@ -90,8 +90,6 @@
 "!"                     return  'NOT'
 "^"                     return  'XOR'
 
-/* TERNARIO */
-"?"                     return  'TERNARIO'
 
 /* AGRUPADORES */
 "("                     return  'PARIZQ'
@@ -115,7 +113,7 @@
 "$"                     return  'DOLAR'
 
 <<EOF>>                 return  'EOF'
-.                       return  'INVALID'
+.                       { InsertarError('Léxico','Este es un error léxico: ' + yytext, yylloc.first_line, yylloc.first_column); }
 
 
 /lex
@@ -129,7 +127,6 @@
 %left   PARIZQ PARDER
 %left   IGUALQUE DIFERENTE IGUALREF
 %left   MENOR MAYORIGUAL MENORIGUAL MAYOR
-%right  TERNARIO
 %left   OR
 %left   XOR
 %left   AND
@@ -189,7 +186,7 @@
     var NULL = require('../app/Compilador/TSJ/Tipo').NULL;
     var VOID = require('../app/Compilador/TSJ/Tipo').VOID;
 
-
+    var InsertarError = require('../app/Auxiliares/Utilidades').InsertarError;
 
     var ParametroFormal = require('../app/Compilador/TSJ/ParametroFormal').ParametroFormal;
 %}
@@ -310,6 +307,11 @@ SENT:
     |   L_ACCESO DECREMENTO PTCOMA          { $$ = new IncDec(new Acceso($1,@1.first_line,@1.first_column),-1,@1.first_line,@1.first_column); }
     |   L_ACCESO INCREMENTO                 { $$ = new IncDec(new Acceso($1,@1.first_line,@1.first_column),1,@1.first_line,@1.first_column); }
     |   L_ACCESO DECREMENTO                 { $$ = new IncDec(new Acceso($1,@1.first_line,@1.first_column),-1,@1.first_line,@1.first_column); }
+
+    /* ERRORES */
+    |   error PTCOMA                        { $$ = null; InsertarError('Sintactico','Error sintáctico con token: ' + yytext + this.yylloc, this._$.first_line, this._$.first_column); }
+    |   error LLAVEDER                      { $$ = null; InsertarError('Sintactico','Error sintáctico con token: ' + yytext, this._$.first_line, this._$.first_column); }
+    |   error CORDER                        { $$ = null; InsertarError('Sintactico','Error sintáctico con token: ' + yytext, this._$.first_line, this._$.first_column); }
 ;
 
 TRYCATCH:
