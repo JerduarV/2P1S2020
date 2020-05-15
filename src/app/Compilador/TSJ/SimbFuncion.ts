@@ -111,7 +111,8 @@ export class SimbFuncion extends SimboloJ {
         }
 
         for (let i = 0; i < def.getParamatrosFormales().length; i++) {
-            if (!def.getParamatrosFormales()[i].getTipo().AplicaCasteo(lista_tipo[i])) {
+            if (!def.getParamatrosFormales()[i].getTipo().AplicaCasteo(lista_tipo[i])
+             && !def.getParamatrosFormales()[i].getTipo().esIgualA(lista_tipo[i])) {
                 return false;
             }
         }

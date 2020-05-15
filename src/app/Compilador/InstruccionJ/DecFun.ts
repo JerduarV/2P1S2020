@@ -132,7 +132,8 @@ export class DecFun extends InstruccionJ {
     public hasParametroCasteo(nombre: string, tipo: Tipo): boolean {
         for (let i = 0; i < this.parametroFormales.length; i++) {
             let param: ParametroFormal = this.parametroFormales[i];
-            if (param.nombre.toUpperCase() == nombre.toUpperCase() && param.getTipo().AplicaCasteo(tipo)) {
+            if (param.nombre.toUpperCase() == nombre.toUpperCase()
+                && (param.getTipo().AplicaCasteo(tipo) || param.getTipo().esIgualA(tipo))) {
                 return true;
             }
         }

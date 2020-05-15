@@ -23,7 +23,7 @@ export class StrcArray extends ExpresionJ {
         if (o instanceof ErrorLup) {
             return o;
         }
-        
+
         let tipo: Tipo = <Tipo>o;
         if (!(tipo.isInteger() || tipo.isChar())) {
             return ts.GenerarError('La expresión debe ser númerica', this.getFila(), this.getCol());
@@ -56,9 +56,9 @@ export class StrcArray extends ExpresionJ {
         //concatCodigo('E = 2;');
         concatCodigo(etqf + ':');
 
-        
+
         let t: Tipo = <Tipo>this.getTipo(ts);
-        let y: Tipo = new Tipo(t.getNombreTipo(),0);
+        let y: Tipo = new Tipo(t.getNombreTipo(), 0);
 
         concatCodigo(t1 + ' = ' + y.getValDefecto() + ';');
         concatCodigo('P = P + ' + ts.getTamanioFunTotal() + ';');
