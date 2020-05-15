@@ -8,6 +8,7 @@ export class SimbVar extends SimboloJ {
     private readonly esConstante: boolean;
     private readonly posicion: number;
     private readonly dimensiones: number;
+    private readonly funcion: string;
 
     /**
      * Constructor del simbolo varible
@@ -17,12 +18,13 @@ export class SimbVar extends SimboloJ {
      * @param esConstante Indica si es constante
      * @param pos Posicion
      */
-    constructor(nombre: string, tipo: Tipo, esGlobal: boolean, esConstante: boolean, pos: number) {
+    constructor(nombre: string, tipo: Tipo, esGlobal: boolean, esConstante: boolean, pos: number, funcion: string) {
         super(nombre);
         this.tipo = tipo;
         this.esGlobal = esGlobal;
         this.esConstante = esConstante;
         this.posicion = pos;
+        this.funcion = funcion;
     }
 
 
@@ -48,5 +50,9 @@ export class SimbVar extends SimboloJ {
 
     public setTipo(t: Tipo): void {
         this.tipo = t;
+    }
+
+    public getFuncion():string{
+        return this.funcion;
     }
 }

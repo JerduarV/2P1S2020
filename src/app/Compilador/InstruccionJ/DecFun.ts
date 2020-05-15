@@ -43,7 +43,7 @@ export class DecFun extends InstruccionJ {
         let local: TablaSimbJ = NewTablaLocal(ts);
         for (let i = 0; i < this.parametroFormales.length; i++) {
             let param: ParametroFormal = this.parametroFormales[i];
-            local.GuardarVarible(param.nombre, param.getTipo(), false, false, i + 1, this.getFila(), this.getCol(), true);
+            local.GuardarVarible(param.nombre, param.getTipo(), false, false, i + 1, this.getFila(), this.getCol(), true, this.nombre);
         }
 
         concatCodigo('\nproc ' + this.nombre + this.concatTipo() + ' begin');
@@ -69,7 +69,7 @@ export class DecFun extends InstruccionJ {
         let local: TablaSimbJ = NewTablaLocal(ts);
         for (let i = 0; i < this.parametroFormales.length; i++) {
             let param: ParametroFormal = this.parametroFormales[i];
-            local.GuardarVarible(param.nombre, param.getTipo(), false, false, i + 1, this.getFila(), this.getCol(), true);
+            local.GuardarVarible(param.nombre, param.getTipo(), false, false, i + 1, this.getFila(), this.getCol(), true, this.nombre);
         }
         if (this.getCuerpo() != null) {
             for (let i = 0; i < this.getCuerpo().length; i++) {

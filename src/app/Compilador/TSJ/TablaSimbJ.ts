@@ -97,10 +97,10 @@ export class TablaSimbJ {
      * @param fila Fila en la que se encuentra
      * @param col Columna en la que se encuentra
      */
-    public GuardarVarible(nombre: string, tipo: Tipo, esGlobal: boolean, esConstante: boolean, pos: number, fila: number, col: number, rep: boolean): SimbVar {
+    public GuardarVarible(nombre: string, tipo: Tipo, esGlobal: boolean, esConstante: boolean, pos: number, fila: number, col: number, rep: boolean, funcion: string): SimbVar {
         let key: string = this.getKeyVar('var', nombre);
         if (!this.tabla.has(key)) {
-            let s: SimbVar = new SimbVar(nombre, tipo, esGlobal, esConstante, pos);
+            let s: SimbVar = new SimbVar(nombre, tipo, esGlobal, esConstante, pos, funcion);
             this.tabla.set(key, s);
             lista_var_global.push(s);
             return s;

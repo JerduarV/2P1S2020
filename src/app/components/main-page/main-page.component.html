@@ -123,6 +123,12 @@
                                     <td mat-cell *matCellDef="let element"> {{element.getTipo().getString()}} </td>
                                 </ng-container>
 
+                                <!-- Name Column -->
+                                <ng-container matColumnDef="FUNCIÓN">
+                                    <th mat-header-cell *matHeaderCellDef> FUNCIÓN </th>
+                                    <td mat-cell *matCellDef="let element"> {{element.getFuncion()}} </td>
+                                </ng-container>
+
                                 <!-- Weight Column -->
                                 <ng-container matColumnDef="POSICIÓN">
                                     <th mat-header-cell *matHeaderCellDef> POSICIÓN </th>

@@ -1,6 +1,6 @@
 import * as parser from 'src/Gramatica/GramaticaJSharp';
 import { Consola } from '../Auxiliares/Consola';
-import { TablaSimbJ, NewTablaLocal } from './TSJ/TablaSimbJ';
+import { TablaSimbJ, NewTablaLocal, lista_var_global } from './TSJ/TablaSimbJ';
 import { DeclaracionJ } from './InstruccionJ/DeclaracionJ';
 import { NodoASTJ } from './ASTJ/NodoASTJ';
 import { Tipo, getTipoVacio } from './TSJ/Tipo';
@@ -218,6 +218,8 @@ export class CompiladorJ {
             }
         }
 
+        lista_var_global.splice(0, lista_var_global.length);
+
         for (let i = 0; i < lista_dec_global.length; i++) {
             let dec: DeclaracionJ = <DeclaracionJ>lista_dec_global[i];
             let t: Tipo = dec.getTipo();
@@ -237,7 +239,7 @@ export class CompiladorJ {
             }
 
             for (let k = 0; k < dec.getListaIDs().length; k++) {
-                let s: SimbVar = ts.GuardarVarible(dec.getListaIDs()[k], t, true, dec.esConstante(), contador, dec.getFila(), dec.getCol(), false);
+                let s: SimbVar = ts.GuardarVarible(dec.getListaIDs()[k], t, true, dec.esConstante(), contador, dec.getFila(), dec.getCol(), false,"global");
                 if (s != null) {
                     contador += 2;
                     concatCodigo('Heap[' + s.getPosicion() + '] = ' + s.getTipo().getValDefecto() + ';');

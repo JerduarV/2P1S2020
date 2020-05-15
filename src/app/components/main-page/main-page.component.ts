@@ -35,7 +35,7 @@ export class MainPageComponent implements OnInit {
 
   //VARIABLES
   variables = new MatTableDataSource(lista_var_global);
-  dC: string[] = ['NOMBRE', 'TIPO', 'POSICIÓN', 'GLOBAL/LOCAL', 'CONSTANTE']
+  dC: string[] = ['NOMBRE', 'TIPO', 'FUNCIÓN', 'POSICIÓN', 'GLOBAL/LOCAL', 'CONSTANTE']
 
   //VARIABLES
   structs = new MatTableDataSource(lista_strc_global);

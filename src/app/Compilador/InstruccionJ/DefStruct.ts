@@ -85,7 +85,7 @@ export class DefStruct extends InstruccionJ {
             let contador = 1;
             //GUARDANDO LA LISTA DE ATRIBUTOS
             this.lista_atrib.forEach(atrib => {
-                local.GuardarVarible(atrib.id, atrib.tipo, false, false, contador++, atrib.fila, atrib.col, true);
+                local.GuardarVarible(atrib.id, atrib.tipo, false, false, contador++, atrib.fila, atrib.col, true, this.id);
             });
 
             //PASO DEL HEAP AL STACK

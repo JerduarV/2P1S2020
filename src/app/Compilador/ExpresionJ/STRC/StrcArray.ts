@@ -59,8 +59,6 @@ export class StrcArray extends ExpresionJ {
         
         let t: Tipo = <Tipo>this.getTipo(ts);
         let y: Tipo = new Tipo(t.getNombreTipo(),0);
-        console.log(y.getValDefecto());
-        console.log(y);
 
         concatCodigo(t1 + ' = ' + y.getValDefecto() + ';');
         concatCodigo('P = P + ' + ts.getTamanioFunTotal() + ';');

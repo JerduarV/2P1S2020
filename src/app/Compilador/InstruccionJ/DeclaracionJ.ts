@@ -58,7 +58,7 @@ export class DeclaracionJ extends InstruccionJ {
             }
 
             this.lista_ids.forEach(element => {
-                ts.GuardarVarible(element, tipo, this.esGlobal(), this.esConstante(), ts.tam_fun_actual++, this.getFila(), this.getCol(), false);
+                ts.GuardarVarible(element, tipo, this.esGlobal(), this.esConstante(), ts.tam_fun_actual++, this.getFila(), this.getCol(), false, "");
             });
         }
     }
@@ -117,7 +117,7 @@ export class DeclaracionJ extends InstruccionJ {
         }
 
         this.lista_ids.forEach(element => {
-            ts.GuardarVarible(element, tipo, this.esGlobal(), this.esConstante(), ts.tam_fun_actual++, this.getFila(), this.getCol(), true);
+            ts.GuardarVarible(element, tipo, this.esGlobal(), this.esConstante(), ts.tam_fun_actual++, this.getFila(), this.getCol(), true, ts.funcion_actual.getNombre());
         });
 
         for (let i = 0; i < this.lista_ids.length; i++) {
