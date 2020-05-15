@@ -15,6 +15,7 @@ export class DeclaracionJ extends InstruccionJ {
     private readonly global: boolean;
     private readonly exp: ExpresionJ;
     public dec_interna: boolean;
+    public tipo_exp_global: Tipo;
 
     constructor(tipo: Tipo, lista: string[], constante: boolean, global: boolean, e: ExpresionJ, fila: number, col: number) {
         super(null, fila, col);
@@ -23,12 +24,42 @@ export class DeclaracionJ extends InstruccionJ {
         this.constante = constante;
         this.global = global;
         this.exp = e;
+        this.tipo_exp_global = null;
         this.dec_interna = true;
     }
 
-    public BuscarVariablesGlobales(lista_dec: DeclaracionJ[]): void {
+    public BuscarVariablesGlobales(lista_dec: DeclaracionJ[], ts: TablaSimbJ): void {
         if (this.esGlobal()) {
+            if (this.exp != null) {
+                let o: Object = this.exp.getTipo(ts);
+                if (!(o instanceof ErrorLup)) {
+                    this.tipo_exp_global = <Tipo>o;
+                }
+            }
             lista_dec.push(this);
+        } else {
+            //VERIFICO LOS TIPOS
+            let tipo: Tipo;
+            if (this.TipoImplicito()) {
+                let o: Object = this.exp.getTipo(ts);
+                if (o instanceof ErrorLup) {
+                    //ts.GenerarError('Hubo un error en la expresión ', this.getFila(), this.getCol());
+                    return;
+                } else {
+                    tipo = <Tipo>o;
+                }
+            } else {
+                tipo = this.tipo;
+            }
+
+            if (!ts.getExisteTipo(tipo)) {
+                //ts.GenerarError('El tipo no existe: ' + tipo.getString(), this.getFila(), this.getCol());
+                return;
+            }
+
+            this.lista_ids.forEach(element => {
+                ts.GuardarVarible(element, tipo, this.esGlobal(), this.esConstante(), ts.tam_fun_actual++, this.getFila(), this.getCol(), false);
+            });
         }
     }
 
@@ -47,9 +78,14 @@ export class DeclaracionJ extends InstruccionJ {
             }
 
             let tipo: Tipo = <Tipo>o;
-            if (!variable.getTipo().esIgualA(tipo) && !variable.getTipo().AplicaCasteo(tipo)) {
-                ts.GenerarError('Error en los tipos', this.getFila(), this.getCol());
+
+            if (!variable.getTipo().esIgualA(tipo) && !variable.getTipo().AplicaCasteo(tipo) && !variable.getTipo().isVoid()) {
+                ts.GenerarError(`Error en los tipos ${variable.getTipo().getString()} : ${tipo.getString()}`, this.getFila(), this.getCol());
                 return;
+            }
+
+            if (variable.getTipo().isVoid()) {
+                variable.setTipo(tipo);
             }
 
             this.exp.Traducir(ts);
@@ -81,7 +117,7 @@ export class DeclaracionJ extends InstruccionJ {
         }
 
         this.lista_ids.forEach(element => {
-            ts.GuardarVarible(element, tipo, this.esGlobal(), this.esConstante(), ts.tam_fun_actual++, this.getFila(), this.getCol());
+            ts.GuardarVarible(element, tipo, this.esGlobal(), this.esConstante(), ts.tam_fun_actual++, this.getFila(), this.getCol(), true);
         });
 
         for (let i = 0; i < this.lista_ids.length; i++) {
@@ -163,7 +199,7 @@ export class DeclaracionJ extends InstruccionJ {
         let n: string = getIdNodo('DEC');
         conectarNodo(padre, n);
 
-        if(this.tipo != null){
+        if (this.tipo != null) {
             conectarNodo(n, getIdNodo(this.tipo.getString()));
         }
 

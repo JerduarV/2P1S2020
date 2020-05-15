@@ -1,9 +1,9 @@
 import { SimboloJ } from './SimboloJ';
 import { Tipo } from './Tipo';
 
-export class SimbVar extends SimboloJ{
+export class SimbVar extends SimboloJ {
 
-    private readonly tipo: Tipo;
+    private tipo: Tipo;
     private readonly esGlobal: boolean;
     private readonly esConstante: boolean;
     private readonly posicion: number;
@@ -17,7 +17,7 @@ export class SimbVar extends SimboloJ{
      * @param esConstante Indica si es constante
      * @param pos Posicion
      */
-    constructor(nombre: string, tipo: Tipo, esGlobal: boolean, esConstante: boolean, pos: number){
+    constructor(nombre: string, tipo: Tipo, esGlobal: boolean, esConstante: boolean, pos: number) {
         super(nombre);
         this.tipo = tipo;
         this.esGlobal = esGlobal;
@@ -25,24 +25,28 @@ export class SimbVar extends SimboloJ{
         this.posicion = pos;
     }
 
-    
-    public getTipo() : Tipo {
+
+    public getTipo(): Tipo {
         return this.tipo;
     }
 
-    public getEsGlobal() : boolean {
+    public getEsGlobal(): boolean {
         return this.esGlobal;
     }
-    
-    public getEsConstante():boolean{
+
+    public getEsConstante(): boolean {
         return this.esConstante;
     }
 
-    public getPosicion():number{
+    public getPosicion(): number {
         return this.posicion;
     }
 
-    public getEsArreglo():boolean{
+    public getEsArreglo(): boolean {
         return this.dimensiones > 0;
+    }
+
+    public setTipo(t: Tipo): void {
+        this.tipo = t;
     }
 }

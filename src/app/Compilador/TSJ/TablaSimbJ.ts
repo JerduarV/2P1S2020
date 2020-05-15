@@ -97,7 +97,7 @@ export class TablaSimbJ {
      * @param fila Fila en la que se encuentra
      * @param col Columna en la que se encuentra
      */
-    public GuardarVarible(nombre: string, tipo: Tipo, esGlobal: boolean, esConstante: boolean, pos: number, fila: number, col: number): SimbVar {
+    public GuardarVarible(nombre: string, tipo: Tipo, esGlobal: boolean, esConstante: boolean, pos: number, fila: number, col: number, rep: boolean): SimbVar {
         let key: string = this.getKeyVar('var', nombre);
         if (!this.tabla.has(key)) {
             let s: SimbVar = new SimbVar(nombre, tipo, esGlobal, esConstante, pos);
@@ -105,7 +105,9 @@ export class TablaSimbJ {
             lista_var_global.push(s);
             return s;
         }
-        this.consola.InsertError('Ya existe la variable' + nombre, 'Semantico', fila, col);
+        if(rep){
+            this.consola.InsertError(`Ya existe la variable: ${nombre}`, 'Semantico', fila, col);
+        }
         return null;
     }
 
@@ -127,7 +129,7 @@ export class TablaSimbJ {
                 //console.log('Se agregó ' + key);
                 return null;
             } else {
-                return this.GenerarError('Ya existe la función ' + fun.getNombre(), fun.getFila(), fun.getCol());
+                return this.GenerarError('Ya existe la función: ' + fun.getNombre(), fun.getFila(), fun.getCol());
             }
         }
     }

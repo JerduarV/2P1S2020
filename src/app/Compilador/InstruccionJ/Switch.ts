@@ -138,9 +138,9 @@ export class Switch extends InstruccionJ {
         });
     }
 
-    public BuscarVariablesGlobales(lista_dec: DeclaracionJ[]): void {
+    public BuscarVariablesGlobales(lista_dec: DeclaracionJ[], ts: TablaSimbJ): void {
         this.lista_casos.forEach(caso => {
-            caso.BuscarVariablesGlobales(lista_dec);
+            caso.BuscarVariablesGlobales(lista_dec, ts);
         });
     }
 

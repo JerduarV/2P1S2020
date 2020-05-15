@@ -1,5 +1,5 @@
 import { NodoASTJ } from '../ASTJ/NodoASTJ';
-import { TablaSimbJ } from '../TSJ/TablaSimbJ';
+import { TablaSimbJ, NewTablaLocal } from '../TSJ/TablaSimbJ';
 import { DeclaracionJ } from './DeclaracionJ';
 import { DecFun } from './DecFun';
 import { DefStruct } from './DefStruct';
@@ -18,11 +18,12 @@ export abstract class InstruccionJ extends NodoASTJ{
      * Método que busca las variables globales
      * @param lista_dec Lista para almecenar las variables globales
      */
-    public BuscarVariablesGlobales(lista_dec: DeclaracionJ[]): void{
+    public BuscarVariablesGlobales(lista_dec: DeclaracionJ[], ts: TablaSimbJ): void{
         if(this.cuerpo != null){
+            let local: TablaSimbJ = NewTablaLocal(ts);
             for(let i = 0; i < this.cuerpo.length; i++){
                 if(this.cuerpo[i] instanceof InstruccionJ){
-                    (<InstruccionJ>this.cuerpo[i]).BuscarVariablesGlobales(lista_dec);
+                    (<InstruccionJ>this.cuerpo[i]).BuscarVariablesGlobales(lista_dec, ts);
                 }
             }
         }

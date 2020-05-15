@@ -5,7 +5,7 @@ import { NodoASTJ } from '../ASTJ/NodoASTJ';
 import { ErrorLup } from 'src/app/Auxiliares/Error';
 import { Tipo } from '../TSJ/Tipo';
 import { getTempAct, getEtiqueta, concatCodigo, getIdNodo, conectarNodo } from 'src/app/Auxiliares/Utilidades';
-import { NewTablaLocal } from '../TSJ/TablaSimbJ';
+import { NewTablaLocal, TablaSimbJ } from '../TSJ/TablaSimbJ';
 import { DeclaracionJ } from './DeclaracionJ';
 import { DecFun } from './DecFun';
 import { DefStruct } from './DefStruct';
@@ -62,14 +62,10 @@ export class IF extends InstruccionJ {
         }
     }
 
-    public BuscarVariablesGlobales(lista_dec: DeclaracionJ[]): void {
-        for (let i = 0; i < this.getCuerpo().length; i++) {
-            if (this.getCuerpo()[i] instanceof InstruccionJ) {
-                (<InstruccionJ>this.getCuerpo()[i]).BuscarVariablesGlobales(lista_dec);
-            }
-        }
+    public BuscarVariablesGlobales(lista_dec: DeclaracionJ[], ts: TablaSimbJ): void {
+        super.BuscarVariablesGlobales(lista_dec, ts);
         if (this.sino != null) {
-            this.sino.BuscarVariablesGlobales(lista_dec);
+            this.sino.BuscarVariablesGlobales(lista_dec, ts);
         }
     }
 

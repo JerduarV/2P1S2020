@@ -1,3 +1,7 @@
+export function getTipoVacio():Tipo{
+    return new Tipo(VOID, 0);
+}
+
 export function getTipoString(): Tipo {
     return new Tipo(STRING, 0);
 }
@@ -86,12 +90,16 @@ export class Tipo {
         return this.tipo == STRING && this.dim == 0;
     }
 
+    public isVoid():boolean{
+        return this.tipo == VOID && this.dim == 0;
+    }
+
     public esIgualA(t: Tipo): boolean {
         return this.tipo == t.tipo && this.dim == t.dim;
     }
 
     public getValDefecto(): string {
-        if (this.isBoolean() || this.isInteger() || this.isChar()) {
+        if (this.isBoolean() || this.isInteger() || this.isChar() || this.isVoid()) {
             return '0';
         }
         if (this.isDouble()) {

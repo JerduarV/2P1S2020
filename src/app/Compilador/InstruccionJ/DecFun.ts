@@ -4,6 +4,7 @@ import { ParametroFormal } from '../TSJ/ParametroFormal';
 import { NodoASTJ } from '../ASTJ/NodoASTJ';
 import { TablaSimbJ, NewTablaLocal } from '../TSJ/TablaSimbJ';
 import { concatCodigo, getEtiqueta, getIdNodo, conectarNodo } from 'src/app/Auxiliares/Utilidades';
+import { DeclaracionJ } from './DeclaracionJ';
 
 export class DecFun extends InstruccionJ {
 
@@ -42,7 +43,7 @@ export class DecFun extends InstruccionJ {
         let local: TablaSimbJ = NewTablaLocal(ts);
         for (let i = 0; i < this.parametroFormales.length; i++) {
             let param: ParametroFormal = this.parametroFormales[i];
-            local.GuardarVarible(param.nombre, param.getTipo(), false, false, i + 1, this.getFila(), this.getCol());
+            local.GuardarVarible(param.nombre, param.getTipo(), false, false, i + 1, this.getFila(), this.getCol(), true);
         }
 
         concatCodigo('\nproc ' + this.nombre + this.concatTipo() + ' begin');
@@ -61,6 +62,22 @@ export class DecFun extends InstruccionJ {
 
     public getNombreLlamada(): string {
         return this.nombre + this.concatTipo();
+    }
+
+    public BuscarVariablesGlobales(lista_dec: DeclaracionJ[], ts: TablaSimbJ): void {
+        //METER PARAMETROS EN LA TABLA LOCAL
+        let local: TablaSimbJ = NewTablaLocal(ts);
+        for (let i = 0; i < this.parametroFormales.length; i++) {
+            let param: ParametroFormal = this.parametroFormales[i];
+            local.GuardarVarible(param.nombre, param.getTipo(), false, false, i + 1, this.getFila(), this.getCol(), true);
+        }
+        if (this.getCuerpo() != null) {
+            for (let i = 0; i < this.getCuerpo().length; i++) {
+                if (this.getCuerpo()[i] instanceof InstruccionJ) {
+                    (<InstruccionJ>this.getCuerpo()[i]).BuscarVariablesGlobales(lista_dec, local);
+                }
+            }
+        }
     }
 
     /**

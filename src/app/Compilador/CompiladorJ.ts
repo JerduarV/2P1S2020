@@ -3,7 +3,7 @@ import { Consola } from '../Auxiliares/Consola';
 import { TablaSimbJ, NewTablaLocal } from './TSJ/TablaSimbJ';
 import { DeclaracionJ } from './InstruccionJ/DeclaracionJ';
 import { NodoASTJ } from './ASTJ/NodoASTJ';
-import { Tipo } from './TSJ/Tipo';
+import { Tipo, getTipoVacio } from './TSJ/Tipo';
 import { SimbVar } from './TSJ/SimbVar';
 import { ExpresionJ } from './ExpresionJ/ExpresionJ';
 import { inicializarTodo, concatCodigo, getTempAct, ImprimitCodigo, QuemarFunciones, GenerarEncabezado, getEtiqueta, genTemp, getIdNodo, dot, DOT_GEN } from '../Auxiliares/Utilidades';
@@ -185,13 +185,16 @@ export class CompiladorJ {
 
     private RecolectarStructs(AST: NodoASTJ[]): DefStruct[] {
         let lista_strc: DefStruct[] = [];
-        AST.forEach(nodo => {
+        for (const nodo of AST) {
+            if (nodo == null) {
+                continue;
+            }
             if (nodo instanceof DefStruct) {
                 lista_strc.push(nodo);
             } else {
                 (<InstruccionJ>nodo).RecolectarStruct(lista_strc);
             }
-        });
+        }
         return lista_strc;
     }
 
@@ -200,16 +203,18 @@ export class CompiladorJ {
      */
     public RecolectarGlobales(ts: TablaSimbJ, AST: NodoASTJ[]): void {
         let lista_dec_global: DeclaracionJ[] = [];
-        let VariableGlobales: SimbVar[] = [];
-        let expresiones_ini: ExpresionJ[] = [];
         let contador: number = 0;
 
         //BUSCO TODAS LAS DECLARACIONES GLOBALES
         for (let i = 0; i < AST.length; i++) {
+            if (AST[i] == null) {
+                continue;
+            }
+
             if (AST[i] instanceof DeclaracionJ) {
                 lista_dec_global.push(<DeclaracionJ>AST[i]);
             } else {
-                (<InstruccionJ>AST[i]).BuscarVariablesGlobales(lista_dec_global);
+                (<InstruccionJ>AST[i]).BuscarVariablesGlobales(lista_dec_global, ts);
             }
         }
 
@@ -217,19 +222,24 @@ export class CompiladorJ {
             let dec: DeclaracionJ = <DeclaracionJ>lista_dec_global[i];
             let t: Tipo = dec.getTipo();
             if (dec.esVar() || dec.esConstante() || dec.esGlobal()) {
-                let tipo: Object = dec.getExp().getTipo(ts);
+                let tipo: Object = null;
+                if (dec.tipo_exp_global != null) {
+                    tipo = dec.tipo_exp_global;
+                } else {
+                    tipo = dec.getExp().getTipo(ts);
+                }
+
                 if (tipo instanceof Tipo) {
                     t = <Tipo>tipo;
-                }
+                }/* else {
+                    t = getTipoVacio();
+                }*/
             }
-            for (let k = 0; k < dec.getListaIDs().length; k++) {
-                //console.log(dec.getListaIDs()[k]);
-                let s: SimbVar = ts.GuardarVarible(dec.getListaIDs()[k], t, true, dec.esConstante(), contador, dec.getFila(), dec.getCol());
-                if (s != null) {
-                    VariableGlobales.push(s);
-                    expresiones_ini.push(dec.getExp());
-                    contador += 2;
 
+            for (let k = 0; k < dec.getListaIDs().length; k++) {
+                let s: SimbVar = ts.GuardarVarible(dec.getListaIDs()[k], t, true, dec.esConstante(), contador, dec.getFila(), dec.getCol(), false);
+                if (s != null) {
+                    contador += 2;
                     concatCodigo('Heap[' + s.getPosicion() + '] = ' + s.getTipo().getValDefecto() + ';');
                     let bandera: number = dec.dec_interna ? -1 : 1;
                     concatCodigo('Heap[' + (s.getPosicion() + 1) + '] = ' + bandera + ';');
@@ -238,40 +248,23 @@ export class CompiladorJ {
 
         }
 
-        //RESERVANDO LUGAR EN EL HEAP Y SETEANDO VALOR POR DEFECTO
-        /*for (let y = 0; y < VariableGlobales.length; y++) {
-            let variable: SimbVar = VariableGlobales[y];
-            concatCodigo('Heap[' + variable.getPosicion() + '] = ' + variable.getTipo().getValDefecto() + ';');
-        }*/
-
         concatCodigo('H = ' + contador + ';')
 
-        //SETENDO VALOR SI APLICA
-        /*for (let u = 0; u < VariableGlobales.length; u++) {
-            if (expresiones_ini[u] != null) {
-                expresiones_ini[u].Traducir(ts);
-                let temp: string = getTempAct();
-                concatCodigo('Heap[' + VariableGlobales[u].getPosicion() + '] = ' + temp + ';')
-            }
-        }*/
         for (let i = 0; i < lista_dec_global.length; i++) {
             let dec: DeclaracionJ = lista_dec_global[i];
-            //console.log(dec);
-            if (dec.getExp() == null) {
+            if (dec.getExp() == null || dec.dec_interna) {
                 continue;
             }
+
             let o: Object = dec.getExp().getTipo(ts);
             if (o instanceof ErrorLup) {
-                ts.GenerarError('Hubo un error en la expresión ', dec.getFila(), dec.getCol());
                 continue;
             }
 
             let tipo = <Tipo>o;
             dec.getExp().Traducir(ts);
             let t1 = getTempAct();
-            //console.log('holita');
             for (let y = 0; y < dec.getListaIDs().length; y++) {
-                //console.log('hola');
                 let variable: SimbVar = ts.BuscarVariable(dec.lista_ids[y]);
                 if (variable == null) {
                     ts.GenerarError('La varible ' + dec.lista_ids[y] + ' no existe', dec.getFila(), dec.getCol());
@@ -286,8 +279,6 @@ export class CompiladorJ {
             ts.SacarTemporal(t1);
         }
 
-
-        //console.log(VariableGlobales);
     }
 
     private EscrbirPalabras(val: string): string {
@@ -303,10 +294,10 @@ export class CompiladorJ {
         return temp;
     }
 
-    public DibujarAST(AST: NodoASTJ[]):void{
+    public DibujarAST(AST: NodoASTJ[]): void {
         let padre: string = getIdNodo('AST');
         AST.forEach(nodo => {
-            if(nodo != null){
+            if (nodo != null) {
                 nodo.dibujar(padre);
             }
         });

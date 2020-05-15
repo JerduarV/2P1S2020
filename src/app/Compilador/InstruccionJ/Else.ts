@@ -1,7 +1,7 @@
 import { InstruccionJ } from './InstruccionJ';
 import { IF } from './IF';
 import { NodoASTJ } from '../ASTJ/NodoASTJ';
-import { NewTablaLocal } from '../TSJ/TablaSimbJ';
+import { NewTablaLocal, TablaSimbJ } from '../TSJ/TablaSimbJ';
 import { DeclaracionJ } from './DeclaracionJ';
 import { DecFun } from './DecFun';
 import { DefStruct } from './DefStruct';
@@ -28,15 +28,11 @@ export class Else extends InstruccionJ {
         }
     }
 
-    public BuscarVariablesGlobales(lista_dec: DeclaracionJ[]): void {
+    public BuscarVariablesGlobales(lista_dec: DeclaracionJ[], ts: TablaSimbJ): void {
         if (this.IF == null) {
-            for (let i = 0; i < this.getCuerpo().length; i++) {
-                if (this.getCuerpo()[i] instanceof InstruccionJ) {
-                    (<InstruccionJ>this.getCuerpo()[i]).BuscarVariablesGlobales(lista_dec);
-                }
-            }
+            super.BuscarVariablesGlobales(lista_dec, ts);
         } else {
-            this.IF.BuscarVariablesGlobales(lista_dec);
+            this.IF.BuscarVariablesGlobales(lista_dec, ts);
         }
     }
 

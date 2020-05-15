@@ -206,10 +206,16 @@ JS_BODY:
 
 JS_BODY_DEC:
         METHOD_DEC              { $$ = $1; }
+    |   STRC_DEC PTCOMA         { $$ = $1; }
     |   STRC_DEC                { $$ = $1; }
     |   VAR_DEC PTCOMA          { $$ = $1; $$.dec_interna = false; }
     |   VAR_DEC                 { $$ = $1; $$.dec_interna = false; }
-    |   IMPORT                  { $$ = $1; }       
+    |   IMPORT                  { $$ = $1; }
+
+    /* ERRORES */
+    |   error PTCOMA            { $$ = null; }
+    |   error LLAVEDER          { $$ = null; }
+    |   error CORDER            { $$ = null; }       
 ;
 
 IMPORT:
@@ -309,9 +315,9 @@ SENT:
     |   L_ACCESO DECREMENTO                 { $$ = new IncDec(new Acceso($1,@1.first_line,@1.first_column),-1,@1.first_line,@1.first_column); }
 
     /* ERRORES */
-    |   error PTCOMA                        { $$ = null; InsertarError('Sintactico','Error sintáctico con token: ' + yytext + this.yylloc, this._$.first_line, this._$.first_column); }
-    |   error LLAVEDER                      { $$ = null; InsertarError('Sintactico','Error sintáctico con token: ' + yytext, this._$.first_line, this._$.first_column); }
-    |   error CORDER                        { $$ = null; InsertarError('Sintactico','Error sintáctico con token: ' + yytext, this._$.first_line, this._$.first_column); }
+    |   error PTCOMA                        { $$ = null; }
+    |   error LLAVEDER                      { $$ = null; }
+    |   error CORDER                        { $$ = null; }
 ;
 
 TRYCATCH:
