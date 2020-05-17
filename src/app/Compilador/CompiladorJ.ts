@@ -5,7 +5,6 @@ import { DeclaracionJ } from './InstruccionJ/DeclaracionJ';
 import { NodoASTJ } from './ASTJ/NodoASTJ';
 import { Tipo, getTipoVacio, getTipoString, CHAR, getTipoInteger } from './TSJ/Tipo';
 import { SimbVar } from './TSJ/SimbVar';
-import { ExpresionJ } from './ExpresionJ/ExpresionJ';
 import { inicializarTodo, concatCodigo, getTempAct, ImprimitCodigo, QuemarFunciones, GenerarEncabezado, getEtiqueta, genTemp, getIdNodo, dot, DOT_GEN } from '../Auxiliares/Utilidades';
 import { DecFun } from './InstruccionJ/DecFun';
 import { InstruccionJ } from './InstruccionJ/InstruccionJ';

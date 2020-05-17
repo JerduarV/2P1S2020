@@ -71,6 +71,7 @@ export class LiteralJ extends ExpresionJ {
                 valor = valor.replace(/\\n/g, '\n');
                 valor = valor.replace(/\\r/g, '\r');
                 valor = valor.replace(/\\"/g, '"');
+                valor = valor.replace(/\\\\/g, '\\');
                 this.TraducirStringLit(valor, ts);
                 break;
         }

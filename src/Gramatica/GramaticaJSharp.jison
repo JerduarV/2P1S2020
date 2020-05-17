@@ -56,7 +56,7 @@
 /* EXPRESIONES REGULARES */
 [0-9]+("."[0-9]+)\b                             return  'LIT_DOUBLE'
 [0-9]+\b                                        return  'LIT_INTEGER'
-([a-zñA-ZÑ0-9]|"-"|".")+("."[j])              return  'ID_FILE'
+([a-zñA-ZÑ0-9]|"-"|".")+("."[j])                            return  'ID_FILE'
 [a-zA-Z_ñ]([a-zA-Z0-9_Ñ]*)                      return  'ID'
 ('"')([^\\"]|\\.)*('"')		                    return  'LIT_STRING'
 ("'")([^\\']|"\\n"|"\\t"|"\\r"|"\\"|"\\0")("'") return  'LIT_CHAR'
