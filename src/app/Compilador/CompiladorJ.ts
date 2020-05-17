@@ -3,7 +3,7 @@ import { Consola } from '../Auxiliares/Consola';
 import { TablaSimbJ, NewTablaLocal, lista_var_global } from './TSJ/TablaSimbJ';
 import { DeclaracionJ } from './InstruccionJ/DeclaracionJ';
 import { NodoASTJ } from './ASTJ/NodoASTJ';
-import { Tipo, getTipoVacio } from './TSJ/Tipo';
+import { Tipo, getTipoVacio, getTipoString, CHAR, getTipoInteger } from './TSJ/Tipo';
 import { SimbVar } from './TSJ/SimbVar';
 import { ExpresionJ } from './ExpresionJ/ExpresionJ';
 import { inicializarTodo, concatCodigo, getTempAct, ImprimitCodigo, QuemarFunciones, GenerarEncabezado, getEtiqueta, genTemp, getIdNodo, dot, DOT_GEN } from '../Auxiliares/Utilidades';
@@ -13,6 +13,8 @@ import { DefStruct } from './InstruccionJ/DefStruct';
 import { ErrorLup } from '../Auxiliares/Error';
 import { Import } from './InstruccionJ/Import';
 import { Editor3Component } from '../components/editor3/editor3.component';
+import { lista_funciones_global } from './TSJ/SimbFuncion';
+import { ParametroFormal } from './TSJ/ParametroFormal';
 
 export class CompiladorJ {
     constructor() {
@@ -103,17 +105,40 @@ export class CompiladorJ {
 
             //IMPRESIÓN DEL CÓDIGO
             cons.salida = ImprimitCodigo();
-            //console.log(global.getConsola().lista_errores);
+
+            //QUEMAR FUNCIONES NATIVAS DEL ENUNCIADO
+            this.QuemarFunciones();
 
         } catch (error) {
             console.log(error);
         }
     }
 
+    private QuemarFunciones(): void {
+        let f1: DecFun = new DecFun(getTipoString(), 'toUpperCase', [], [], 0, 0);
+        let f2: DecFun = new DecFun(getTipoString(), 'toLowerCase', [], [], 0, 0);
+        let f3: DecFun = new DecFun(new Tipo(CHAR, 1), 'toCharArray', [], [], 0, 0);
+        let f4: DecFun = new DecFun(getTipoInteger(), 'length', [], [], 0, 0);
+        let f5: DecFun = new DecFun(getTipoInteger(), 'charAt', [new ParametroFormal(getTipoInteger(), 'n')], [], 0, 0);
+        let f6: DecFun = new DecFun(getTipoInteger(), 'size', [], [], 0, 0);
+        let f7: DecFun = new DecFun(getTipoInteger(), 'getReference', [], [], 0, 0);
+        let f8: DecFun = new DecFun(getTipoInteger(), 'instanceOf', [], [], 0, 0);
+        let f9: DecFun = new DecFun(getTipoInteger(), 'linealize', [], [], 0, 0);
+
+        lista_funciones_global.push(f1);
+        lista_funciones_global.push(f2);
+        lista_funciones_global.push(f3);
+        lista_funciones_global.push(f4);
+        lista_funciones_global.push(f5);
+        lista_funciones_global.push(f6);
+        lista_funciones_global.push(f7);
+        lista_funciones_global.push(f8);
+        lista_funciones_global.push(f9);
+    }
+
     private Import(Archivo: string, lista_files: Editor3Component[]): NodoASTJ[] {
         for (let i = 0; i < lista_files.length; i++) {
             if (Archivo == lista_files[i].getNombre()) {
-                //console.log(lista_files[i].code);
                 let AST;
                 try {
                     AST = parser.parse(lista_files[i].code);
@@ -239,7 +264,7 @@ export class CompiladorJ {
             }
 
             for (let k = 0; k < dec.getListaIDs().length; k++) {
-                let s: SimbVar = ts.GuardarVarible(dec.getListaIDs()[k], t, true, dec.esConstante(), contador, dec.getFila(), dec.getCol(), false,"global");
+                let s: SimbVar = ts.GuardarVarible(dec.getListaIDs()[k], t, true, dec.esConstante(), contador, dec.getFila(), dec.getCol(), false, "global");
                 if (s != null) {
                     contador += 2;
                     concatCodigo('Heap[' + s.getPosicion() + '] = ' + s.getTipo().getValDefecto() + ';');

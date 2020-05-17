@@ -13,22 +13,23 @@ import { Editor3Component } from './components/editor3/editor3.component';
 import { MonacoEditorModule, NgxMonacoEditorConfig } from 'ngx-monaco-editor';
 import { VentanaErroresComponent } from './components/ventana-errores/ventana-errores.component';
 
-export const monacoConfig:  NgxMonacoEditorConfig = {
+export const monacoConfig: NgxMonacoEditorConfig = {
 
   defaultOptions: { scrollBeyondLastLine: false },
   onMonacoLoad: () => {
-    
+
     monaco.editor.defineTheme('CAAS', {
       base: 'vs', // can also be vs-dark or hc-black
       inherit: true, // can also be false to completely replace the builtin rules
+
       rules: [
-        {token : 'string', foreground : '#f48f42'},
-        {token : 'comment', foreground : '#818791'},
-        {token : 'number.float', foreground : '#bf59ff'},
-        {token : 'number', foreground : '#bf59ff'}
+        { token: 'string', foreground: '#f48f42' },
+        { token: 'comment', foreground: '#818791' },
+        { token: 'number.float', foreground: '#bf59ff' },
+        { token: 'number', foreground: '#bf59ff' },
       ],
       colors: {
-        
+
       }
     });
 
@@ -55,10 +56,10 @@ export const monacoConfig:  NgxMonacoEditorConfig = {
     MonacoEditorModule.forRoot(monacoConfig)
   ],
   providers: [
-    
+
   ],
   bootstrap: [AppComponent],
-  schemas:[NO_ERRORS_SCHEMA],
+  schemas: [NO_ERRORS_SCHEMA],
   entryComponents: [VentanaErroresComponent]
 })
 export class AppModule { }
