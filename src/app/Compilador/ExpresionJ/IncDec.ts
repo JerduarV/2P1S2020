@@ -27,16 +27,18 @@ export class IncDec extends ExpresionJ {
         }
 
         let tipo: Tipo = <Tipo>o;
-        if (tipo.isNumerico()) {
+        if (tipo.isNumerico() || tipo.isChar()) {
             return tipo;
         }
 
-        return ts.GenerarError('Se esperaba un acceso numérico', this.getFila(), this.getCol());
+        return ts.GenerarError('Se esperaba un acceso numérico o char', this.getFila(), this.getCol());
 
     }
     public Traducir(ts: import("../TSJ/TablaSimbJ").TablaSimbJ): void {
 
-        if (this.getTipo(ts) instanceof ErrorLup) {
+        let o: Object = this.getTipo(ts);
+
+        if (o instanceof ErrorLup) {
             return;
         }
 

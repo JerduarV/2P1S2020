@@ -163,7 +163,7 @@ export class OpeLogica extends OperacionJ {
 
         let temp: string = genTemp();
         concatCodigo(temp + ' = 0;')
-        concatCodigo('if (' + t1 + ' != ' + t2 + ') goto ' + etqv + ';\ngoto ' + etqf + ';');
+        concatCodigo('if (' + t1 + ' <> ' + t2 + ') goto ' + etqv + ';\ngoto ' + etqf + ';');
         concatCodigo(etqv + ':\n' + temp + ' = 1;\n' + etqf + ':');
 
         ts.SacarTemporal(t1);

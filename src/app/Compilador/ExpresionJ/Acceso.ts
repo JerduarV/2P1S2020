@@ -1036,7 +1036,8 @@ export class Acceso extends ExpresionJ {
                     ts.GenerarError('La expresión es un error', this.getFila(), this.getCol());
                 }
 
-                if (!variable.getTipo().esIgualA(<Tipo>o) && !variable.getTipo().AplicaCasteo(<Tipo>o)) {
+                if (!variable.getTipo().esIgualA(<Tipo>o) && !variable.getTipo().AplicaCasteo(<Tipo>o)
+                    && !(variable.getTipo().isChar() && (<Tipo>o).isInteger())) {
                     ts.GenerarError('Asig: Los tipos no coinciden', this.getFila(), this.getCol());
                     return;
                 }
@@ -1118,7 +1119,8 @@ export class Acceso extends ExpresionJ {
 
                 let tipo_exp: Tipo = <Tipo>o;
 
-                if (!atrib.esIgualA(tipo_exp) && !atrib.AplicaCasteo(tipo_exp)) {
+                if (!atrib.esIgualA(tipo_exp) && !atrib.AplicaCasteo(tipo_exp)
+                    && !(atrib.isChar() && (<Tipo>o).isInteger())) {
                     ts.GenerarError('Asig: Los tipo no coinciden', this.getFila(), this.getCol());
                     return;
                 }
@@ -1187,7 +1189,8 @@ export class Acceso extends ExpresionJ {
             let tipo_exp_asig: Tipo = <Tipo>o;
             let tipo_contendio: Tipo = new Tipo(variable.getTipo().getNombreTipo(), 0);
 
-            if (!tipo_contendio.esIgualA(tipo_exp_asig) && !tipo_contendio.AplicaCasteo(tipo_exp_asig)) {
+            if (!tipo_contendio.esIgualA(tipo_exp_asig) && !tipo_contendio.AplicaCasteo(tipo_exp_asig)
+                && !(tipo_contendio.isChar() && (<Tipo>o).isInteger())) {
                 ts.GenerarError('Los tipos no coinciden', this.getFila(), this.getCol());
                 return null;
             }

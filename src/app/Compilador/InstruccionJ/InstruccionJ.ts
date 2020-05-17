@@ -23,7 +23,7 @@ export abstract class InstruccionJ extends NodoASTJ{
             let local: TablaSimbJ = NewTablaLocal(ts);
             for(let i = 0; i < this.cuerpo.length; i++){
                 if(this.cuerpo[i] instanceof InstruccionJ){
-                    (<InstruccionJ>this.cuerpo[i]).BuscarVariablesGlobales(lista_dec, ts);
+                    (<InstruccionJ>this.cuerpo[i]).BuscarVariablesGlobales(lista_dec, local);
                 }
             }
         }

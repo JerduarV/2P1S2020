@@ -148,7 +148,7 @@ export class DeclaracionJ extends InstruccionJ {
                     continue;
                 }
                 if (!variable.getTipo().esIgualA(tipo) && !variable.getTipo().AplicaCasteo(tipo)) {
-                    ts.GenerarError('Los tipos no coinciden ' + variable.getTipo().getString() + ' : ' + tipo.getString(), this.getFila(), this.getCol());
+                    ts.GenerarError('Dec: Los tipos no coinciden ' + variable.getTipo().getString() + ' : ' + tipo.getString(), this.getFila(), this.getCol());
                     return;
                 }
                 let temp: string = genTemp();

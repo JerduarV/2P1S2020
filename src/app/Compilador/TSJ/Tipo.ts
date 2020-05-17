@@ -140,12 +140,12 @@ export class Tipo {
     }
 
     public AplicaCasteo(contenido: Tipo): boolean {
-        if (this.dim != contenido.dim) {
+        if (this.dim != contenido.dim && contenido.tipo != NULL) {
             return false;
         }
-        if (this.tipo == INT) {
+        if (this.tipo == INT && this.dim == contenido.dim) {
             return contenido.tipo == CHAR;
-        } else if (this.tipo == DOUBLE) {
+        } else if (this.tipo == DOUBLE && this.dim == contenido.dim) {
             return contenido.tipo == INT || contenido.tipo == CHAR;
         } else if (this.tipo == STRING || this.soyArreglo() || this.esStruct()) {
             return contenido.tipo == NULL;

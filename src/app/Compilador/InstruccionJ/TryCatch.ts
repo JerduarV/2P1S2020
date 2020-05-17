@@ -4,6 +4,9 @@ import { ParametroFormal } from '../TSJ/ParametroFormal';
 import { NewTablaLocal, TablaSimbJ } from '../TSJ/TablaSimbJ';
 import { genTemp, getEtiqueta, concatCodigo, getIdNodo, conectarNodo } from 'src/app/Auxiliares/Utilidades';
 import { NULLPOINTEREX, ARITHMETICEX, INDEXOUTOFBOUNDEX, INVALIDCASTINGEXCEPTION, UNCAUGTHEX, HEAPOVERFLOWERROR, STACKOVERFLOWERROR } from '../TSJ/Tipo';
+import { DeclaracionJ } from './DeclaracionJ';
+import { DefStruct } from './DefStruct';
+import { DecFun } from './DecFun';
 
 export class TryCatch extends InstruccionJ {
 
@@ -76,7 +79,37 @@ export class TryCatch extends InstruccionJ {
 
         concatCodigo(etq_salida + ':');
 
-        console.log('NO TENGO TRADUCCIÓN');
+        //console.log('NO TENGO TRADUCCIÓN');
+    }
+
+    public BuscarVariablesGlobales(lista_dec: DeclaracionJ[], ts: TablaSimbJ): void {
+        super.BuscarVariablesGlobales(lista_dec, ts);
+        let local: TablaSimbJ = NewTablaLocal(ts);
+        for (let i = 0; i < this.cuerpoCatch.length; i++) {
+            if (this.cuerpoCatch[i] instanceof InstruccionJ) {
+                (<InstruccionJ>this.cuerpoCatch[i]).BuscarVariablesGlobales(lista_dec, local);
+            }
+        }
+    }
+
+    public RecolectarStruct(lista: DefStruct[]): void {
+        super.RecolectarStruct(lista);
+
+        for (let i = 0; i < this.cuerpoCatch.length; i++) {
+            if (this.cuerpoCatch[i] instanceof InstruccionJ) {
+                (<InstruccionJ>this.cuerpoCatch[i]).RecolectarStruct(lista);
+            }
+        }
+
+    }
+
+    public DeterminarTamanioFuncion(funcion: DecFun): void {
+        super.DeterminarTamanioFuncion(funcion);
+        for (let i = 0; i < this.cuerpoCatch.length; i++) {
+            if (this.cuerpoCatch[i] instanceof InstruccionJ) {
+                (<InstruccionJ>this.cuerpoCatch[i]).DeterminarTamanioFuncion(funcion);
+            }
+        }
     }
 
     public dibujar(padre: string): void {
