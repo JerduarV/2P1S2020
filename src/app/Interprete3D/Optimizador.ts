@@ -10,6 +10,7 @@ import { Operacion, TipoOpe } from './Expresion/Operacion';
 import { Literal } from './Expresion/Literal';
 import { SaltoIC } from './Instruccion/SaltoIC';
 import { Direccion } from './Instruccion/Direccion';
+import { Bloque, dot_bloque, ConstruirDot } from './Bloque';
 
 export class Optimizador {
 
@@ -22,6 +23,7 @@ export class Optimizador {
             //PARSEO
             AST = parser.parse(codigo);
             AST = this.Linealizar(AST);
+            this.ConstruirBloquesInicio(AST);
             reporte_optimi.splice(0, reporte_optimi.length);
             this.OptimizarMirill(AST);
 
@@ -71,7 +73,7 @@ export class Optimizador {
 
         for (let y = index; y < i && y < AST.length; y++) {
             const element = AST[y];
-            if(element instanceof Instruccion){
+            if (element instanceof Instruccion) {
                 element.DebeEscribirse = false;
                 InsertReporte('Línea eliminada: ' + element.Escribir(), 2, element.getFila().toString());
             }
@@ -167,5 +169,51 @@ export class Optimizador {
         });
         return cad;
     }
+
+    public ConstruirBloquesInicio(AST: NodoAST[]) {
+
+        let bloques_basicos: Bloque[] = [];
+        let bloque_act: Bloque = new Bloque();
+        bloques_basicos.push(bloque_act);
+
+        for (let i = 0; i < AST.length; i++) {
+            const element = AST[i];
+            if (element instanceof Direccion) {
+                if (bloque_act.lista_inst.length > 0) {
+                    let bloque_nuevo: Bloque = new Bloque();
+                    bloque_nuevo.id = element.getID();
+                    bloque_nuevo.lista_inst.push(element);
+                    bloque_act.hijos.push(bloque_nuevo);
+                    bloque_act = bloque_nuevo;
+                    bloques_basicos.push(bloque_nuevo);
+                }else{
+                    bloque_act.id = element.getID();
+                    bloque_act.lista_inst.push(element);
+                }
+
+            } else if (element instanceof SaltoIC) {
+                bloque_act.lista_inst.push(element);
+                let bloque_nuevo: Bloque = new Bloque;
+                bloques_basicos.push(bloque_nuevo);
+                bloque_act.conexiones.push(element.label);
+                bloque_act = bloque_nuevo;
+            } else if (element instanceof SaltoCond) {
+                bloque_act.lista_inst.push(element);
+                let bloque_nuevo: Bloque = new Bloque;
+                bloques_basicos.push(bloque_nuevo);
+                bloque_act.conexiones.push(element.lb);
+                bloque_act.hijos.push(bloque_nuevo);
+                bloque_act = bloque_nuevo;
+            } else {
+                bloque_act.lista_inst.push(<Instruccion>element);
+            }
+        }
+
+        //console.log(bloques_basicos);
+        ConstruirDot(bloques_basicos);
+        //console.log(dot_bloque);
+    }
+
+
 
 }

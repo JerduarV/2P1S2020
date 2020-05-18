@@ -11,6 +11,7 @@ import { lista_var_global, lista_strc_global } from 'src/app/Compilador/TSJ/Tabl
 import { graphviz } from 'd3-graphviz';
 import { dot, lista_errores, reporte_optimi } from 'src/app/Auxiliares/Utilidades';
 import { Optimizador } from 'src/app/Interprete3D/Optimizador';
+import { dot_bloque } from 'src/app/Interprete3D/Bloque';
 
 
 @Component({
@@ -69,7 +70,17 @@ export class MainPageComponent implements OnInit {
       graphviz('div2').renderDot(dot);
     } catch (error) {
       console.log(error);
-      console.log(dot);
+      //console.log(dot);
+    }
+
+  }
+
+  public DibujarBloques(): void {
+    try {
+      graphviz('div3').renderDot(dot_bloque);
+    } catch (error) {
+      console.log(error);
+      console.log(dot_bloque);
     }
 
   }

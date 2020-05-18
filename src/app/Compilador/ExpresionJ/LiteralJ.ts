@@ -120,7 +120,7 @@ export class LiteralJ extends ExpresionJ {
         }
 
         cadena = cadena.replace("\\", "\\\\");
-        cadena = cadena.replace("\"", "\\\"");
+        cadena = cadena.replace("\"", '\"');
         cadena = cadena.replace("\n", "\\\\n");
         cadena = cadena.replace("\t", "\\\\t");
         cadena = cadena.replace("\r", "\\\\r");
