@@ -46,15 +46,6 @@
 
         <div class="col">
             <mat-tab-group animationDuration="0ms" #tabGroup style="height: 400px;">
-                <mat-tab label="CONSOLA">
-                    <ng-template matTabContent>
-                        <div class="col">
-                            <div class="label-box border"><span class="mx-4 font-weight-light">Consola</span></div>
-                            <textarea style="height: 300px;" class="form-control output" rows="6" disabled="true"
-                                aria-label="output-textarea"></textarea>
-                        </div>
-                    </ng-template>
-                </mat-tab>
                 <mat-tab label="TS: FUNCIONES">
                     <ng-template matTabContent>
                         <div class="col">
@@ -64,11 +55,6 @@
                             </mat-form-field>
                             <!-- Funciones -->
                             <table mat-table [dataSource]="funciones" class="mat-elevation-z8">
-
-                                <!--- Note that these columns can be defined in any order.
-                                  The actual rendered columns are set as a property on the row definition" -->
-
-                                <!-- Position Column -->
                                 <ng-container matColumnDef="NOMBRE">
                                     <th mat-header-cell *matHeaderCellDef> NOMBRE </th>
                                     <td mat-cell *matCellDef="let element"> {{element.getNombre()}} </td>
